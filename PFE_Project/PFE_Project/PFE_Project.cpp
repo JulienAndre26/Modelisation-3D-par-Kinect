@@ -1,8 +1,37 @@
-
+#include <stdio.h>
 #include <reconstructmesdk/reme.h>
+#include <cstdio>
+#include <string>
 #include <iostream>
 
+using namespace std;
+
+void aquire();
+void read_file();
+
 int main() {
+
+	string choice;
+	cout << "Please choose program choice : " << endl;
+	cout << "1 - Acquire" << endl;
+	cout << "2 - Read file" << endl;
+	cout << "0 - Close" << endl;
+	cin >> choice;
+
+	switch (choice[0]) {
+		case '1' : 
+			aquire();
+			break;
+		case '2' :
+			read_file(); 
+			break;
+	}
+
+	return 0;
+
+}
+
+void aquire() {
 	// Create a new context
 	reme_context_t c;
 	reme_context_create(&c);
@@ -52,11 +81,18 @@ int main() {
 	// Close and destroy the sensor, it is not needed anymore
 	reme_sensor_close(c, s);
 	reme_sensor_destroy(c, &s);
+
+	// ask for filename
+	string filename;
+	cout << "-- Give us filename : " << std::endl;
+	cin >> filename;
+
 	// Create a new surface
 	reme_surface_t m;
 	reme_surface_create(c, &m);
 	reme_surface_generate(c, m, v);
-	reme_surface_save_to_file(c, m, "test.ply");
+	reme_surface_save_to_file(c, m, filename.c_str());
+
 	// Visualize resulting surface
 	reme_viewer_t viewer_surface;
 	reme_viewer_create_surface(c, m, "This is ReconstructMeSDK", &viewer_surface);
@@ -66,4 +102,44 @@ int main() {
 	reme_context_print_errors(c);
 	// Make sure to release all memory acquired
 	reme_context_destroy(&c);
+	
+	return;
+}
+
+void read_file() {
+	string filename;
+	cout << "-- Which file to open " << endl;
+	cin >> filename;
+
+	// Create a new context
+	reme_context_t c;
+	reme_context_create(&c);
+	reme_context_set_log_callback(c, reme_default_log_callback, 0); 
+	// Compile for OpenCL device using defaults
+	reme_context_compile(c);
+	// Create a new volume
+	reme_volume_t v;
+	reme_volume_create(c, &v);
+
+
+
+
+
+	// Create a new surface
+	reme_surface_t m;
+	reme_surface_create(c, &m);
+	reme_surface_generate(c, m, v);
+	reme_surface_load_from_file(c, m, filename.c_str());
+
+	// Visualize resulting surface
+	reme_viewer_t viewer_surface;
+	reme_viewer_create_surface(c, m, "This is ReconstructMeSDK", &viewer_surface);
+	reme_viewer_wait(c, viewer_surface);
+	reme_surface_destroy(c, &m);
+	// Print pending errors
+	reme_context_print_errors(c);
+	// Make sure to release all memory acquired
+	reme_context_destroy(&c);
+
+	return;
 }
