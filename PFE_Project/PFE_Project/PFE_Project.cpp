@@ -43,6 +43,23 @@ void aquire() {
 	// Create a new context
 	reme_context_t c;
 	reme_context_create(&c);
+	// Create options to set custom volume size
+	reme_options_t o;
+	reme_options_create(c, &o);
+	reme_context_bind_reconstruction_options(c, o);
+
+	// Set custom volume size
+	reme_options_set_int(c, o, "volume.minimum_corer.x", -2000);
+	reme_options_set_int(c, o, "volume.minimum_corer.y", -2000);
+	reme_options_set_int(c, o, "volume.minimum_corer.z", -2000);
+
+	reme_options_set_int(c, o, "volume.minimum_corer.x", 2000);
+	reme_options_set_int(c, o, "volume.minimum_corer.y", 2000);
+	reme_options_set_int(c, o, "volume.minimum_corer.z", 2000);
+
+	// Tune reconstruction quality
+	reme_context_tune_reconstruction_options(c, REME_TUNE_PROFILE_MID_QUALITY);
+
 	reme_context_set_log_callback(c, reme_default_log_callback, 0);
 	// Compile for OpenCL device using defaults
 	reme_context_compile(c);
