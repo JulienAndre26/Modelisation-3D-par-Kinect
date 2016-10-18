@@ -8,24 +8,32 @@ using namespace std;
 
 void aquire();
 void read_file();
+string check_ply_format(string filename);
 
 int main() {
 
 	string choice;
-	cout << "Please choose program choice : " << endl;
-	cout << "1 - Acquire" << endl;
-	cout << "2 - Read file" << endl;
-	cout << "0 - Close" << endl;
-	cin >> choice;
+	choice[0] = 'A';
+	
+	while (choice[0] != '0')
+	{
+		cout << endl << "----\nMENU\n----" << endl << endl << "Please choose program choice : " << endl;
+		cout << "1 - Acquire" << endl;
+		cout << "2 - Read file" << endl;
+		cout << "0 - Close" << endl;
+		cin >> choice;
 
-	switch (choice[0]) {
-		case '1' : 
+		switch (choice[0]) {
+		case '1':
 			aquire();
 			break;
-		case '2' :
-			read_file(); 
+		case '2':
+			read_file();
 			break;
+		}
 	}
+
+	
 
 	return 0;
 
@@ -87,6 +95,8 @@ void aquire() {
 	cout << "-- Give us filename : " << std::endl;
 	cin >> filename;
 
+	filename = check_ply_format(filename);
+
 	// Create a new surface
 	reme_surface_t m;
 	reme_surface_create(c, &m);
@@ -111,6 +121,8 @@ void read_file() {
 	cout << "-- Which file to open " << endl;
 	cin >> filename;
 
+	filename = check_ply_format(filename);
+
 	// Create a new context
 	reme_context_t c;
 	reme_context_create(&c);
@@ -120,10 +132,6 @@ void read_file() {
 	// Create a new volume
 	reme_volume_t v;
 	reme_volume_create(c, &v);
-
-
-
-
 
 	// Create a new surface
 	reme_surface_t m;
@@ -142,4 +150,19 @@ void read_file() {
 	reme_context_destroy(&c);
 
 	return;
+}
+
+inline bool ends_with(string const & value, string const & ending)
+{
+	if (ending.size() > value.size()) return false;
+	return equal(ending.rbegin(), ending.rend(), value.rbegin());
+}
+
+string check_ply_format(string filename)
+{
+	if (ends_with(filename, ".ply"))
+		return filename;
+
+	filename += ".ply";
+	return filename;
 }
