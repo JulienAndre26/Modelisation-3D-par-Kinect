@@ -69,4 +69,19 @@
       <UniqueIdentifier>{697541a1-dc73-475f-87f9-7062382ec036}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Images\Error.bmp" />
+    <Image Include="Images\ErrorBig.bmp" />
+    <Image Include="Images\Initializing.bmp" />
+    <Image Include="Images\InitializingBig.bmp" />
+    <Image Include="Images\Listening.bmp" />
+    <Image Include="Images\ListeningBig.bmp" />
+    <Image Include="Images\NoAvailableSensor.bmp" />
+    <Image Include="Images\NoAvailableSensorBig.bmp" />
+    <Image Include="Images\Refresh.bmp" />
+    <Image Include="Images\RefreshClick.bmp" />
+    <Image Include="Images\RefreshOver.bmp" />
+    <Image Include="Images\Allset.bmp" />
+    <Image Include="Images\AllsetBig.bmp" />
+  </ItemGroup>
 </Project>
