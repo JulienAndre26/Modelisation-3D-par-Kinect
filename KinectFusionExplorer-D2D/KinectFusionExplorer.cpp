@@ -15,8 +15,12 @@
 
 #define MIN_DEPTH_DISTANCE_MM 350   // Must be greater than 0
 #define MAX_DEPTH_DISTANCE_MM 8000
+
 #define MIN_INTEGRATION_WEIGHT 1    // Must be greater than 0
 #define MAX_INTEGRATION_WEIGHT 1000
+
+#define MIN_TILT_ANGLE -15    // Must be greater than -15
+#define MAX_TILT_ANGLE 15
 
 #define WM_FRAMEREADY           (WM_USER + 0)
 #define WM_UPDATESENSORSTATUS   (WM_USER + 1)
@@ -111,7 +115,7 @@ int CKinectFusionExplorer::Run(HINSTANCE hInstance, int nCmdShow)
     ShowWindow(hWndApp, nCmdShow);
 
 	// ADD - Antoine - Get the name of the future mesh
-	AskMeshName();
+	// AskMeshName();
 
     // Main message loop
     while (WM_QUIT != msg.message)
@@ -650,6 +654,13 @@ void CKinectFusionExplorer::InitializeUIControls()
         TRUE,
         MAKELPARAM(MIN_INTEGRATION_WEIGHT, MAX_INTEGRATION_WEIGHT));
 
+	SendDlgItemMessage(
+		m_hWnd,
+		IDC_SLIDER_TILT,
+		TBM_SETRANGE,
+		TRUE,
+		MAKELPARAM(MIN_TILT_ANGLE, MAX_TILT_ANGLE));
+
     // Set slider positions
     SendDlgItemMessage(
         m_hWnd,
@@ -671,6 +682,13 @@ void CKinectFusionExplorer::InitializeUIControls()
         TBM_SETPOS,
         TRUE,
         (UINT)m_params.m_cMaxIntegrationWeight);
+
+	SendDlgItemMessage(
+		m_hWnd,
+		IDC_SLIDER_TILT,
+		TBM_SETPOS,
+		TRUE,
+		(UINT) 0);
 
     // Set intermediate slider tics at meter intervals
     for (int i=1; i<(MAX_DEPTH_DISTANCE_MM/1000); i++)
@@ -980,15 +998,16 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
     {
         m_params.m_reconstructionParams.voxelCountZ = 384;
     }*/
-    if (IDC_VOXELS_Z_256 == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
+    
+	/*if (IDC_VOXELS_Z_256 == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
     {
 		m_processor.TiltSensor(15);
     }
     if (IDC_VOXELS_Z_128 == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
     {
 		m_processor.TiltSensor(-15);
-    }
-    if (IDC_MESH_FORMAT_STL_RADIO == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
+    }*/    
+	if (IDC_MESH_FORMAT_STL_RADIO == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
     {
         m_saveMeshFormat = Stl;
     }
@@ -1025,6 +1044,10 @@ void CKinectFusionExplorer::UpdateHSliders()
 
     int maxWeight = (int)SendDlgItemMessage(m_hWnd, IDC_INTEGRATION_WEIGHT_SLIDER, TBM_GETPOS, 0,0);
     m_params.m_cMaxIntegrationWeight = maxWeight % (MAX_INTEGRATION_WEIGHT+1);
+
+	// ADD - Antoine
+	int nTiltAngle = (int)SendDlgItemMessage(m_hWnd, IDC_SLIDER_TILT, TBM_GETPOS, 0, 0);
+	m_processor.TiltSensor(nTiltAngle);
 
 
     // update text

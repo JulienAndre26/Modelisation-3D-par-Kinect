@@ -186,6 +186,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ImageRenderer.h" />
+    <ClInclude Include="NuiSensorChooserUIResource.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="KinectFusionExplorer.h" />
     <ClInclude Include="KinectFusionHelper.h" />
