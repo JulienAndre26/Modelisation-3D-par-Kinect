@@ -177,6 +177,22 @@ KinectFusionProcessor::~KinectFusionProcessor()
     DeleteCriticalSection(&m_lockVolume);
 }
 
+
+// ADDED BY NICO
+void KinectFusionProcessor::TiltSensor(int angle)
+{
+	//AssertOwnThread();
+
+	// Clean up Kinect
+	if (m_pNuiSensor != nullptr)
+	{
+		m_pNuiSensor->NuiCameraElevationSetAngle(angle);
+		//SafeRelease(m_pNuiSensor);
+	}
+}
+
+
+
 /// <summary>
 /// Shuts down the sensor
 /// </summary>

@@ -889,15 +889,15 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
     if (IDC_VOXELS_Z_384 == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
     {
         m_params.m_reconstructionParams.voxelCountZ = 384;
-    }
+    }*/
     if (IDC_VOXELS_Z_256 == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
     {
-        m_params.m_reconstructionParams.voxelCountZ = 256;
+		m_processor.TiltSensor(15);
     }
     if (IDC_VOXELS_Z_128 == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
     {
-        m_params.m_reconstructionParams.voxelCountZ = 128;
-    }*/
+		m_processor.TiltSensor(-15);
+    }
     if (IDC_MESH_FORMAT_STL_RADIO == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
     {
         m_saveMeshFormat = Stl;

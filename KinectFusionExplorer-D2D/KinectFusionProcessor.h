@@ -30,6 +30,10 @@ class KinectFusionProcessor
     static const int            cMinTimestampDifferenceForFrameReSync = 17; // The minimum timestamp difference between depth and color (in ms) at which they are considered un-synchronized. 
 
 public:
+
+	// ADDED BY NICO
+	void TiltSensor(int angle);
+
     /// <summary>
     /// Constructor
     /// </summary>
@@ -133,6 +137,10 @@ private:
 
     KinectFusionProcessorFrame  m_frame;
     CRITICAL_SECTION            m_lockFrame;
+
+
+
+
 
     /// <summary>
     /// Shuts down the sensor.
