@@ -32,7 +32,8 @@
 int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
     CKinectFusionExplorer application;
-    application.Run(hInstance, nCmdShow);
+    //application.Run(hInstance, nCmdShow);
+	application.Run(hInstance, nCmdShow);
 }
 
 /// <summary>
@@ -109,6 +110,9 @@ int CKinectFusionExplorer::Run(HINSTANCE hInstance, int nCmdShow)
     // Show window
     ShowWindow(hWndApp, nCmdShow);
 
+	// ADD - Antoine - Get the name of the future mesh
+	AskMeshName();
+
     // Main message loop
     while (WM_QUIT != msg.message)
     {
@@ -126,6 +130,92 @@ int CKinectFusionExplorer::Run(HINSTANCE hInstance, int nCmdShow)
     }
 
     return static_cast<int>(msg.wParam);
+}
+
+// ADD - Antoine
+int CKinectFusionExplorer::AskMeshName() {
+
+	CComPtr<IFileSaveDialog> pSaveDlg;
+
+	HRESULT hr = S_OK;
+
+	// Create the file save dialog object.
+	hr = pSaveDlg.CoCreateInstance(__uuidof(FileSaveDialog));
+
+	if (FAILED(hr))
+	{
+		return hr;
+	}
+
+	// Set the dialog title
+	hr = pSaveDlg->SetTitle(L"Set Mesh Name");
+	if (SUCCEEDED(hr))
+	{
+		// Set the button text
+		hr = pSaveDlg->SetOkButtonLabel(L"OK");
+		if (SUCCEEDED(hr))
+		{
+			// Set a default filename
+			hr = pSaveDlg->SetFileName(L"MeshedReconstruction");
+
+			if (SUCCEEDED(hr))
+			{
+				// Set the file type extension
+				//hr = pSaveDlg->SetDefaultExtension(L"ply");
+
+				if (SUCCEEDED(hr))
+				{
+					// Set the file type filters
+					COMDLG_FILTERSPEC allPossibleFileTypes[] = {
+						/*{ L"Stl mesh files", L"*.stl" },
+						{ L"Obj mesh files", L"*.obj" },
+						{ L"Ply mesh files", L"*.ply" },*/
+						{ L"All files", L"*.*" }
+					};
+
+					hr = pSaveDlg->SetFileTypes(
+						ARRAYSIZE(allPossibleFileTypes),
+						allPossibleFileTypes);
+
+					if (SUCCEEDED(hr))
+					{
+						// Show the file selection box
+						hr = pSaveDlg->Show(m_hWnd);
+					}
+
+					// Retrieving mesh name
+					CComPtr<IShellItem> pItem;
+					hr = pSaveDlg->GetResult(&pItem);
+
+					if (SUCCEEDED(hr))
+					{
+						LPOLESTR pwsz = nullptr;
+						hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pwsz);
+
+						std::wstring pName(pwsz);
+						std::wstring pMsg = L"Mesh name is set to ";
+						std::wstring sPwszMsg = pMsg + pName;
+						
+						USES_CONVERSION;
+						LPOLESTR pwszMsg = W2OLE((LPWSTR)sPwszMsg.c_str());
+
+						if (SUCCEEDED(hr))
+						{
+							SetStatusMessage(pwszMsg);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return hr;
+}
+
+// ADD - Antoine
+int	SaveMesh(LPOLESTR meshName)
+{
+	return S_OK;
 }
 
 /// <summary>

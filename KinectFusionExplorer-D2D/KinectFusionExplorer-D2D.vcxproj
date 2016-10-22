@@ -211,6 +211,21 @@
       <Project>{67a64301-c979-4fde-bf65-4b0bfd05700d}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Images\Allset.bmp" />
+    <Image Include="Images\AllsetBig.bmp" />
+    <Image Include="Images\Error.bmp" />
+    <Image Include="Images\ErrorBig.bmp" />
+    <Image Include="Images\Initializing.bmp" />
+    <Image Include="Images\InitializingBig.bmp" />
+    <Image Include="Images\Listening.bmp" />
+    <Image Include="Images\ListeningBig.bmp" />
+    <Image Include="Images\NoAvailableSensor.bmp" />
+    <Image Include="Images\NoAvailableSensorBig.bmp" />
+    <Image Include="Images\Refresh.bmp" />
+    <Image Include="Images\RefreshClick.bmp" />
+    <Image Include="Images\RefreshOver.bmp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
