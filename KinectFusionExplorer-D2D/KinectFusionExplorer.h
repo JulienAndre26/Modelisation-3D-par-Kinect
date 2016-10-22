@@ -56,6 +56,8 @@ public:
     /// <param name="nCmdShow"></param>
     int                         Run(HINSTANCE hInstance, int nCmdShow);
 
+	int							AskMeshName();
+	int							SaveMesh(LPOLESTR meshName);
 private:
     HWND                        m_hWnd;
     NuiSensorChooserUI*         m_pSensorChooserUI;
