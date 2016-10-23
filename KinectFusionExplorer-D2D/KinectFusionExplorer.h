@@ -57,7 +57,9 @@ public:
     int                         Run(HINSTANCE hInstance, int nCmdShow);
 
 	int							AskMeshName();
-	int							SaveMesh(LPOLESTR meshName);
+	int							SaveMesh();
+	int							SetCurrentMeshFileName(LPOLESTR * tmp);
+
 private:
     HWND                        m_hWnd;
     NuiSensorChooserUI*         m_pSensorChooserUI;
@@ -144,4 +146,9 @@ private:
     /// Time since last status message update
     /// </summary>
     DWORD                       m_tickLastStatus;
+
+	// ADD - Antoine
+	bool						m_bMeshNameSet;
+	int							m_nMeshCount;
+	LPOLESTR					m_MeshName;
 };
