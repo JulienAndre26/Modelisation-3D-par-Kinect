@@ -30,8 +30,10 @@ struct KinectFusionParams
     KinectFusionParams() :
         m_bPauseIntegration(false),
         m_bNearMode(true),
-        m_depthImageResolution(NUI_IMAGE_RESOLUTION_640x480),
-        m_colorImageResolution(NUI_IMAGE_RESOLUTION_640x480),
+        //m_depthImageResolution(NUI_IMAGE_RESOLUTION_640x480),
+        //m_colorImageResolution(NUI_IMAGE_RESOLUTION_640x480),
+		m_depthImageResolution(NUI_IMAGE_RESOLUTION_320x240),
+		m_colorImageResolution(NUI_IMAGE_RESOLUTION_320x240),
         m_bAutoResetReconstructionWhenLost(false),
         m_bAutoResetReconstructionOnTimeout(false), // We now try to find the camera pose, however, setting this false will no longer auto reset on .xed file playback
         m_bAutoFindCameraPoseWhenLost(true),
