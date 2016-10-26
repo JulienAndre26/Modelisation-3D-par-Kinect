@@ -30,10 +30,10 @@ struct KinectFusionParams
     KinectFusionParams() :
         m_bPauseIntegration(false),
         m_bNearMode(true),
-        //m_depthImageResolution(NUI_IMAGE_RESOLUTION_640x480),
-        //m_colorImageResolution(NUI_IMAGE_RESOLUTION_640x480),
-		m_depthImageResolution(NUI_IMAGE_RESOLUTION_320x240),
-		m_colorImageResolution(NUI_IMAGE_RESOLUTION_320x240),
+        m_depthImageResolution(NUI_IMAGE_RESOLUTION_640x480),
+        m_colorImageResolution(NUI_IMAGE_RESOLUTION_640x480),
+		//m_depthImageResolution(NUI_IMAGE_RESOLUTION_320x240),
+		//m_colorImageResolution(NUI_IMAGE_RESOLUTION_320x240),
         m_bAutoResetReconstructionWhenLost(false),
         m_bAutoResetReconstructionOnTimeout(false), // We now try to find the camera pose, however, setting this false will no longer auto reset on .xed file playback
         m_bAutoFindCameraPoseWhenLost(true),
@@ -82,15 +82,15 @@ struct KinectFusionParams
 
         // Define a cubic Kinect Fusion reconstruction volume, with the sensor at the center of the
         // front face and the volume directly in front of sensor.
-        /*m_reconstructionParams.voxelsPerMeter = 256;    // 1000mm / 256vpm = ~3.9mm/voxel
+        m_reconstructionParams.voxelsPerMeter = 512;    // 1000mm / 256vpm = ~3.9mm/voxel
         m_reconstructionParams.voxelCountX = 512;       // 512 / 256vpm = 2m wide reconstruction
         m_reconstructionParams.voxelCountY = 384;       // Memory = 512*384*512 * 4bytes per voxel
-        m_reconstructionParams.voxelCountZ = 512;       // This will require a GPU with at least 512MB*/
+        m_reconstructionParams.voxelCountZ = 512;       // This will require a GPU with at least 512MB
 
-		m_reconstructionParams.voxelsPerMeter = 64;    // 1000mm / 256vpm = ~3.9mm/voxel
+		/*m_reconstructionParams.voxelsPerMeter = 64;    // 1000mm / 256vpm = ~3.9mm/voxel
 		m_reconstructionParams.voxelCountX = 640;       // 512 / 256vpm = 2m wide reconstruction
 		m_reconstructionParams.voxelCountY = 640;       // Memory = 512*384*512 * 4bytes per voxel
-		m_reconstructionParams.voxelCountZ = 512;       // This will require a GPU with at least 512MB
+		m_reconstructionParams.voxelCountZ = 512;*/       // This will require a GPU with at least 512MB
 
 
         // This parameter sets whether GPU or CPU processing is used. Note that the CPU will likely be 
