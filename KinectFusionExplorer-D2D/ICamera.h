@@ -10,6 +10,7 @@ public:
 	static ICamera * factory(int selection);
 
 	// start camera
-	virtual bool startCamera() = 0;
+	virtual bool start() = 0;
+
 
 };

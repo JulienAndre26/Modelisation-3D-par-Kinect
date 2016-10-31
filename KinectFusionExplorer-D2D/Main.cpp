@@ -20,8 +20,8 @@ int main() {
 
 	// if asked for 1 start the fake camera
 	if (strcmp(value.c_str(), "1") == 0) {
-		ICamera * kinect = ICamera::factory(1);
-		kinect->startCamera();
+		ICamera * camera = ICamera::factory(1);
+		camera->start();
 	}
 
 	// return success

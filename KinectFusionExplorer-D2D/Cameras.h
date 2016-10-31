@@ -4,11 +4,9 @@
 
 #include "ICamera.h";
 
-// Error while including ...
-//#include "KinectFusionParams.h";
-//#include "KinectfusionHelper.h";
-//#include "KinectFusionProcessor.h";
-//#include "KinectFusionProcessorFrame.h";
+// Only import Kinect Fusion explorer 
+// as it already includes all other .h 
+#include "KinectFusionExplorer.h";
 
 
 class Kinect : public ICamera {
@@ -24,8 +22,29 @@ public:
 	~Kinect() {}
 
 	// inherited method, start the camera
-	bool startCamera() {
-		std::cout << "starting fake camera ... " << std::endl;
+	bool start() {
+		std::cout << "Asking or Kinect Fustion Processor ... " << std::endl;
+		KinectFusionProcessor * kfp = new KinectFusionProcessor();
+		kfp->StartProcessing();
+		std::cout << "Starting Kinect Processing ... " << std::endl;
+		return true;
+	}
+};
+
+class XTION : public ICamera {
+private:
+	int someStuff;
+
+public:
+	// Constructor
+	XTION() {}
+
+	// Destructor
+	~XTION() {}
+
+	// inherited method, start the camera
+	bool start() {
+		std::cout << "Starting fake XTION ... " << std::endl;
 		return true;
 	}
 };
