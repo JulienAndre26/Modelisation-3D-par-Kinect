@@ -1,30 +1,68 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="ImageRenderer.cpp" />
-    <ClCompile Include="KinectFusionExplorer.cpp" />
-    <ClCompile Include="KinectFusionHelper.cpp" />
-    <ClCompile Include="KinectFusionProcessor.cpp" />
-    <ClCompile Include="KinectFusionProcessorFrame.cpp" />
-    <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Cameras.cpp">
+      <Filter>kinect fusion\implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageRenderer.cpp">
+      <Filter>kinect fusion</Filter>
+    </ClCompile>
+    <ClCompile Include="KinectFusionExplorer.cpp">
+      <Filter>kinect fusion</Filter>
+    </ClCompile>
+    <ClCompile Include="KinectFusionHelper.cpp">
+      <Filter>kinect fusion</Filter>
+    </ClCompile>
+    <ClCompile Include="KinectFusionProcessor.cpp">
+      <Filter>kinect fusion</Filter>
+    </ClCompile>
+    <ClCompile Include="KinectFusionProcessorFrame.cpp">
+      <Filter>kinect fusion</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>kinect fusion</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ImageRenderer.h" />
-    <ClInclude Include="Resource.h" />
-    <ClInclude Include="KinectFusionExplorer.h" />
-    <ClInclude Include="KinectFusionHelper.h" />
-    <ClInclude Include="KinectFusionParams.h" />
-    <ClInclude Include="KinectFusionProcessor.h" />
-    <ClInclude Include="KinectFusionProcessorFrame.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Timer.h" />
-    <ClInclude Include="NuiSensorChooserUIResource.h" />
+    <ClInclude Include="ICamera.h">
+      <Filter>kinect fusion\implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="Cameras.h">
+      <Filter>kinect fusion\implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageRenderer.h">
+      <Filter>kinect fusion</Filter>
+    </ClInclude>
+    <ClInclude Include="KinectFusionExplorer.h">
+      <Filter>kinect fusion</Filter>
+    </ClInclude>
+    <ClInclude Include="KinectFusionHelper.h">
+      <Filter>kinect fusion</Filter>
+    </ClInclude>
+    <ClInclude Include="KinectFusionParams.h">
+      <Filter>kinect fusion</Filter>
+    </ClInclude>
+    <ClInclude Include="KinectFusionProcessor.h">
+      <Filter>kinect fusion</Filter>
+    </ClInclude>
+    <ClInclude Include="KinectFusionProcessorFrame.h">
+      <Filter>kinect fusion</Filter>
+    </ClInclude>
+    <ClInclude Include="NuiSensorChooserUIResource.h">
+      <Filter>kinect fusion</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>kinect fusion</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>kinect fusion</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>kinect fusion</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="KinectFusionExplorer-D2D.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.ico" />
     <None Include="..\NuiSensorChooser\Images\Allset.bmp">
       <Filter>External Images</Filter>
     </None>
@@ -64,25 +102,65 @@
     <None Include="..\NuiSensorChooser\Images\RefreshOver.bmp">
       <Filter>External Images</Filter>
     </None>
+    <None Include="app.ico">
+      <Filter>kinect fusion</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External Images">
       <UniqueIdentifier>{697541a1-dc73-475f-87f9-7062382ec036}</UniqueIdentifier>
     </Filter>
+    <Filter Include="kinect fusion">
+      <UniqueIdentifier>{1dba1001-c528-41ba-961e-fdd40bbfad4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kinect fusion\implementation">
+      <UniqueIdentifier>{20e3ac31-201e-450b-a59a-b1c460d6d4de}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Images\Error.bmp" />
-    <Image Include="Images\ErrorBig.bmp" />
-    <Image Include="Images\Initializing.bmp" />
-    <Image Include="Images\InitializingBig.bmp" />
-    <Image Include="Images\Listening.bmp" />
-    <Image Include="Images\ListeningBig.bmp" />
-    <Image Include="Images\NoAvailableSensor.bmp" />
-    <Image Include="Images\NoAvailableSensorBig.bmp" />
-    <Image Include="Images\Refresh.bmp" />
-    <Image Include="Images\RefreshClick.bmp" />
-    <Image Include="Images\RefreshOver.bmp" />
-    <Image Include="Images\Allset.bmp" />
-    <Image Include="Images\AllsetBig.bmp" />
+    <Image Include="Images\Allset.bmp">
+      <Filter>kinect fusion</Filter>
+    </Image>
+    <Image Include="Images\AllsetBig.bmp">
+      <Filter>kinect fusion</Filter>
+    </Image>
+    <Image Include="Images\Error.bmp">
+      <Filter>kinect fusion</Filter>
+    </Image>
+    <Image Include="Images\ErrorBig.bmp">
+      <Filter>kinect fusion</Filter>
+    </Image>
+    <Image Include="Images\Initializing.bmp">
+      <Filter>kinect fusion</Filter>
+    </Image>
+    <Image Include="Images\InitializingBig.bmp">
+      <Filter>kinect fusion</Filter>
+    </Image>
+    <Image Include="Images\Listening.bmp">
+      <Filter>kinect fusion</Filter>
+    </Image>
+    <Image Include="Images\ListeningBig.bmp">
+      <Filter>kinect fusion</Filter>
+    </Image>
+    <Image Include="Images\NoAvailableSensor.bmp">
+      <Filter>kinect fusion</Filter>
+    </Image>
+    <Image Include="Images\NoAvailableSensorBig.bmp">
+      <Filter>kinect fusion</Filter>
+    </Image>
+    <Image Include="Images\Refresh.bmp">
+      <Filter>kinect fusion</Filter>
+    </Image>
+    <Image Include="Images\RefreshClick.bmp">
+      <Filter>kinect fusion</Filter>
+    </Image>
+    <Image Include="Images\RefreshOver.bmp">
+      <Filter>kinect fusion</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="KinectFusionExplorer-D2D.rc">
+      <Filter>kinect fusion</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
