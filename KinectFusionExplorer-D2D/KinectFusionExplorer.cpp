@@ -1111,10 +1111,8 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
 
 			// Enable Continue buton
 			if (m_bMeshNameSet) {
-				// Set button text
-				SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"Continue");
+			
 				
-				// Set END button enabled
 				HWND hButton = GetDlgItem(m_hWnd, IDC_BUTTON_END_CAPTURE);
 				EnableWindow(hButton, TRUE);
 
@@ -1307,20 +1305,12 @@ void CKinectFusionExplorer::UpdateHSliders()
     int maxWeight = (int)SendDlgItemMessage(m_hWnd, IDC_INTEGRATION_WEIGHT_SLIDER, TBM_GETPOS, 0,0);
     m_params.m_cMaxIntegrationWeight = maxWeight % (MAX_INTEGRATION_WEIGHT+1);
 
-	// ADD - Antoine
-	int nTiltAngle = (int)SendDlgItemMessage(m_hWnd, IDC_SLIDER_TILT, TBM_GETPOS, 0, 0);
-	m_processor.TiltSensor(nTiltAngle);
-
-
     // update text
     WCHAR str[MAX_PATH];
     /*swprintf_s(str, ARRAYSIZE(str), L"%4.2fm", m_params.m_fMinDepthThreshold);
     SetDlgItemText(m_hWnd, IDC_MIN_DIST_TEXT, str);
     swprintf_s(str, ARRAYSIZE(str), L"%4.2fm", m_params.m_fMaxDepthThreshold);
     SetDlgItemText(m_hWnd, IDC_MAX_DIST_TEXT, str);*/
-
-	swprintf_s(str, ARRAYSIZE(str), L"%d", nTiltAngle);
-	SetDlgItemText(m_hWnd, IDC_TILT_TEXT, str);
 
     swprintf_s(str, ARRAYSIZE(str), L"%d", m_params.m_cMaxIntegrationWeight);
     SetDlgItemText(m_hWnd, IDC_INTEGRATION_WEIGHT_TEXT, str);
