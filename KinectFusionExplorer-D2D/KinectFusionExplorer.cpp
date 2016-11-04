@@ -1074,6 +1074,23 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
 	{
 		m_processor.ResetReconstruction();
 	}
+	// If it was the cancel button clicked, clear the volume
+	if (IDC_CAPTURE_CANCEL == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
+	{
+		// CANCEL SCENE
+		// Set button text
+		SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"New Scene");
+
+		// Disable Continue buton
+		HWND hButton = GetDlgItem(m_hWnd, IDC_BUTTON_END_CAPTURE);
+		EnableWindow(hButton, FALSE);
+
+		hButton = GetDlgItem(m_hWnd, IDC_CAPTURE_CANCEL);
+		EnableWindow(hButton, FALSE);
+
+		// Set flag
+		m_bMeshNameSet = false;
+	}
     if (IDC_BUTTON_END_CAPTURE == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
     {
 		// END OF SCENE
@@ -1086,6 +1103,9 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
 
 		// Disable Continue buton
 		HWND hButton = GetDlgItem(m_hWnd, IDC_BUTTON_END_CAPTURE);
+		EnableWindow(hButton, FALSE);
+
+		hButton = GetDlgItem(m_hWnd, IDC_CAPTURE_CANCEL);
 		EnableWindow(hButton, FALSE);
 
 		// Set flag
@@ -1101,19 +1121,16 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
 			// Ask Mesh Name
 			int bRes = AskMeshName();
 
-			if (bRes >= 0)
-				SetStatusMessage(L"YEAAAAAAH");
-			else
-				SetStatusMessage(L"NOOOOOO");
-
 			// Set flag
 			m_bMeshNameSet = (bRes >= 0);
 
 			// Enable Continue buton
 			if (m_bMeshNameSet) {
 			
-				
 				HWND hButton = GetDlgItem(m_hWnd, IDC_BUTTON_END_CAPTURE);
+				EnableWindow(hButton, TRUE);
+
+				hButton = GetDlgItem(m_hWnd, IDC_CAPTURE_CANCEL);
 				EnableWindow(hButton, TRUE);
 
 				// Reset
