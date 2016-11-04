@@ -187,7 +187,6 @@ void KinectFusionProcessor::TiltSensor(int angle)
 	if (m_pNuiSensor != nullptr)
 	{
 		m_pNuiSensor->NuiCameraElevationSetAngle(angle);
-		//SafeRelease(m_pNuiSensor);
 	}
 }
 

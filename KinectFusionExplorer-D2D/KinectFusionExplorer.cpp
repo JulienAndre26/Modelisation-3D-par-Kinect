@@ -1074,44 +1074,26 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
 	{
 		m_processor.ResetReconstruction();
 	}
-	// If it was the cancel button clicked, clear the volume
-	if (IDC_CAPTURE_CANCEL == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-	{
-		// CANCEL SCENE
-		// Set button text
-		SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"New Scene");
 
-		// Disable Continue buton
-		HWND hButton = GetDlgItem(m_hWnd, IDC_BUTTON_END_CAPTURE);
-		EnableWindow(hButton, FALSE);
-
-		hButton = GetDlgItem(m_hWnd, IDC_CAPTURE_CANCEL);
-		EnableWindow(hButton, FALSE);
-
-		// Set flag
-		m_bMeshNameSet = false;
-	}
+	// If END CAPTURE clicked
     if (IDC_BUTTON_END_CAPTURE == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
     {
 		// END OF SCENE
 
 		// Set button text
-		SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"New Scene");
+		SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"New Capture");
 
 		// Save last file
-		SaveMesh();
+		/*SaveMesh();*/
 
-		// Disable Continue buton
+		// Disable END CAPTURE buton
 		HWND hButton = GetDlgItem(m_hWnd, IDC_BUTTON_END_CAPTURE);
-		EnableWindow(hButton, FALSE);
-
-		hButton = GetDlgItem(m_hWnd, IDC_CAPTURE_CANCEL);
 		EnableWindow(hButton, FALSE);
 
 		// Set flag
 		m_bMeshNameSet = false;
     }
-    // If it was the mesh button clicked, mesh the volume and save
+    // If it was the NEW CAPTURE / SAVE SCENE button clicked, mesh the volume and save
     if (IDC_BUTTON_NEW_CONTINUE_SCENE == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
     {
 		if (!m_bMeshNameSet)
@@ -1124,13 +1106,14 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
 			// Set flag
 			m_bMeshNameSet = (bRes >= 0);
 
-			// Enable Continue buton
+			// If valid mesh name
 			if (m_bMeshNameSet) {
-			
-				HWND hButton = GetDlgItem(m_hWnd, IDC_BUTTON_END_CAPTURE);
-				EnableWindow(hButton, TRUE);
 
-				hButton = GetDlgItem(m_hWnd, IDC_CAPTURE_CANCEL);
+				// Set button text
+				SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"Save Scene");
+			
+				// Enable END CAPTURE button
+				HWND hButton = GetDlgItem(m_hWnd, IDC_BUTTON_END_CAPTURE);
 				EnableWindow(hButton, TRUE);
 
 				// Reset
@@ -1146,52 +1129,6 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
 		}
 
 		m_processor.ResetReconstruction();
-
-
-		//SetStatusMessage(L"Creating and saving mesh of reconstruction, please wait...");
-		//m_bSavingMesh = true;
-
-		//// Pause integration while we're saving
-		//bool wasPaused = m_params.m_bPauseIntegration;
-		//m_params.m_bPauseIntegration = true;
-		//m_processor.SetParams(m_params);
-
-		//INuiFusionColorMesh *mesh = nullptr;
-		//HRESULT hr = m_processor.CalculateMesh(&mesh);
-
-		//if (SUCCEEDED(hr))
-		//{
-		//    // Save mesh
-		//    hr = SaveMeshFile(mesh, m_saveMeshFormat);
-
-		//    if (SUCCEEDED(hr))
-		//    {
-		//        SetStatusMessage(L"Saved Kinect Fusion mesh.");
-		//    }
-		//    else if (HRESULT_FROM_WIN32(ERROR_CANCELLED) == hr)
-		//    {
-		//        SetStatusMessage(L"Mesh save canceled.");
-		//    }
-		//    else
-		//    {
-		//        SetStatusMessage(L"Error saving Kinect Fusion mesh!");
-		//    }
-
-		//    // Release the mesh
-		//    SafeRelease(mesh);
-		//}
-		//else
-		//{
-		//    SetStatusMessage(L"Failed to create mesh of reconstruction.");
-		//}
-
-		//// Restore pause state of integration
-		//m_params.m_bPauseIntegration = wasPaused;
-		//m_processor.SetParams(m_params);
-
-		//m_bSavingMesh = false;
-
-
 
     }
     if (IDC_CHECK_PAUSE_INTEGRATION == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
