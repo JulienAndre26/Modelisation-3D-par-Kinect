@@ -2,10 +2,10 @@
 
 #include <iostream>
 
-#include "ICamera.h";
+#include "ICamera.h"
 
 // Only import Kinect Fusion explorer 
-// as it already includes all other .h 
+// as it already includes all other .h
 #include "KinectFusionExplorer.h";
 
 

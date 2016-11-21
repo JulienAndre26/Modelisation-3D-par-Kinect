@@ -188,6 +188,7 @@
     <ClInclude Include="Cameras.h" />
     <ClInclude Include="ICamera.h" />
     <ClInclude Include="ImageRenderer.h" />
+    <ClInclude Include="IStorage.h" />
     <ClInclude Include="NuiSensorChooserUIResource.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="KinectFusionExplorer.h" />
@@ -196,11 +197,13 @@
     <ClInclude Include="KinectFusionProcessor.h" />
     <ClInclude Include="KinectFusionProcessorFrame.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Storages.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Cameras.cpp" />
     <ClCompile Include="ImageRenderer.cpp" />
+    <ClCompile Include="Storages.cpp" />
     <ClCompile Include="KinectFusionExplorer.cpp" />
     <ClCompile Include="KinectFusionHelper.cpp" />
     <ClCompile Include="KinectFusionProcessor.cpp" />

@@ -1,5 +1,5 @@
-#include "Cameras.h";
-#include "ICamera.h";
+#include "Cameras.h"
+#include "ICamera.h"
 
 /*
 *	Factory method : it allows to create different

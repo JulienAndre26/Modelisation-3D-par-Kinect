@@ -4,6 +4,8 @@
 #include <string>
 
 #include "ICamera.h"
+#include "IStorage.h"
+
 
 using namespace std;
 
@@ -22,7 +24,12 @@ int main() {
 	if (strcmp(value.c_str(), "1") == 0) {
 		ICamera * camera = ICamera::factory(1);
 		camera->start();
+		IStorage * ply = IStorage::factory(1);
+		ply->save();
+		ply->load();
 	}
+
+	cin >> value;
 
 	// return success
 	return EXIT_SUCCESS;
