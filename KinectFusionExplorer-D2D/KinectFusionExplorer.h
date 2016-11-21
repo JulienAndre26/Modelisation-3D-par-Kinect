@@ -58,7 +58,7 @@ public:
 
 	int							AskMeshName();
 	int							SaveMesh();
-	int							SetCurrentMeshFileName(LPOLESTR * tmp);
+	void						SetEnableConfUI(int nEnable);
 
 private:
     HWND                        m_hWnd;

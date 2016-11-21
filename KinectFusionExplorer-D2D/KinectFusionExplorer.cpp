@@ -59,7 +59,7 @@ CKinectFusionExplorer::CKinectFusionExplorer() :
 	m_bUIUpdated(false),
 
 	m_bMeshNameSet(false),
-	m_nMeshCount(1),
+	m_nMeshCount(0),
 	m_MeshName(nullptr)
 {
 }
@@ -202,6 +202,11 @@ int CKinectFusionExplorer::AskMeshName() {
 						m_MeshName = pwsz;
 
 						std::wstring pName(pwsz);
+
+						// TODO : CHECK VALIDITY
+						if (pName.size() <= 0)
+							return -1;
+
 						std::wstring pMsg = L"Mesh name is set to ";
 						std::wstring sPwszMsg = pMsg + pName;
 						
@@ -308,32 +313,6 @@ int	CKinectFusionExplorer::SaveMesh()
 
 	return S_OK;
 }
-
-int	CKinectFusionExplorer::SetCurrentMeshFileName(LPOLESTR * tmp)
-{
-	std::wstring szFormat;
-
-	// Get extension as wstring
-	if (Stl == m_saveMeshFormat)
-		szFormat = L".stl";
-	else if (Obj == m_saveMeshFormat)
-		szFormat = L".obj";
-	else if (Ply == m_saveMeshFormat)
-		szFormat = L".ply";
-
-	std::wstring szMeshCount = std::to_wstring(m_nMeshCount);
-
-	// Concat
-	std::wstring szMeshName(m_MeshName);
-	std::wstring szCurrentMeshName = szMeshName + szMeshCount + szFormat;
-
-	// Convert wstring to LPOLESTR
-	USES_CONVERSION;
-	*tmp = W2OLE((LPWSTR)szCurrentMeshName.c_str());
-
-	return S_OK;
-}
-
 
 /// <summary>
 /// Handles window messages, passes most to the class instance to handle
@@ -518,8 +497,8 @@ void CKinectFusionExplorer::HandleCompletedFrame()
         if (m_processor.IsVolumeInitialized())
         {
             m_pDrawDepth->Draw(pFrame->m_pDepthRGBX, pFrame->m_cbImageSize);
-            m_pDrawReconstruction->Draw(pFrame->m_pReconstructionRGBX, pFrame->m_cbImageSize);
-            m_pDrawTrackingResiduals->Draw(pFrame->m_pTrackingDataRGBX, pFrame->m_cbImageSize);
+			m_pDrawReconstruction->Draw(pFrame->m_pReconstructionRGBX, pFrame->m_cbImageSize);
+			m_pDrawTrackingResiduals->Draw(pFrame->m_pTrackingDataRGBX, pFrame->m_cbImageSize);
         }
 
         SetStatusMessage(pFrame->m_statusMessage);
@@ -747,47 +726,12 @@ void CKinectFusionExplorer::InitializeUIControls()
     m_pSensorChooserUI->UpdateSensorStatus(NuiSensorChooserStatusInitializing);
 
     // Set slider ranges
-    /*SendDlgItemMessage(
-        m_hWnd,
-        IDC_SLIDER_DEPTH_MIN,
-        TBM_SETRANGE,
-        TRUE,
-        MAKELPARAM(MIN_DEPTH_DISTANCE_MM, MAX_DEPTH_DISTANCE_MM));
-
-    SendDlgItemMessage(m_hWnd,
-        IDC_SLIDER_DEPTH_MAX,
-        TBM_SETRANGE,
-        TRUE,
-        MAKELPARAM(MIN_DEPTH_DISTANCE_MM, MAX_DEPTH_DISTANCE_MM));*/
-
     SendDlgItemMessage(
         m_hWnd,
         IDC_INTEGRATION_WEIGHT_SLIDER,
         TBM_SETRANGE,
         TRUE,
         MAKELPARAM(MIN_INTEGRATION_WEIGHT, MAX_INTEGRATION_WEIGHT));
-
-	SendDlgItemMessage(
-		m_hWnd,
-		IDC_SLIDER_TILT,
-		TBM_SETRANGE,
-		TRUE,
-		MAKELPARAM(MIN_TILT_ANGLE, MAX_TILT_ANGLE));
-
-    // Set slider positions
-    /*SendDlgItemMessage(
-        m_hWnd,
-        IDC_SLIDER_DEPTH_MAX,
-        TBM_SETPOS,
-        TRUE,
-        (UINT)m_params.m_fMaxDepthThreshold * 1000);
-	*/
-    /*SendDlgItemMessage(
-        m_hWnd,
-        IDC_SLIDER_DEPTH_MIN,
-        TBM_SETPOS,
-        TRUE,
-        (UINT)m_params.m_fMinDepthThreshold * 1000);*/
 
     SendDlgItemMessage(
         m_hWnd,
@@ -820,104 +764,39 @@ void CKinectFusionExplorer::InitializeUIControls()
     swprintf_s(str, ARRAYSIZE(str), L"%d", m_params.m_cMaxIntegrationWeight);
     SetDlgItemText(m_hWnd, IDC_INTEGRATION_WEIGHT_TEXT, str);
 
-    // Set the radio buttons for Volume Parameters
-  //  switch((int)m_params.m_reconstructionParams.voxelsPerMeter)
-  //  {
-  //  case 768:
-  //      CheckDlgButton(m_hWnd, IDC_VPM_768, BST_CHECKED);
-  //      break;
-  //  case 640:
-  //      CheckDlgButton(m_hWnd, IDC_VPM_640, BST_CHECKED);
-  //      break;
-  //  case 512:
-  //      CheckDlgButton(m_hWnd, IDC_VPM_512, BST_CHECKED);
-  //      break;
-  //  case 384:
-  //      CheckDlgButton(m_hWnd, IDC_VPM_384, BST_CHECKED);
-  //      break;
-  //  case 256:
-  //      CheckDlgButton(m_hWnd, IDC_VPM_256, BST_CHECKED);
-  //      break;
-  //  case 128:
-  //      CheckDlgButton(m_hWnd, IDC_VPM_128, BST_CHECKED);
-  //      break;
-  //  default:
-		///*
-  //      m_params.m_reconstructionParams.voxelsPerMeter = 256.0f;	// set to medium default
-  //      */
-		//CheckDlgButton(m_hWnd, IDC_VPM_256, BST_CHECKED);
-  //      break;
-  //  }
+	// TODO : CHANGE
+	// Set Quality Radio Buttons
+	if ((int)m_params.m_reconstructionParams.voxelsPerMeter == 512
+		&& (int)m_params.m_reconstructionParams.voxelCountX == 512
+		&& (int)m_params.m_reconstructionParams.voxelCountY == 384)
+	{
+		CheckDlgButton(m_hWnd, IDC_CAPTURE_TYPE_MEDIUM, BST_CHECKED);
+	}
+	else if ((int)m_params.m_reconstructionParams.voxelsPerMeter == 512
+		&& (int)m_params.m_reconstructionParams.voxelCountX == 1024
+		&& (int)m_params.m_reconstructionParams.voxelCountY == 512)
+	{
+		CheckDlgButton(m_hWnd, IDC_CAPTURE_TYPE_HIGH, BST_CHECKED);
+	}
+	else 
+	{
+		CheckDlgButton(m_hWnd, IDC_CAPTURE_TYPE_LOW, BST_CHECKED);
+	}
 
-    //switch((int)m_params.m_reconstructionParams.voxelCountX)
-    //{
-    //case 640:
-    //    CheckDlgButton(m_hWnd, IDC_VOXELS_X_640, BST_CHECKED);
-    //    break;
-    //case 512:
-    //    CheckDlgButton(m_hWnd, IDC_VOXELS_X_512, BST_CHECKED);
-    //    break;
-    //case 384:
-    //    CheckDlgButton(m_hWnd, IDC_VOXELS_X_384, BST_CHECKED);
-    //    break;
-    //case 256:
-    //    CheckDlgButton(m_hWnd, IDC_VOXELS_X_256, BST_CHECKED);
-    //    break;
-    //case 128:
-    //    CheckDlgButton(m_hWnd, IDC_VOXELS_X_128, BST_CHECKED);
-    //    break;
-    //default:
-    //    /*m_params.m_reconstructionParams.voxelCountX = 384;	// set to medium default
-    //    */CheckDlgButton(m_hWnd, IDC_VOXELS_X_384, BST_CHECKED);
-    //    break;
-    //}
+	// Set Color Radio Buttons
+	if (m_params.m_bCaptureColor)
+	{
+		CheckDlgButton(m_hWnd, IDC_CAPTURE_COLOR_YES, BST_CHECKED);
+	}
+	else
+	{
+		CheckDlgButton(m_hWnd, IDC_CAPTURE_COLOR_NO, BST_CHECKED);
+	}
 
-    //switch((int)m_params.m_reconstructionParams.voxelCountY)
-    //{
-    //case 640:
-    //    CheckDlgButton(m_hWnd, IDC_VOXELS_Y_640, BST_CHECKED);
-    //    break;
-    //case 512:
-    //    CheckDlgButton(m_hWnd, IDC_VOXELS_Y_512, BST_CHECKED);
-    //    break;
-    //case 384:
-    //    CheckDlgButton(m_hWnd, IDC_VOXELS_Y_384, BST_CHECKED);
-    //    break;
-    //case 256:
-    //    CheckDlgButton(m_hWnd, IDC_VOXELS_Y_256, BST_CHECKED);
-    //    break;
-    //case 128:
-    //    CheckDlgButton(m_hWnd, IDC_VOXELS_Y_128, BST_CHECKED);
-    //    break;
-    //default:
-    //    /*m_params.m_reconstructionParams.voxelCountX = 384;	// set to medium default
-    //    */CheckDlgButton(m_hWnd, IDC_VOXELS_Y_384, BST_CHECKED);
-    //    break;
-    //}
-
-    /*switch((int)m_params.m_reconstructionParams.voxelCountZ)
-    {
-    case 640:
-        CheckDlgButton(m_hWnd, IDC_VOXELS_Z_640, BST_CHECKED);
-        break;
-    case 512:
-        CheckDlgButton(m_hWnd, IDC_VOXELS_Z_512, BST_CHECKED);
-        break;
-    case 384:
-        CheckDlgButton(m_hWnd, IDC_VOXELS_Z_384, BST_CHECKED);
-        break;
-    case 256:
-        CheckDlgButton(m_hWnd, IDC_VOXELS_Z_256, BST_CHECKED);
-        break;
-    case 128:
-        CheckDlgButton(m_hWnd, IDC_VOXELS_Z_128, BST_CHECKED);
-        break;
-    default:
-        /*m_params.m_reconstructionParams.voxelCountX = 384;	// set to medium default
-        *//*CheckDlgButton(m_hWnd, IDC_VOXELS_Z_384, BST_CHECKED);
-        break;
-    }*/
-
+	// Set Tilt Radio Buttons + Tilt Position
+	CheckDlgButton(m_hWnd, IDC_SENSOR_TILT_MIDDLE, BST_CHECKED);
+	m_processor.TiltSensor(0);
+	
     if (Stl == m_saveMeshFormat)
     {
         CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_STL_RADIO, BST_CHECKED);
@@ -930,16 +809,6 @@ void CKinectFusionExplorer::InitializeUIControls()
     {
         CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_PLY_RADIO, BST_CHECKED);
     }
-
-    if (m_params.m_bCaptureColor)
-    {
-        CheckDlgButton(m_hWnd, IDC_CHECK_CAPTURE_COLOR, BST_CHECKED);
-    }
-
-    /*if (m_params.m_bAutoFindCameraPoseWhenLost)
-    {
-        CheckDlgButton(m_hWnd, IDC_CHECK_CAMERA_POSE_FINDER, BST_CHECKED);
-    }*/
 }
 
 /// <summary>
@@ -955,222 +824,123 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
         // Toggle our internal state for near mode
         m_params.m_bNearMode = !m_params.m_bNearMode;
     }
-    // If it was for the display surface normals toggle this variable
-    if (IDC_CHECK_CAPTURE_COLOR == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-    {
-        // Toggle capture color
-        m_params.m_bCaptureColor = !m_params.m_bCaptureColor;
-    }
-    //// If it was for the display surface normals toggle this variable
-    //if (IDC_CHECK_MIRROR_DEPTH == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-    //{
-    //    // Toggle depth mirroring
-    //    m_params.m_bMirrorDepthFrame = !m_params.m_bMirrorDepthFrame;
+	// Set Capture Color
+	if (IDC_CAPTURE_COLOR_YES == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
+	{
+		// Toggle capture color
+		m_params.m_bCaptureColor = true;
+	}
+	if (IDC_CAPTURE_COLOR_NO == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
+	{
+		// Toggle capture color
+		m_params.m_bCaptureColor = false;
+	}
 
-    //    m_processor.ResetReconstruction();
-    //}
-    //if (IDC_CHECK_CAMERA_POSE_FINDER == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-    //{
-    //    m_params.m_bAutoFindCameraPoseWhenLost = !m_params.m_bAutoFindCameraPoseWhenLost;
+	// Set Capture Quality
+	if (IDC_CAPTURE_TYPE_MEDIUM == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
+	{
+		m_params.m_reconstructionParams.voxelsPerMeter = 512;    // 1000mm / 256vpm = ~3.9mm/voxel
+		m_params.m_reconstructionParams.voxelCountX = 512;       // 512 / 256vpm = 2m wide reconstruction
+		m_params.m_reconstructionParams.voxelCountY = 384;       // Memory = 512*384*512 * 4bytes per voxel
+	}
+	if (IDC_CAPTURE_TYPE_HIGH == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
+	{
+		m_params.m_reconstructionParams.voxelsPerMeter = 512;    // 1000mm / 256vpm = ~3.9mm/voxel
+		m_params.m_reconstructionParams.voxelCountX = 1024;       // 512 / 256vpm = 2m wide reconstruction
+		m_params.m_reconstructionParams.voxelCountY = 512;       // Memory = 512*384*512 * 4bytes per voxel
+	}
+	if (IDC_CAPTURE_TYPE_LOW == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
+	{
+		m_params.m_reconstructionParams.voxelsPerMeter = 64;    // 1000mm / 256vpm = ~3.9mm/voxel
+		m_params.m_reconstructionParams.voxelCountX = 640;       // 512 / 256vpm = 2m wide reconstruction
+		m_params.m_reconstructionParams.voxelCountY = 640;       // Memory = 512*384*512 * 4bytes per voxel
+	}
 
-    //    if (!m_params.m_bAutoFindCameraPoseWhenLost)
-    //    {
-    //        // Force pause integration off when unchecking use of camera pose finder
-    //        m_params.m_bPauseIntegration = false;
-    //    }
-    //}
+	// Set Tilt Position
+	if (IDC_SENSOR_TILT_TOP == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
+	{
+		m_processor.TiltSensor(MAX_TILT_ANGLE);
+	}
+	if (IDC_SENSOR_TILT_MIDDLE == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
+	{
+		m_processor.TiltSensor(MAX_TILT_ANGLE + MIN_TILT_ANGLE);
+	}
+	if (IDC_SENSOR_TILT_BOTTOM == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
+	{
+		m_processor.TiltSensor(MIN_TILT_ANGLE);
+	}
+
     // If it was the reset button clicked, clear the volume
 	if (IDC_BUTTON_RESET == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
 	{
 		m_processor.ResetReconstruction();
 	}
+
+	// If END CAPTURE clicked
     if (IDC_BUTTON_END_CAPTURE == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
     {
 		// END OF SCENE
 
 		// Set button text
-		SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"New Scene");
+		SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"New Capture");
 
-		// Save last file
-		SaveMesh();
+		// Show Pop Up message
+		std::wstring szMeshCount = std::to_wstring(m_nMeshCount);
+		std::wstring szPath(m_MeshName);
+		std::wstring szMsg = szMeshCount + L" file(s) have been saved in " + m_MeshName;
+		MessageBoxW(NULL,
+			szMsg.c_str(),
+			_T("End of Capture"),
+			NULL);
 
-		// Disable Continue buton
-		HWND hButton = GetDlgItem(m_hWnd, IDC_BUTTON_END_CAPTURE);
-		EnableWindow(hButton, FALSE);
+		// Disable Conf Radio Buttons
+		SetEnableConfUI(TRUE);
 
 		// Set flag
 		m_bMeshNameSet = false;
     }
-    // If it was the mesh button clicked, mesh the volume and save
+    // If it was the NEW CAPTURE / SAVE SCENE button clicked, mesh the volume and save
     if (IDC_BUTTON_NEW_CONTINUE_SCENE == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
     {
 		if (!m_bMeshNameSet)
 		{
 			// NEW SCENE 
 			
-			// Set button text
-			SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"Continue");
-
 			// Ask Mesh Name
-			AskMeshName();
+			int bRes = AskMeshName();
 
 			// Set flag
-			m_bMeshNameSet = true;
+			m_bMeshNameSet = (bRes >= 0);
 
-			// Enable Continue buton
-			HWND hButton = GetDlgItem(m_hWnd, IDC_BUTTON_END_CAPTURE);
-			EnableWindow(hButton, TRUE);
+			// If valid mesh name
+			if (m_bMeshNameSet) {
 
-			// Reset
-			m_nMeshCount = 1;
+				// Set button text
+				SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"Save Scene");
+			
+				// Disable Conf in UI
+				SetEnableConfUI(FALSE);
+
+				// Reset
+				m_nMeshCount = 0;
+			}
 		}
 		else {
-			// Save last file
-			SaveMesh();
-
 			// Increase counter
 			m_nMeshCount++;
+
+			// Save last file
+			SaveMesh();
 		}
 
 		m_processor.ResetReconstruction();
-
-
-		//SetStatusMessage(L"Creating and saving mesh of reconstruction, please wait...");
-		//m_bSavingMesh = true;
-
-		//// Pause integration while we're saving
-		//bool wasPaused = m_params.m_bPauseIntegration;
-		//m_params.m_bPauseIntegration = true;
-		//m_processor.SetParams(m_params);
-
-		//INuiFusionColorMesh *mesh = nullptr;
-		//HRESULT hr = m_processor.CalculateMesh(&mesh);
-
-		//if (SUCCEEDED(hr))
-		//{
-		//    // Save mesh
-		//    hr = SaveMeshFile(mesh, m_saveMeshFormat);
-
-		//    if (SUCCEEDED(hr))
-		//    {
-		//        SetStatusMessage(L"Saved Kinect Fusion mesh.");
-		//    }
-		//    else if (HRESULT_FROM_WIN32(ERROR_CANCELLED) == hr)
-		//    {
-		//        SetStatusMessage(L"Mesh save canceled.");
-		//    }
-		//    else
-		//    {
-		//        SetStatusMessage(L"Error saving Kinect Fusion mesh!");
-		//    }
-
-		//    // Release the mesh
-		//    SafeRelease(mesh);
-		//}
-		//else
-		//{
-		//    SetStatusMessage(L"Failed to create mesh of reconstruction.");
-		//}
-
-		//// Restore pause state of integration
-		//m_params.m_bPauseIntegration = wasPaused;
-		//m_processor.SetParams(m_params);
-
-		//m_bSavingMesh = false;
-
-
 
     }
     if (IDC_CHECK_PAUSE_INTEGRATION == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
     {
         // Toggle the pause state of the reconstruction
         m_params.m_bPauseIntegration = !m_params.m_bPauseIntegration;
-    }
-    /*if (IDC_VPM_768 == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-    {
-        m_params.m_reconstructionParams.voxelsPerMeter = 768.0f;
-    }
-    if (IDC_VPM_640 == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-    {
-        m_params.m_reconstructionParams.voxelsPerMeter = 640.0f;
-    }
-    if (IDC_VPM_512 == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-    {
-        m_params.m_reconstructionParams.voxelsPerMeter = 512.0f;
-    }
-    if (IDC_VPM_384 == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-    {
-        m_params.m_reconstructionParams.voxelsPerMeter = 384.0f;
-    }
-    if (IDC_VPM_256 == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-    {
-        m_params.m_reconstructionParams.voxelsPerMeter = 256.0f;
-    }
-    if (IDC_VPM_128 == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-    {
-        m_params.m_reconstructionParams.voxelsPerMeter = 128.0f;
-    }
-    if (IDC_VOXELS_X_640 == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-    {
-        m_params.m_reconstructionParams.voxelCountX = 640;
-    }
-    if (IDC_VOXELS_X_512 == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-    {
-        m_params.m_reconstructionParams.voxelCountX = 512;
-    }
-    if (IDC_VOXELS_X_384 == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-    {
-        m_params.m_reconstructionParams.voxelCountX = 384;
-    }
-    if (IDC_VOXELS_X_256 == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-    {
-        m_params.m_reconstructionParams.voxelCountX = 256;
-    }
-    if (IDC_VOXELS_X_128 == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-    {
-        m_params.m_reconstructionParams.voxelCountX = 128;
-    }
-    if (IDC_VOXELS_Y_640 == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-    {
-        m_params.m_reconstructionParams.voxelCountY = 640;
-    }
-    if (IDC_VOXELS_Y_512 == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-    {
-        m_params.m_reconstructionParams.voxelCountY = 512;
-    }
-    if (IDC_VOXELS_Y_384 == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-    {
-        m_params.m_reconstructionParams.voxelCountY = 384;
-    }
-    if (IDC_VOXELS_Y_256 == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-    {
-        m_params.m_reconstructionParams.voxelCountY = 256;
-    }
-    if (IDC_VOXELS_Y_128 == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-    {
-        m_params.m_reconstructionParams.voxelCountY = 128;
-    }
-    if (IDC_VOXELS_Z_640 == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-    {
-        m_params.m_reconstructionParams.voxelCountZ = 640;
-    }
-    if (IDC_VOXELS_Z_512 == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-    {
-        m_params.m_reconstructionParams.voxelCountZ = 512;
-    }
-    if (IDC_VOXELS_Z_384 == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-    {
-        m_params.m_reconstructionParams.voxelCountZ = 384;
-    }*/
-    
-	/*if (IDC_VOXELS_Z_256 == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-    {
-		m_processor.TiltSensor(15);
-    }
-    if (IDC_VOXELS_Z_128 == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-    {
-		m_processor.TiltSensor(-15);
-    }*/    
+    }    
 	if (IDC_MESH_FORMAT_STL_RADIO == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
     {
         m_saveMeshFormat = Stl;
@@ -1187,43 +957,41 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
     m_processor.SetParams(m_params);
 }
 
+// ADD - Antoine
+void CKinectFusionExplorer::SetEnableConfUI(int nEnable) {
+	int opposit = (nEnable == FALSE) ? TRUE : FALSE;
+
+	HWND hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_COLOR_YES);
+	EnableWindow(hElem, nEnable);
+	hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_COLOR_NO);
+	EnableWindow(hElem, nEnable);
+	hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_TYPE_HIGH);
+	EnableWindow(hElem, nEnable);
+	hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_TYPE_MEDIUM);
+	EnableWindow(hElem, nEnable);
+	hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_TYPE_LOW);
+	EnableWindow(hElem, nEnable);
+	hElem = GetDlgItem(m_hWnd, IDC_MESH_FORMAT_OBJ_RADIO);
+	EnableWindow(hElem, nEnable);
+	hElem = GetDlgItem(m_hWnd, IDC_MESH_FORMAT_PLY_RADIO);
+	EnableWindow(hElem, nEnable);
+	hElem = GetDlgItem(m_hWnd, IDC_MESH_FORMAT_STL_RADIO);
+	EnableWindow(hElem, nEnable);
+
+	hElem = GetDlgItem(m_hWnd, IDC_BUTTON_END_CAPTURE);
+	EnableWindow(hElem, opposit);
+}
+
 /// <summary>
 /// Update the internal variable values from the UI Horizontal sliders.
 /// </summary>
 void CKinectFusionExplorer::UpdateHSliders()
 {
-    /*int mmMinPos = (int)SendDlgItemMessage(m_hWnd, IDC_SLIDER_DEPTH_MIN, TBM_GETPOS, 0,0);
-
-    if (mmMinPos >= MIN_DEPTH_DISTANCE_MM && mmMinPos <= MAX_DEPTH_DISTANCE_MM)
-    {
-        m_params.m_fMinDepthThreshold = (float)mmMinPos * 0.001f;
-    }
-
-    int mmMaxPos = (int)SendDlgItemMessage(m_hWnd, IDC_SLIDER_DEPTH_MAX, TBM_GETPOS, 0,0);
-
-    if (mmMaxPos >= MIN_DEPTH_DISTANCE_MM && mmMaxPos <= MAX_DEPTH_DISTANCE_MM)
-    {
-        m_params.m_fMaxDepthThreshold = (float)mmMaxPos * 0.001f;
-    }*/
-
     int maxWeight = (int)SendDlgItemMessage(m_hWnd, IDC_INTEGRATION_WEIGHT_SLIDER, TBM_GETPOS, 0,0);
     m_params.m_cMaxIntegrationWeight = maxWeight % (MAX_INTEGRATION_WEIGHT+1);
 
-	// ADD - Antoine
-	int nTiltAngle = (int)SendDlgItemMessage(m_hWnd, IDC_SLIDER_TILT, TBM_GETPOS, 0, 0);
-	m_processor.TiltSensor(nTiltAngle);
-
-
-    // update text
+    // Update text
     WCHAR str[MAX_PATH];
-    /*swprintf_s(str, ARRAYSIZE(str), L"%4.2fm", m_params.m_fMinDepthThreshold);
-    SetDlgItemText(m_hWnd, IDC_MIN_DIST_TEXT, str);
-    swprintf_s(str, ARRAYSIZE(str), L"%4.2fm", m_params.m_fMaxDepthThreshold);
-    SetDlgItemText(m_hWnd, IDC_MAX_DIST_TEXT, str);*/
-
-	swprintf_s(str, ARRAYSIZE(str), L"%d", nTiltAngle);
-	SetDlgItemText(m_hWnd, IDC_TILT_TEXT, str);
-
     swprintf_s(str, ARRAYSIZE(str), L"%d", m_params.m_cMaxIntegrationWeight);
     SetDlgItemText(m_hWnd, IDC_INTEGRATION_WEIGHT_TEXT, str);
 
