@@ -707,93 +707,29 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
 	}
 
 	// If END CAPTURE clicked
-    if (IDC_BUTTON_END_CAPTURE == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-    {
-		// END OF SCENE
-
-		// Create / Prompt configuration file
-		CreateConfFile();
-
-		// Set button text
-		SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"New Capture");
-
-		// Switch number of meshes
-		CString message;
-		int res = -1;
-		switch (m_nMeshCount)
+	if (IDC_BUTTON_END_IMPORT_CAPTURE == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
+	{
+		if (!m_bDirNameSet) // NOT CAPTURING
 		{
-		case 0:
-			// Nothing
-			break;
-		case 1:
-			// SCENE OK
-			 res = AskViewer();
-			 if (res == IDYES)
-				 OpenViewer();
-			break;
-		default:
-			// MULTIPLE 3D OBJECTS
-			res = AskTreatment();
-			if (res == IDYES)
-			{
-				ProcessTreatment();
-				res = AskViewer();
-				
-				if (res == IDYES)
-					OpenViewer();
-			}
+			// IMPORT
+			AskImportDir();
 		}
-
-		// Disable Conf Radio Buttons
-		SetEnableConfUI(TRUE);
-
-		// Set flag
-		m_bDirNameSet = false;
-		
-		// Set count
-		m_nMeshCount = 0;
-
-		// Update UI
-		UpdateCaptureNameUI();
-		UpdateMeshCountUI();
-    }
+		else	// CAPTURING
+		{
+			// END OF SCENE
+			OnEndCapture();
+		}
+	}
     // If it was the NEW CAPTURE / SAVE SCENE button clicked, mesh the volume and save
     if (IDC_BUTTON_NEW_CONTINUE_SCENE == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
     {
-		if (!m_bDirNameSet)
+		if (!m_bDirNameSet) // NOT CAPTURING
 		{
 			// NEW SCENE 
-			
-			// Ask Mesh Name
-			int bRes = AskDirName();
-
-			// Set flag
-			m_bDirNameSet = (bRes >= 0);
-
-			// If valid mesh name
-			if (m_bDirNameSet) {
-
-				UpdateCaptureNameUI();
-
-				// Set button text
-				SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"Save Scene");
-			
-				// Disable Conf in UI
-				SetEnableConfUI(FALSE);
-
-				// Reset
-				m_nMeshCount = 0;
-			}
+			OnNewCapture();
 		}
-		else {
-			// Increase counter
-			m_nMeshCount++;
-
-			// Save last file
-			SaveMesh();
-
-			// Update Label
-			UpdateMeshCountUI();
+		else { // CAPTURING
+			OnContinueScene();
 		}
 
 		m_processor.ResetReconstruction();
@@ -1127,11 +1063,13 @@ void CKinectFusionExplorer::SetEnableCaptureUI(int nEnable)
 	EnableWindow(hElem, nEnable);
 	hElem = GetDlgItem(m_hWnd, IDC_BUTTON_RESET);
 	EnableWindow(hElem, nEnable);
+	hElem = GetDlgItem(m_hWnd, IDC_BUTTON_END_IMPORT_CAPTURE);
+	EnableWindow(hElem, nEnable);
 }
 
 // ADD - Antoine
 void CKinectFusionExplorer::SetEnableConfUI(int nEnable) {
-	int opposit = (nEnable == FALSE) ? TRUE : FALSE;
+	//int opposit = (nEnable == FALSE) ? TRUE : FALSE;
 
 	HWND hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_COLOR_YES);
 	EnableWindow(hElem, nEnable);
@@ -1150,8 +1088,8 @@ void CKinectFusionExplorer::SetEnableConfUI(int nEnable) {
 	hElem = GetDlgItem(m_hWnd, IDC_MESH_FORMAT_STL_RADIO);
 	EnableWindow(hElem, nEnable);
 
-	hElem = GetDlgItem(m_hWnd, IDC_BUTTON_END_CAPTURE);
-	EnableWindow(hElem, opposit);
+	/*hElem = GetDlgItem(m_hWnd, IDC_BUTTON_END_IMPORT_CAPTURE);
+	EnableWindow(hElem, opposit);*/
 }
 
 #include <iostream>
@@ -1201,4 +1139,198 @@ void CKinectFusionExplorer::CreateConfFile()
 
 		confFile.close();
 	}
+}
+
+int CKinectFusionExplorer::AskImportDir()
+{
+	// CoCreate the File Open Dialog object.
+	IFileDialog *pfd = NULL;
+	HRESULT hr = CoCreateInstance(CLSID_FileOpenDialog,
+		NULL,
+		CLSCTX_INPROC_SERVER,
+		IID_PPV_ARGS(&pfd));
+	if (SUCCEEDED(hr))
+	{
+		// Always use known folders instead of hard-coding physical file paths.
+		// In this case we are using Public Music KnownFolder.
+		IKnownFolderManager *pkfm = NULL;
+		hr = CoCreateInstance(CLSID_KnownFolderManager,
+			NULL,
+			CLSCTX_INPROC_SERVER,
+			IID_PPV_ARGS(&pkfm));
+		if (SUCCEEDED(hr))
+		{
+			// Get the known folder.
+			IKnownFolder *pKnownFolder = NULL;
+			hr = pkfm->GetFolder(FOLDERID_Desktop, &pKnownFolder);
+			if (SUCCEEDED(hr))
+			{
+				// File Dialog APIs need an IShellItem that represents the location.
+				IShellItem *psi = NULL;
+				hr = pKnownFolder->GetShellItem(0, IID_PPV_ARGS(&psi));
+				if (SUCCEEDED(hr))
+				{
+					// Add the place to the bottom of default list in Common File Dialog.
+					hr = pfd->AddPlace(psi, FDAP_BOTTOM);
+					if (SUCCEEDED(hr))
+					{
+						DWORD dwOptions;
+						if (SUCCEEDED(pfd->GetOptions(&dwOptions)))
+						{
+							pfd->SetOptions(dwOptions | FOS_PICKFOLDERS);
+						}
+
+						// Show the File Dialog.
+						hr = pfd->Show(NULL);
+						if (SUCCEEDED(hr))
+						{
+							// Retrieving mesh name
+							CComPtr<IShellItem> pItem;
+							hr = pfd->GetResult(&pItem);
+
+							if (SUCCEEDED(hr))
+							{
+								LPOLESTR pwsz = nullptr;
+								hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pwsz);
+
+								std::wstring wsConfFilePath(pwsz);
+								wsConfFilePath += L"\\conf.txt";
+
+								if (PathFileExists(W2OLE((LPWSTR)wsConfFilePath.c_str())))
+								{
+									m_DirPath = pwsz;
+									LoadProject();
+								}
+								else
+								{
+									CString message;
+									message.Format(L"%s is not a valid project. Can't find conf.txt file.", pwsz);
+									MessageBoxW(NULL, message, _T("Import Error"), MB_OK | MB_ICONERROR);
+								}
+							}
+						
+						}
+					}
+					psi->Release();
+				}
+				pKnownFolder->Release();
+			}
+			pkfm->Release();
+		}
+		pfd->Release();
+	}
+	return hr;
+}
+
+void CKinectFusionExplorer::LoadProject()
+{
+	// Retrieve conf.txt values
+	RetrieveProjectConf();
+
+	// Read file
+	UpdateCaptureNameUI();
+
+	// Set button texts
+	SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"Save Scene");
+	SetDlgItemText(m_hWnd, IDC_BUTTON_END_IMPORT_CAPTURE, L"End Capture");
+
+	// Disable Conf in UI
+	SetEnableConfUI(FALSE);
+
+	m_bDirNameSet = true;
+}
+
+void CKinectFusionExplorer::RetrieveProjectConf()
+{
+	// TODO : READ FILE 
+	// TODO : SET UI ACCORDING TO VALUES
+}
+
+void CKinectFusionExplorer::OnNewCapture()
+{
+	// Ask Mesh Name
+	int bRes = AskDirName();
+
+	// Set flag
+	m_bDirNameSet = (bRes >= 0);
+
+	// If valid mesh name
+	if (m_bDirNameSet) {
+
+		UpdateCaptureNameUI();
+
+		// Set button texts
+		SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"Save Scene");
+		SetDlgItemText(m_hWnd, IDC_BUTTON_END_IMPORT_CAPTURE, L"End Capture");
+
+
+		// Disable Conf in UI
+		SetEnableConfUI(FALSE);
+
+		// Reset
+		m_nMeshCount = 0;
+	}
+}
+
+void CKinectFusionExplorer::OnEndCapture()
+{
+	// Create / Prompt configuration file
+	CreateConfFile();
+
+	// Set button text
+	SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"New Capture");
+	SetDlgItemText(m_hWnd, IDC_BUTTON_END_IMPORT_CAPTURE, L"Import Capture");
+
+	// Switch number of meshes
+	CString message;
+	int res = -1;
+
+	switch (m_nMeshCount)
+	{
+	case 0:
+		// Nothing
+		break;
+	case 1:
+		// SCENE OK
+		res = AskViewer();
+		if (res == IDYES)
+			OpenViewer();
+		break;
+	default:
+		// MULTIPLE 3D OBJECTS
+		res = AskTreatment();
+		if (res == IDYES)
+		{
+			ProcessTreatment();
+			res = AskViewer();
+
+			if (res == IDYES)
+				OpenViewer();
+		}
+	}
+
+	// Disable Conf Radio Buttons
+	SetEnableConfUI(TRUE);
+
+	// Set flag
+	m_bDirNameSet = false;
+
+	// Set count
+	m_nMeshCount = 0;
+
+	// Update UI
+	UpdateCaptureNameUI();
+	UpdateMeshCountUI();
+}
+
+void CKinectFusionExplorer::OnContinueScene()
+{
+	// Increase counter
+	m_nMeshCount++;
+
+	// Save last file
+	SaveMesh();
+
+	// Update Label
+	UpdateMeshCountUI();
 }

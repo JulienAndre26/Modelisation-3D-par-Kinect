@@ -57,12 +57,22 @@ public:
     int                         Run(HINSTANCE hInstance, int nCmdShow);
 
 	int							AskDirName();
+	int							AskImportDir();
+
 	int							SaveMesh();
+	void						LoadProject();
+	void						RetrieveProjectConf();
 
 	void						SetEnableConfUI(int nEnable);
 	void						SetEnableCaptureUI(int nEnable);
 	void						UpdateMeshCountUI();
 	void						UpdateCaptureNameUI();
+
+	void						OnNewCapture();
+	void						OnEndCapture();
+	void						OnContinueScene();
+
+
 
 	int							AskViewer();
 	void						OpenViewer();
