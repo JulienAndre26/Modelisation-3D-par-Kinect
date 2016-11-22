@@ -14,6 +14,7 @@
 #include "KinectFusionHelper.h"
 
 #include <atlstr.h>
+#include <wchar.h>
 
 #define MIN_DEPTH_DISTANCE_MM 350   // Must be greater than 0
 #define MAX_DEPTH_DISTANCE_MM 8000
@@ -62,7 +63,7 @@ CKinectFusionExplorer::CKinectFusionExplorer() :
 
 	m_bDirNameSet(false),
 	m_nMeshCount(0),
-	m_DirName(nullptr)
+	m_DirPath(nullptr)
 {
 }
 
@@ -141,215 +142,6 @@ int CKinectFusionExplorer::Run(HINSTANCE hInstance, int nCmdShow)
     return static_cast<int>(msg.wParam);
 }
 
-// ADD - Antoine -----------------------------------------------------------------------------
-int CKinectFusionExplorer::AskDirName() {
-
-	CComPtr<IFileSaveDialog> pSaveDlg;
-
-	HRESULT hr = S_OK;
-
-	// Create the file save dialog object.
-	hr = pSaveDlg.CoCreateInstance(__uuidof(FileSaveDialog));
-
-	if (FAILED(hr))
-	{
-		return hr;
-	}
-
-	// Set the dialog title
-	hr = pSaveDlg->SetTitle(L"Set Project Name");
-	if (SUCCEEDED(hr))
-	{
-		// Set the button text
-		hr = pSaveDlg->SetOkButtonLabel(L"OK");
-		if (SUCCEEDED(hr))
-		{
-			// Set a default filename
-			hr = pSaveDlg->SetFileName(L"ProjectName");
-
-			if (SUCCEEDED(hr))
-			{
-				// Set the file type extension
-				//hr = pSaveDlg->SetDefaultExtension(L"ply");
-
-				if (SUCCEEDED(hr))
-				{
-					// Set the file type filters
-					COMDLG_FILTERSPEC allPossibleFileTypes[] = {
-						/*{ L"Stl mesh files", L"*.stl" },
-						{ L"Obj mesh files", L"*.obj" },
-						{ L"Ply mesh files", L"*.ply" },*/
-						{ L"All files", L"*.*" }
-					};
-
-					hr = pSaveDlg->SetFileTypes(
-						ARRAYSIZE(allPossibleFileTypes),
-						allPossibleFileTypes);
-
-					if (SUCCEEDED(hr))
-					{
-						// Show the file selection box
-						hr = pSaveDlg->Show(m_hWnd);
-					}
-
-					// Retrieving mesh name
-					CComPtr<IShellItem> pItem;
-					hr = pSaveDlg->GetResult(&pItem);
-
-					if (SUCCEEDED(hr))
-					{
-						LPOLESTR pwsz = nullptr;
-						hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pwsz);
-
-						m_DirName = pwsz;
-
-						std::wstring pName(pwsz);
-
-						// Check directory name validity
-						if (pName.size() <= 0)
-							return -1;
-
-						CreateDirectory(m_DirName, NULL);
-						
-						std::wstring pMsg = L"Project name is set to ";
-						std::wstring sPwszMsg = pMsg + pName;
-						
-						USES_CONVERSION;
-						LPOLESTR pwszMsg = W2OLE((LPWSTR)sPwszMsg.c_str());
-
-						if (SUCCEEDED(hr))
-						{
-							SetStatusMessage(pwszMsg);
-						}
-					}
-				}
-			}
-		}
-	}
-
-	return hr;
-}
-
-// ADD - Antoine
-int	CKinectFusionExplorer::SaveMesh()
-{
-	SetStatusMessage(L"Creating and saving mesh of reconstruction, please wait...");
-	m_bSavingMesh = true;
-
-	// Pause integration while we're saving
-	bool wasPaused = m_params.m_bPauseIntegration;
-	m_params.m_bPauseIntegration = true;
-	m_processor.SetParams(m_params);
-
-	INuiFusionColorMesh *mesh = nullptr;
-	HRESULT hr = m_processor.CalculateMesh(&mesh);
-
-	if (SUCCEEDED(hr))
-	{
-	    // Save mesh
-		SetStatusMessage(L"Saving mesh file, please wait...");
-		SetCursor(LoadCursor(nullptr, MAKEINTRESOURCE(IDC_WAIT)));
-
-		// Set Mesh File Name
-		LPOLESTR currentMeshName(nullptr);
-				
-		// Get extension as wstring
-		std::wstring szFormat; 
-		if (Stl == m_saveMeshFormat)
-			szFormat = L".stl";
-		else if (Obj == m_saveMeshFormat)
-			szFormat = L".obj";
-		else if (Ply == m_saveMeshFormat)
-			szFormat = L".ply";
-
-		std::wstring szMeshCount = std::to_wstring(m_nMeshCount);
-
-		// Concat
-		std::wstring szDirName(m_DirName);
-		std::wstring szCurrentMeshName = szDirName + L"\\plan"+ szMeshCount + szFormat;
-
-		// Convert wstring to LPOLESTR
-		USES_CONVERSION;
-		currentMeshName = W2OLE((LPWSTR)szCurrentMeshName.c_str());
-
-		if (Stl == m_saveMeshFormat)
-		{
-			hr = WriteBinarySTLMeshFile(mesh, currentMeshName);
-		}
-		else if (Obj == m_saveMeshFormat)
-		{
-			hr = WriteAsciiObjMeshFile(mesh, currentMeshName);
-		}
-		else if (Ply == m_saveMeshFormat)
-		{
-			hr = WriteAsciiPlyMeshFile(mesh, currentMeshName, true, m_bColorCaptured);
-		}
-
-		//CoTaskMemFree(m_CurrentMeshName);
-
-	    if (SUCCEEDED(hr))
-	    {
-	        //SetStatusMessage(L"Saved Kinect Fusion mesh.");
-			SetStatusMessage(currentMeshName);
-	    }
-	    else if (HRESULT_FROM_WIN32(ERROR_CANCELLED) == hr)
-	    {
-	        SetStatusMessage(L"Mesh save canceled.");
-	    }
-	    else
-	    {
-	        SetStatusMessage(L"Error saving Kinect Fusion mesh!");
-	    }
-
-	    // Release the mesh
-	    SafeRelease(mesh);
-	}
-	else
-	{
-	    SetStatusMessage(L"Failed to create mesh of reconstruction.");
-	}
-
-	// Restore pause state of integration
-	m_params.m_bPauseIntegration = wasPaused;
-	m_processor.SetParams(m_params);
-
-	m_bSavingMesh = false;
-
-	return S_OK;
-}
-
-int CKinectFusionExplorer::AskTreatment()
-{
-	CString message;
-	message.Format(L"%d files have been saved in %s. Do you want to merge the objects into a unique file ?", m_nMeshCount, m_DirName);
-	return MessageBoxW(NULL,
-		message,
-		_T("End of Capture"),
-		MB_YESNOCANCEL | MB_ICONQUESTION);
-}
-
-void CKinectFusionExplorer::ProcessTreatment()
-{
-	SetStatusMessage(L"LAUNCHING TREATMENT");
-}
-
-int CKinectFusionExplorer::AskViewer()
-{
-	CString message;
-	message.Format(L"Your scene has been saved in %s. Do you want to open it through the viewer ?", m_DirName);
-	return MessageBoxW(NULL,
-		message,
-		_T("End of Capture"),
-		MB_YESNOCANCEL | MB_ICONQUESTION);
-}
-
-void CKinectFusionExplorer::OpenViewer()
-{
-	SetStatusMessage(L"LAUNCHING VIEWER");
-}
-
-
-// ------------------------------------------------------------------------------------
 /// <summary>
 /// Handles window messages, passes most to the class instance to handle
 /// </summary>
@@ -506,7 +298,7 @@ LRESULT CALLBACK CKinectFusionExplorer::DlgProc(
     case WM_UPDATESENSORSTATUS:
         if (m_pSensorChooserUI != nullptr)
         {
-            m_pSensorChooserUI->UpdateSensorStatus(static_cast<DWORD>(wParam));
+			m_pSensorChooserUI->UpdateSensorStatus(static_cast<DWORD>(wParam));
         }
         break;
     }
@@ -594,6 +386,8 @@ void CKinectFusionExplorer::HandleCompletedFrame()
     m_bColorCaptured = pFrame->m_bColorCaptured;
 
     m_processor.UnlockFrame();
+
+	SetEnableCaptureUI(TRUE); // ADD - Antoine
 }
 
 /// <summary>
@@ -917,6 +711,9 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
     {
 		// END OF SCENE
 
+		// Create / Prompt configuration file
+		CreateConfFile();
+
 		// Set button text
 		SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"New Capture");
 
@@ -947,22 +744,18 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
 			}
 		}
 
-		// Show Pop Up message
-		/*std::wstring szMeshCount = std::to_wstring(m_nMeshCount);
-		std::wstring szMsg = szMeshCount + L" file(s) have been saved in " + m_MeshName + L". Do you want to merge them now into a unique 3D Scene ?";
-		MessageBoxW(NULL,
-			szMsg.c_str(),
-			_T("End of Capture"),
-			MB_YESNOCANCEL | MB_ICONQUESTION);
-*/
 		// Disable Conf Radio Buttons
 		SetEnableConfUI(TRUE);
 
 		// Set flag
 		m_bDirNameSet = false;
+		
+		// Set count
+		m_nMeshCount = 0;
 
-		// TODO: place dialogs here
-
+		// Update UI
+		UpdateCaptureNameUI();
+		UpdateMeshCountUI();
     }
     // If it was the NEW CAPTURE / SAVE SCENE button clicked, mesh the volume and save
     if (IDC_BUTTON_NEW_CONTINUE_SCENE == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
@@ -980,6 +773,8 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
 			// If valid mesh name
 			if (m_bDirNameSet) {
 
+				UpdateCaptureNameUI();
+
 				// Set button text
 				SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"Save Scene");
 			
@@ -996,6 +791,9 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
 
 			// Save last file
 			SaveMesh();
+
+			// Update Label
+			UpdateMeshCountUI();
 		}
 
 		m_processor.ResetReconstruction();
@@ -1020,31 +818,6 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
     }
 
     m_processor.SetParams(m_params);
-}
-
-// ADD - Antoine
-void CKinectFusionExplorer::SetEnableConfUI(int nEnable) {
-	int opposit = (nEnable == FALSE) ? TRUE : FALSE;
-
-	HWND hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_COLOR_YES);
-	EnableWindow(hElem, nEnable);
-	hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_COLOR_NO);
-	EnableWindow(hElem, nEnable);
-	hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_TYPE_HIGH);
-	EnableWindow(hElem, nEnable);
-	hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_TYPE_MEDIUM);
-	EnableWindow(hElem, nEnable);
-	hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_TYPE_LOW);
-	EnableWindow(hElem, nEnable);
-	hElem = GetDlgItem(m_hWnd, IDC_MESH_FORMAT_OBJ_RADIO);
-	EnableWindow(hElem, nEnable);
-	hElem = GetDlgItem(m_hWnd, IDC_MESH_FORMAT_PLY_RADIO);
-	EnableWindow(hElem, nEnable);
-	hElem = GetDlgItem(m_hWnd, IDC_MESH_FORMAT_STL_RADIO);
-	EnableWindow(hElem, nEnable);
-
-	hElem = GetDlgItem(m_hWnd, IDC_BUTTON_END_CAPTURE);
-	EnableWindow(hElem, opposit);
 }
 
 /// <summary>
@@ -1112,4 +885,320 @@ void CKinectFusionExplorer::SetFramesPerSecond(float fFramesPerSecond)
 
         SendDlgItemMessageW(m_hWnd, IDC_FRAMES_PER_SECOND, WM_SETTEXT, 0, (LPARAM)str);
     }
+}
+
+
+// ADD - Antoine -----------------------------------------------------------------------------
+int CKinectFusionExplorer::AskDirName() {
+
+	CComPtr<IFileSaveDialog> pSaveDlg;
+
+	HRESULT hr = S_OK;
+
+	// Create the file save dialog object.
+	hr = pSaveDlg.CoCreateInstance(__uuidof(FileSaveDialog));
+
+	if (FAILED(hr))
+	{
+		return hr;
+	}
+
+	// Set the dialog title
+	hr = pSaveDlg->SetTitle(L"Set Project Name");
+	if (SUCCEEDED(hr))
+	{
+		// Set the button text
+		hr = pSaveDlg->SetOkButtonLabel(L"OK");
+		if (SUCCEEDED(hr))
+		{
+			// Set a default filename
+			hr = pSaveDlg->SetFileName(L"ProjectName");
+
+			if (SUCCEEDED(hr))
+			{
+				// Set the file type extension
+				//hr = pSaveDlg->SetDefaultExtension(L"ply");
+
+				if (SUCCEEDED(hr))
+				{
+					// Set the file type filters
+					COMDLG_FILTERSPEC allPossibleFileTypes[] = {
+						/*{ L"Stl mesh files", L"*.stl" },
+						{ L"Obj mesh files", L"*.obj" },
+						{ L"Ply mesh files", L"*.ply" },*/
+						{ L"All files", L"*.*" }
+					};
+
+					hr = pSaveDlg->SetFileTypes(
+						ARRAYSIZE(allPossibleFileTypes),
+						allPossibleFileTypes);
+
+					if (SUCCEEDED(hr))
+					{
+						// Show the file selection box
+						hr = pSaveDlg->Show(m_hWnd);
+					}
+
+					// Retrieving mesh name
+					CComPtr<IShellItem> pItem;
+					hr = pSaveDlg->GetResult(&pItem);
+
+					if (SUCCEEDED(hr))
+					{
+						LPOLESTR pwsz = nullptr;
+						hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pwsz);
+
+						m_DirPath = pwsz;
+
+						std::wstring pName(pwsz);
+
+						// Check directory name validity
+						if (pName.size() <= 0)
+							return -1;
+
+						CreateDirectory(m_DirPath, NULL);
+
+						std::wstring pMsg = L"Project name is set to ";
+						std::wstring sPwszMsg = pMsg + pName;
+
+						USES_CONVERSION;
+						LPOLESTR pwszMsg = W2OLE((LPWSTR)sPwszMsg.c_str());
+
+						if (SUCCEEDED(hr))
+						{
+							SetStatusMessage(pwszMsg);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return hr;
+}
+
+// ADD - Antoine
+int	CKinectFusionExplorer::SaveMesh()
+{
+	SetStatusMessage(L"Creating and saving mesh of reconstruction, please wait...");
+	m_bSavingMesh = true;
+
+	// Pause integration while we're saving
+	bool wasPaused = m_params.m_bPauseIntegration;
+	m_params.m_bPauseIntegration = true;
+	m_processor.SetParams(m_params);
+
+	INuiFusionColorMesh *mesh = nullptr;
+	HRESULT hr = m_processor.CalculateMesh(&mesh);
+
+	if (SUCCEEDED(hr))
+	{
+		// Save mesh
+		SetStatusMessage(L"Saving mesh file, please wait...");
+		SetCursor(LoadCursor(nullptr, MAKEINTRESOURCE(IDC_WAIT)));
+
+		// Set Mesh File Name
+		LPOLESTR currentMeshName(nullptr);
+
+		// Get extension as wstring
+		std::wstring szFormat;
+		if (Stl == m_saveMeshFormat)
+			szFormat = L".stl";
+		else if (Obj == m_saveMeshFormat)
+			szFormat = L".obj";
+		else if (Ply == m_saveMeshFormat)
+			szFormat = L".ply";
+
+		std::wstring szMeshCount = std::to_wstring(m_nMeshCount);
+
+		// Concat
+		std::wstring szDirName(m_DirPath);
+		std::wstring szCurrentMeshName = szDirName + L"\\plan" + szMeshCount + szFormat;
+
+		// Convert wstring to LPOLESTR
+		USES_CONVERSION;
+		currentMeshName = W2OLE((LPWSTR)szCurrentMeshName.c_str());
+
+		if (Stl == m_saveMeshFormat)
+		{
+			hr = WriteBinarySTLMeshFile(mesh, currentMeshName);
+		}
+		else if (Obj == m_saveMeshFormat)
+		{
+			hr = WriteAsciiObjMeshFile(mesh, currentMeshName);
+		}
+		else if (Ply == m_saveMeshFormat)
+		{
+			hr = WriteAsciiPlyMeshFile(mesh, currentMeshName, true, m_bColorCaptured);
+		}
+
+		if (SUCCEEDED(hr))
+		{
+			SetStatusMessage(currentMeshName);
+		}
+		else if (HRESULT_FROM_WIN32(ERROR_CANCELLED) == hr)
+		{
+			SetStatusMessage(L"Mesh save canceled.");
+		}
+		else
+		{
+			SetStatusMessage(L"Error saving Kinect Fusion mesh!");
+		}
+
+		// Release the mesh
+		SafeRelease(mesh);
+	}
+	else
+	{
+		SetStatusMessage(L"Failed to create mesh of reconstruction.");
+	}
+
+	// Restore pause state of integration
+	m_params.m_bPauseIntegration = wasPaused;
+	m_processor.SetParams(m_params);
+
+	m_bSavingMesh = false;
+
+	return S_OK;
+}
+
+void CKinectFusionExplorer::UpdateCaptureNameUI()
+{
+	std::wstring szDirName(m_DirPath);
+
+	if (!m_bDirNameSet) 
+	{	// DIR NAME NOT SET
+		szDirName = L"No Project Loaded";
+	}
+	else 
+	{	// DIR NAME SET
+
+		// Get basename
+		const size_t last_slash_idx = szDirName.find_last_of(L"\\/");
+		if (std::wstring::npos != last_slash_idx)
+		{
+			szDirName.erase(0, last_slash_idx + 1);
+		}
+	}
+	
+	SetDlgItemText(m_hWnd, IDC_CAPTURE_NAME, W2OLE((LPWSTR)szDirName.c_str()));
+}
+
+void CKinectFusionExplorer::UpdateMeshCountUI()
+{
+	std::wstring meshCount = std::to_wstring(m_nMeshCount);
+	SetDlgItemText(m_hWnd, IDC_MESH_COUNT, W2OLE((LPWSTR)meshCount.c_str()));
+}
+
+
+int CKinectFusionExplorer::AskTreatment()
+{
+	CString message;
+	message.Format(L"%d files have been saved in %s. Do you want to merge the objects into a unique file ?", m_nMeshCount, m_DirPath);
+	return MessageBoxW(NULL,
+		message,
+		_T("End of Capture"),
+		MB_YESNOCANCEL | MB_ICONQUESTION);
+}
+
+void CKinectFusionExplorer::ProcessTreatment()
+{
+	SetStatusMessage(L"LAUNCHING TREATMENT");
+}
+
+int CKinectFusionExplorer::AskViewer()
+{
+	CString message;
+	message.Format(L"Your scene has been saved in %s. Do you want to open it through the viewer ?", m_DirPath);
+	return MessageBoxW(NULL,
+		message,
+		_T("End of Capture"),
+		MB_YESNOCANCEL | MB_ICONQUESTION);
+}
+
+void CKinectFusionExplorer::OpenViewer()
+{
+	SetStatusMessage(L"LAUNCHING VIEWER");
+}
+
+void CKinectFusionExplorer::SetEnableCaptureUI(int nEnable)
+{
+	HWND hElem = GetDlgItem(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE);
+	EnableWindow(hElem, nEnable);
+	hElem = GetDlgItem(m_hWnd, IDC_BUTTON_RESET);
+	EnableWindow(hElem, nEnable);
+}
+
+// ADD - Antoine
+void CKinectFusionExplorer::SetEnableConfUI(int nEnable) {
+	int opposit = (nEnable == FALSE) ? TRUE : FALSE;
+
+	HWND hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_COLOR_YES);
+	EnableWindow(hElem, nEnable);
+	hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_COLOR_NO);
+	EnableWindow(hElem, nEnable);
+	hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_TYPE_HIGH);
+	EnableWindow(hElem, nEnable);
+	hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_TYPE_MEDIUM);
+	EnableWindow(hElem, nEnable);
+	hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_TYPE_LOW);
+	EnableWindow(hElem, nEnable);
+	hElem = GetDlgItem(m_hWnd, IDC_MESH_FORMAT_OBJ_RADIO);
+	EnableWindow(hElem, nEnable);
+	hElem = GetDlgItem(m_hWnd, IDC_MESH_FORMAT_PLY_RADIO);
+	EnableWindow(hElem, nEnable);
+	hElem = GetDlgItem(m_hWnd, IDC_MESH_FORMAT_STL_RADIO);
+	EnableWindow(hElem, nEnable);
+
+	hElem = GetDlgItem(m_hWnd, IDC_BUTTON_END_CAPTURE);
+	EnableWindow(hElem, opposit);
+}
+
+#include <iostream>
+#include <fstream>
+
+void CKinectFusionExplorer::CreateConfFile()
+{
+	// QUALITY
+	std::wstring wsQuality;
+	if (m_params.m_reconstructionParams.voxelsPerMeter == 64)
+		wsQuality = L"LOW";
+	else if (m_params.m_reconstructionParams.voxelsPerMeter == 128)
+		wsQuality = L"MEDIUM";
+	else
+		wsQuality = L"HIGH";
+
+	// FORMAT
+	std::wstring wsFormat;
+	if (m_saveMeshFormat == Ply)
+		wsFormat = L"ply";
+	else if (m_saveMeshFormat == Obj)
+		wsFormat = L"obj";
+	else
+		wsFormat = L"stl";
+
+	// COLOR
+	std::wstring wsColor = (m_params.m_bCaptureColor) ? L"true" : L"false";
+	
+	// FILE COUNT
+	std::wstring wsCount = std::to_wstring(m_nMeshCount);
+
+	// DIRECTORY
+	std::wstring wsPath(m_DirPath);
+	
+	// Conf file
+	std::wstring wsConfPath = wsPath + L"\\conf.txt";
+	std::wofstream confFile(wsConfPath, std::ios::out | std::ios::trunc);  //déclaration du flux et ouverture du fichier
+
+	// If success
+	if (confFile)
+	{
+		confFile << L"[PATH] " + wsPath + L"\n";
+		confFile << L"[COUNT] " + wsCount + L"\n";
+		confFile << L"[FORMAT] " + wsFormat + L"\n";
+		confFile << L"[COLOR] " + wsColor + L"\n";
+		confFile << L"[QUALITY] " + wsQuality;
+
+		confFile.close();
+	}
 }

@@ -58,13 +58,19 @@ public:
 
 	int							AskDirName();
 	int							SaveMesh();
+
 	void						SetEnableConfUI(int nEnable);
+	void						SetEnableCaptureUI(int nEnable);
+	void						UpdateMeshCountUI();
+	void						UpdateCaptureNameUI();
 
 	int							AskViewer();
 	void						OpenViewer();
 
 	int							AskTreatment();
 	void						ProcessTreatment();
+
+	void						CreateConfFile();
 
 private:
     HWND                        m_hWnd;
@@ -156,5 +162,5 @@ private:
 	// ADD - Antoine
 	bool						m_bDirNameSet;
 	int							m_nMeshCount;
-	LPOLESTR					m_DirName;
+	LPOLESTR					m_DirPath;
 };
