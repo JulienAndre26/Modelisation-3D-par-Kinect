@@ -82,10 +82,17 @@ struct KinectFusionParams
 
         // Define a cubic Kinect Fusion reconstruction volume, with the sensor at the center of the
         // front face and the volume directly in front of sensor.
-        m_reconstructionParams.voxelsPerMeter = 512;    // 1000mm / 256vpm = ~3.9mm/voxel
-        m_reconstructionParams.voxelCountX = 512;       // 512 / 256vpm = 2m wide reconstruction
-        m_reconstructionParams.voxelCountY = 384;       // Memory = 512*384*512 * 4bytes per voxel
-        m_reconstructionParams.voxelCountZ = 512;       // This will require a GPU with at least 512MB
+        //m_reconstructionParams.voxelsPerMeter = 512;    // 1000mm / 256vpm = ~3.9mm/voxel
+        //m_reconstructionParams.voxelCountX = 512;       // 512 / 256vpm = 2m wide reconstruction
+        //m_reconstructionParams.voxelCountY = 384;       // Memory = 512*384*512 * 4bytes per voxel
+        //m_reconstructionParams.voxelCountZ = 512;       // This will require a GPU with at least 512MB
+
+		// LOW
+		m_reconstructionParams.voxelsPerMeter = 64;    // 1000mm / 256vpm = ~3.9mm/voxel
+		m_reconstructionParams.voxelCountX = 320;       // 512 / 256vpm = 2m wide reconstruction
+		m_reconstructionParams.voxelCountY = 256;       // Memory = 512*384*512 * 4bytes per voxel
+		m_reconstructionParams.voxelCountZ = 512;       // This will require a GPU with at least 512MB
+
 
 		/*m_reconstructionParams.voxelsPerMeter = 64;    // 1000mm / 256vpm = ~3.9mm/voxel
 		m_reconstructionParams.voxelCountX = 640;       // 512 / 256vpm = 2m wide reconstruction

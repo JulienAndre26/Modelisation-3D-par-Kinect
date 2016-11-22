@@ -766,15 +766,15 @@ void CKinectFusionExplorer::InitializeUIControls()
 
 	// TODO : CHANGE
 	// Set Quality Radio Buttons
-	if ((int)m_params.m_reconstructionParams.voxelsPerMeter == 512
-		&& (int)m_params.m_reconstructionParams.voxelCountX == 512
-		&& (int)m_params.m_reconstructionParams.voxelCountY == 384)
+	if ((int)m_params.m_reconstructionParams.voxelsPerMeter == 128
+		&& (int)m_params.m_reconstructionParams.voxelCountX == 640
+		&& (int)m_params.m_reconstructionParams.voxelCountY == 512)
 	{
 		CheckDlgButton(m_hWnd, IDC_CAPTURE_TYPE_MEDIUM, BST_CHECKED);
 	}
-	else if ((int)m_params.m_reconstructionParams.voxelsPerMeter == 512
-		&& (int)m_params.m_reconstructionParams.voxelCountX == 1024
-		&& (int)m_params.m_reconstructionParams.voxelCountY == 512)
+	else if ((int)m_params.m_reconstructionParams.voxelsPerMeter == 256
+		&& (int)m_params.m_reconstructionParams.voxelCountX == 1280
+		&& (int)m_params.m_reconstructionParams.voxelCountY == 1024)
 	{
 		CheckDlgButton(m_hWnd, IDC_CAPTURE_TYPE_HIGH, BST_CHECKED);
 	}
@@ -839,21 +839,21 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
 	// Set Capture Quality
 	if (IDC_CAPTURE_TYPE_MEDIUM == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
 	{
-		m_params.m_reconstructionParams.voxelsPerMeter = 512;    // 1000mm / 256vpm = ~3.9mm/voxel
-		m_params.m_reconstructionParams.voxelCountX = 512;       // 512 / 256vpm = 2m wide reconstruction
-		m_params.m_reconstructionParams.voxelCountY = 384;       // Memory = 512*384*512 * 4bytes per voxel
+		m_params.m_reconstructionParams.voxelsPerMeter = 128;    // 1000mm / 256vpm = ~3.9mm/voxel
+		m_params.m_reconstructionParams.voxelCountX = 640;       // 512 / 256vpm = 2m wide reconstruction
+		m_params.m_reconstructionParams.voxelCountY = 512;       // Memory = 512*384*512 * 4bytes per voxel
 	}
 	if (IDC_CAPTURE_TYPE_HIGH == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
 	{
-		m_params.m_reconstructionParams.voxelsPerMeter = 512;    // 1000mm / 256vpm = ~3.9mm/voxel
-		m_params.m_reconstructionParams.voxelCountX = 1024;       // 512 / 256vpm = 2m wide reconstruction
+		m_params.m_reconstructionParams.voxelsPerMeter = 256;    // 1000mm / 256vpm = ~3.9mm/voxel
+		m_params.m_reconstructionParams.voxelCountX = 1280;       // 512 / 256vpm = 2m wide reconstruction
 		m_params.m_reconstructionParams.voxelCountY = 512;       // Memory = 512*384*512 * 4bytes per voxel
 	}
 	if (IDC_CAPTURE_TYPE_LOW == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
 	{
 		m_params.m_reconstructionParams.voxelsPerMeter = 64;    // 1000mm / 256vpm = ~3.9mm/voxel
-		m_params.m_reconstructionParams.voxelCountX = 640;       // 512 / 256vpm = 2m wide reconstruction
-		m_params.m_reconstructionParams.voxelCountY = 640;       // Memory = 512*384*512 * 4bytes per voxel
+		m_params.m_reconstructionParams.voxelCountX = 320;       // 512 / 256vpm = 2m wide reconstruction
+		m_params.m_reconstructionParams.voxelCountY = 256;       // Memory = 512*384*512 * 4bytes per voxel
 	}
 
 	// Set Tilt Position
