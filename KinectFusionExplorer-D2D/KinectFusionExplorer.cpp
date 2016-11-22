@@ -13,6 +13,8 @@
 #include "KinectFusionProcessorFrame.h"
 #include "KinectFusionHelper.h"
 
+#include <atlstr.h>
+
 #define MIN_DEPTH_DISTANCE_MM 350   // Must be greater than 0
 #define MAX_DEPTH_DISTANCE_MM 8000
 
@@ -139,7 +141,7 @@ int CKinectFusionExplorer::Run(HINSTANCE hInstance, int nCmdShow)
     return static_cast<int>(msg.wParam);
 }
 
-// ADD - Antoine
+// ADD - Antoine -----------------------------------------------------------------------------
 int CKinectFusionExplorer::AskMeshName() {
 
 	CComPtr<IFileSaveDialog> pSaveDlg;
@@ -314,6 +316,38 @@ int	CKinectFusionExplorer::SaveMesh()
 	return S_OK;
 }
 
+int CKinectFusionExplorer::AskTreatment()
+{
+	CString message;
+	message.Format(L"%d files have been saved in %s. Do you want to merge the objects into a unique file ?", m_nMeshCount, m_MeshName);
+	return MessageBoxW(NULL,
+		message,
+		_T("End of Capture"),
+		MB_YESNOCANCEL | MB_ICONQUESTION);
+}
+
+void CKinectFusionExplorer::ProcessTreatment()
+{
+	SetStatusMessage(L"LAUNCHING TREATMENT");
+}
+
+int CKinectFusionExplorer::AskViewer()
+{
+	CString message;
+	message.Format(L"Your scene has been saved in %s. Do you want to open it through the viewer ?", m_MeshName);
+	return MessageBoxW(NULL,
+		message,
+		_T("End of Capture"),
+		MB_YESNOCANCEL | MB_ICONQUESTION);
+}
+
+void CKinectFusionExplorer::OpenViewer()
+{
+	SetStatusMessage(L"LAUNCHING VIEWER");
+}
+
+
+// ------------------------------------------------------------------------------------
 /// <summary>
 /// Handles window messages, passes most to the class instance to handle
 /// </summary>
@@ -884,20 +918,49 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
 		// Set button text
 		SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"New Capture");
 
+		// Switch number of meshes
+		CString message;
+		int res = -1;
+		switch (m_nMeshCount)
+		{
+		case 0:
+			// Nothing
+			break;
+		case 1:
+			// SCENE OK
+			 res = AskViewer();
+			 if (res == IDYES)
+				 OpenViewer();
+			break;
+		default:
+			// MULTIPLE 3D OBJECTS
+			res = AskTreatment();
+			if (res == IDYES)
+			{
+				ProcessTreatment();
+				res = AskViewer();
+				
+				if (res == IDYES)
+					OpenViewer();
+			}
+		}
+
 		// Show Pop Up message
-		std::wstring szMeshCount = std::to_wstring(m_nMeshCount);
-		std::wstring szPath(m_MeshName);
-		std::wstring szMsg = szMeshCount + L" file(s) have been saved in " + m_MeshName;
+		/*std::wstring szMeshCount = std::to_wstring(m_nMeshCount);
+		std::wstring szMsg = szMeshCount + L" file(s) have been saved in " + m_MeshName + L". Do you want to merge them now into a unique 3D Scene ?";
 		MessageBoxW(NULL,
 			szMsg.c_str(),
 			_T("End of Capture"),
-			NULL);
-
+			MB_YESNOCANCEL | MB_ICONQUESTION);
+*/
 		// Disable Conf Radio Buttons
 		SetEnableConfUI(TRUE);
 
 		// Set flag
 		m_bMeshNameSet = false;
+
+		// TODO: place dialogs here
+
     }
     // If it was the NEW CAPTURE / SAVE SCENE button clicked, mesh the volume and save
     if (IDC_BUTTON_NEW_CONTINUE_SCENE == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
