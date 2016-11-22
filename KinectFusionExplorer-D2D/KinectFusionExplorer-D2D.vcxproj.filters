@@ -26,6 +26,13 @@
     <ClCompile Include="Storages.cpp">
       <Filter>IO</Filter>
     </ClCompile>
+    <ClCompile Include="some_test.cpp" />
+    <ClCompile Include="GeneratedFiles\Debug\moc_some_test.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_some_test.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ICamera.h">
@@ -69,6 +76,12 @@
     </ClInclude>
     <ClInclude Include="Storages.h">
       <Filter>IO</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_some_test.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="some_test.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -114,6 +127,12 @@
     <None Include="app.ico">
       <Filter>Kinect Fusion</Filter>
     </None>
+    <None Include="some_test.ui">
+      <Filter>Form Files</Filter>
+    </None>
+    <None Include="some_test.qrc">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External Images">
@@ -133,6 +152,24 @@
     </Filter>
     <Filter Include="Kinect Fusion\implementation">
       <UniqueIdentifier>{20e3ac31-201e-450b-a59a-b1c460d6d4de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Form Files">
+      <UniqueIdentifier>{d81cdf6c-8a91-42bf-b098-7e6bb7dd36e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{19f717b2-aad8-44bc-9f4e-88456c149443}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Generated Files\Debug">
+      <UniqueIdentifier>{ad286b83-8e89-4e46-bf00-cb32ac5a326a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Generated Files\Release">
+      <UniqueIdentifier>{dd1b14b3-6d38-4f54-83b3-0fa8edbbae35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{a6ead5fd-e9e3-4dee-b0ff-0098e1440059}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{4684e716-ce83-4925-b5d8-054e7d066d95}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

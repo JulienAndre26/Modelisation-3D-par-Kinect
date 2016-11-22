@@ -64,6 +64,8 @@ using namespace std;
 #include <sstream>
 #include <stdlib.h>
 
+
+
 #ifdef WIN32
 # define sleep(x) Sleep((x)*1000)
 #endif
@@ -100,11 +102,11 @@ public:
 			pcl::visualization::PointCloudColorHandlerRGBField<pcl::PointXYZRGB> rgb(cloud);
 			viewer->addPointCloud<pcl::PointXYZRGB>(cloud, rgb, "Before Cloud", v1);
 
-			/*int v2(0);
-			viewer->createViewPort(0.0, 0.0, 1.0, 1.0, v2);
-			viewer->setBackgroundColor(0.2, 0.2, 0.2, v2);
-			pcl::visualization::PointCloudColorHandlerRGBField<pcl::PointXYZRGB> single_color(cloudOut);
-			viewer->addPointCloud<pcl::PointXYZRGB>(cloudOut, single_color, "AfterCloud", v2);*/
+			//int v2(0);
+			//viewer->createViewPort(0.0, 0.0, 1.0, 1.0, v2);
+			//viewer->setBackgroundColor(0.2, 0.2, 0.2, v2);
+			//pcl::visualization::PointCloudColorHandlerRGBField<pcl::PointXYZRGB> single_color(cloudOut);
+			//viewer->addPointCloud<pcl::PointXYZRGB>(cloudOut, single_color, "AfterCloud", v2);
 		}
 	}
 
@@ -150,3 +152,18 @@ main(int argc, char **argv)
 	return EXIT_SUCCESS;
 }
 
+
+/*
+#include <qapplication.h>
+#include "GeneratedFiles\ui_some_test.h"
+#include "some_test.h"
+
+int main(int argc, char *argv[])
+{
+	QApplication a(argc, argv);
+	some_test w;
+	w.show();
+	return a.exec();
+}
+
+*/
