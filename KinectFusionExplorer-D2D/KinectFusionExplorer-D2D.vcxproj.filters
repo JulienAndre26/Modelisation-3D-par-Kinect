@@ -1,87 +1,55 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Cameras.cpp">
-      <Filter>Kinect Fusion\implementation</Filter>
+    <ClCompile Include="KinectFusionExplorer.cpp">
+      <Filter>Kinect Fusion\KinectFusionExplorer</Filter>
     </ClCompile>
     <ClCompile Include="ImageRenderer.cpp">
-      <Filter>Kinect Fusion</Filter>
-    </ClCompile>
-    <ClCompile Include="KinectFusionExplorer.cpp">
-      <Filter>Kinect Fusion</Filter>
+      <Filter>Kinect Fusion\ImageRenderer</Filter>
     </ClCompile>
     <ClCompile Include="KinectFusionHelper.cpp">
-      <Filter>Kinect Fusion</Filter>
+      <Filter>Kinect Fusion\KinectFusionHelper</Filter>
     </ClCompile>
     <ClCompile Include="KinectFusionProcessor.cpp">
-      <Filter>Kinect Fusion</Filter>
+      <Filter>Kinect Fusion\KinectFusionProcessor</Filter>
     </ClCompile>
     <ClCompile Include="KinectFusionProcessorFrame.cpp">
-      <Filter>Kinect Fusion</Filter>
+      <Filter>Kinect Fusion\KinectFusionProcessor</Filter>
     </ClCompile>
     <ClCompile Include="Timer.cpp">
-      <Filter>Kinect Fusion</Filter>
-    </ClCompile>
-    <ClCompile Include="Storages.cpp">
-      <Filter>IO</Filter>
-    </ClCompile>
-    <ClCompile Include="some_test.cpp" />
-    <ClCompile Include="GeneratedFiles\Debug\moc_some_test.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_some_test.cpp">
-      <Filter>Generated Files</Filter>
+      <Filter>Kinect Fusion\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ICamera.h">
-      <Filter>Kinect Fusion\implementation</Filter>
-    </ClInclude>
-    <ClInclude Include="Cameras.h">
-      <Filter>Kinect Fusion\implementation</Filter>
-    </ClInclude>
-    <ClInclude Include="ImageRenderer.h">
-      <Filter>Kinect Fusion</Filter>
-    </ClInclude>
-    <ClInclude Include="KinectFusionExplorer.h">
-      <Filter>Kinect Fusion</Filter>
-    </ClInclude>
-    <ClInclude Include="KinectFusionHelper.h">
-      <Filter>Kinect Fusion</Filter>
-    </ClInclude>
     <ClInclude Include="KinectFusionParams.h">
       <Filter>Kinect Fusion</Filter>
     </ClInclude>
+    <ClInclude Include="KinectFusionExplorer.h">
+      <Filter>Kinect Fusion\KinectFusionExplorer</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageRenderer.h">
+      <Filter>Kinect Fusion\ImageRenderer</Filter>
+    </ClInclude>
+    <ClInclude Include="KinectFusionHelper.h">
+      <Filter>Kinect Fusion\KinectFusionHelper</Filter>
+    </ClInclude>
     <ClInclude Include="KinectFusionProcessor.h">
-      <Filter>Kinect Fusion</Filter>
+      <Filter>Kinect Fusion\KinectFusionProcessor</Filter>
     </ClInclude>
     <ClInclude Include="KinectFusionProcessorFrame.h">
-      <Filter>Kinect Fusion</Filter>
-    </ClInclude>
-    <ClInclude Include="NuiSensorChooserUIResource.h">
-      <Filter>Kinect Fusion</Filter>
+      <Filter>Kinect Fusion\KinectFusionProcessor</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
-      <Filter>Kinect Fusion</Filter>
+      <Filter>Kinect Fusion\KinectFusionExplorer</Filter>
     </ClInclude>
-    <ClInclude Include="stdafx.h">
-      <Filter>Kinect Fusion</Filter>
+    <ClInclude Include="NuiSensorChooserUIResource.h">
+      <Filter>Kinect Fusion\KinectFusionExplorer</Filter>
     </ClInclude>
     <ClInclude Include="Timer.h">
-      <Filter>Kinect Fusion</Filter>
+      <Filter>Kinect Fusion\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="IStorage.h">
-      <Filter>IO</Filter>
-    </ClInclude>
-    <ClInclude Include="Storages.h">
-      <Filter>IO</Filter>
-    </ClInclude>
-    <ClInclude Include="GeneratedFiles\ui_some_test.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
-    <ClInclude Include="some_test.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="stdafx.h">
+      <Filter>Kinect Fusion\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -125,97 +93,79 @@
       <Filter>External Images</Filter>
     </None>
     <None Include="app.ico">
-      <Filter>Kinect Fusion</Filter>
-    </None>
-    <None Include="some_test.ui">
-      <Filter>Form Files</Filter>
-    </None>
-    <None Include="some_test.qrc">
-      <Filter>Resource Files</Filter>
+      <Filter>Kinect Fusion\KinectFusionExplorer</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="External Images">
       <UniqueIdentifier>{697541a1-dc73-475f-87f9-7062382ec036}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Gui">
-      <UniqueIdentifier>{55612108-ef94-43bb-b11b-1706593f6019}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="IO">
-      <UniqueIdentifier>{f03a4604-e6b7-4d15-a24d-0d44add1fbda}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Processing">
-      <UniqueIdentifier>{f141f765-23fe-49fa-9f02-d7b3b1155a19}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Kinect Fusion">
       <UniqueIdentifier>{1dba1001-c528-41ba-961e-fdd40bbfad4f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kinect Fusion\implementation">
-      <UniqueIdentifier>{20e3ac31-201e-450b-a59a-b1c460d6d4de}</UniqueIdentifier>
+    <Filter Include="Kinect Fusion\BMPs">
+      <UniqueIdentifier>{5a67c2be-783f-4257-9f74-8ded52bc99a4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Form Files">
-      <UniqueIdentifier>{d81cdf6c-8a91-42bf-b098-7e6bb7dd36e1}</UniqueIdentifier>
+    <Filter Include="Kinect Fusion\KinectFusionExplorer">
+      <UniqueIdentifier>{f3790f8f-b2ac-47cb-8960-6ad5ed7f7508}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Generated Files">
-      <UniqueIdentifier>{19f717b2-aad8-44bc-9f4e-88456c149443}</UniqueIdentifier>
+    <Filter Include="Kinect Fusion\ImageRenderer">
+      <UniqueIdentifier>{0a8f7207-8fbf-4080-9e04-42a49685ef1a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Generated Files\Debug">
-      <UniqueIdentifier>{ad286b83-8e89-4e46-bf00-cb32ac5a326a}</UniqueIdentifier>
+    <Filter Include="Kinect Fusion\KinectFusionHelper">
+      <UniqueIdentifier>{3e0fcaf8-d99b-4322-946e-148c4eab1cce}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Generated Files\Release">
-      <UniqueIdentifier>{dd1b14b3-6d38-4f54-83b3-0fa8edbbae35}</UniqueIdentifier>
+    <Filter Include="Kinect Fusion\Utils">
+      <UniqueIdentifier>{c5381efb-09fa-4080-a9a2-91c4da054b90}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{a6ead5fd-e9e3-4dee-b0ff-0098e1440059}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{4684e716-ce83-4925-b5d8-054e7d066d95}</UniqueIdentifier>
+    <Filter Include="Kinect Fusion\KinectFusionProcessor">
+      <UniqueIdentifier>{54f638dc-2b27-44ff-85f1-f044f78d9c4a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Images\Allset.bmp">
-      <Filter>Kinect Fusion</Filter>
-    </Image>
-    <Image Include="Images\AllsetBig.bmp">
-      <Filter>Kinect Fusion</Filter>
-    </Image>
-    <Image Include="Images\Error.bmp">
-      <Filter>Kinect Fusion</Filter>
-    </Image>
-    <Image Include="Images\ErrorBig.bmp">
-      <Filter>Kinect Fusion</Filter>
-    </Image>
-    <Image Include="Images\Initializing.bmp">
-      <Filter>Kinect Fusion</Filter>
-    </Image>
-    <Image Include="Images\InitializingBig.bmp">
-      <Filter>Kinect Fusion</Filter>
-    </Image>
     <Image Include="Images\Listening.bmp">
-      <Filter>Kinect Fusion</Filter>
+      <Filter>Kinect Fusion\BMPs</Filter>
     </Image>
     <Image Include="Images\ListeningBig.bmp">
-      <Filter>Kinect Fusion</Filter>
+      <Filter>Kinect Fusion\BMPs</Filter>
     </Image>
     <Image Include="Images\NoAvailableSensor.bmp">
-      <Filter>Kinect Fusion</Filter>
+      <Filter>Kinect Fusion\BMPs</Filter>
     </Image>
     <Image Include="Images\NoAvailableSensorBig.bmp">
-      <Filter>Kinect Fusion</Filter>
+      <Filter>Kinect Fusion\BMPs</Filter>
+    </Image>
+    <Image Include="Images\AllsetBig.bmp">
+      <Filter>Kinect Fusion\BMPs</Filter>
+    </Image>
+    <Image Include="Images\Allset.bmp">
+      <Filter>Kinect Fusion\BMPs</Filter>
     </Image>
     <Image Include="Images\Refresh.bmp">
-      <Filter>Kinect Fusion</Filter>
+      <Filter>Kinect Fusion\BMPs</Filter>
     </Image>
     <Image Include="Images\RefreshClick.bmp">
-      <Filter>Kinect Fusion</Filter>
+      <Filter>Kinect Fusion\BMPs</Filter>
     </Image>
     <Image Include="Images\RefreshOver.bmp">
-      <Filter>Kinect Fusion</Filter>
+      <Filter>Kinect Fusion\BMPs</Filter>
+    </Image>
+    <Image Include="Images\InitializingBig.bmp">
+      <Filter>Kinect Fusion\BMPs</Filter>
+    </Image>
+    <Image Include="Images\Initializing.bmp">
+      <Filter>Kinect Fusion\BMPs</Filter>
+    </Image>
+    <Image Include="Images\Error.bmp">
+      <Filter>Kinect Fusion\BMPs</Filter>
+    </Image>
+    <Image Include="Images\ErrorBig.bmp">
+      <Filter>Kinect Fusion\BMPs</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="KinectFusionExplorer-D2D.rc">
-      <Filter>Kinect Fusion</Filter>
+      <Filter>Kinect Fusion\KinectFusionExplorer</Filter>
     </ResourceCompile>
   </ItemGroup>
 </Project>
