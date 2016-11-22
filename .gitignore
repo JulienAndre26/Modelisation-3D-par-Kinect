@@ -274,3 +274,6 @@ __pycache__/
 # *.sln
 # *.vcxproj
 # *.vcxproj.filters
+
+#models folder
+models/
