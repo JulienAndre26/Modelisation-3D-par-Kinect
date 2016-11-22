@@ -22,7 +22,7 @@
     <ProjectGuid>{9F1ABEBE-8226-4B92-AC8E-0B39C6AA2047}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>KinectFusionExplorer-D2D</RootNamespace>
-    <ProjectName>KinectFusionExplorer-D2D</ProjectName>
+    <ProjectName>CaptureExplorer</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
