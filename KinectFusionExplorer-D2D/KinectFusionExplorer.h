@@ -60,6 +60,12 @@ public:
 	int							SaveMesh();
 	void						SetEnableConfUI(int nEnable);
 
+	int							AskViewer();
+	void						OpenViewer();
+
+	int							AskTreatment();
+	void						ProcessTreatment();
+
 private:
     HWND                        m_hWnd;
     NuiSensorChooserUI*         m_pSensorChooserUI;
