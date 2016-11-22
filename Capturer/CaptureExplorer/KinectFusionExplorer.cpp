@@ -60,9 +60,9 @@ CKinectFusionExplorer::CKinectFusionExplorer() :
 	m_bColorCaptured(false),
 	m_bUIUpdated(false),
 
-	m_bMeshNameSet(false),
+	m_bDirNameSet(false),
 	m_nMeshCount(0),
-	m_MeshName(nullptr)
+	m_DirName(nullptr)
 {
 }
 
@@ -142,7 +142,7 @@ int CKinectFusionExplorer::Run(HINSTANCE hInstance, int nCmdShow)
 }
 
 // ADD - Antoine -----------------------------------------------------------------------------
-int CKinectFusionExplorer::AskMeshName() {
+int CKinectFusionExplorer::AskDirName() {
 
 	CComPtr<IFileSaveDialog> pSaveDlg;
 
@@ -157,7 +157,7 @@ int CKinectFusionExplorer::AskMeshName() {
 	}
 
 	// Set the dialog title
-	hr = pSaveDlg->SetTitle(L"Set Mesh Name");
+	hr = pSaveDlg->SetTitle(L"Set Project Name");
 	if (SUCCEEDED(hr))
 	{
 		// Set the button text
@@ -165,7 +165,7 @@ int CKinectFusionExplorer::AskMeshName() {
 		if (SUCCEEDED(hr))
 		{
 			// Set a default filename
-			hr = pSaveDlg->SetFileName(L"MeshedReconstruction");
+			hr = pSaveDlg->SetFileName(L"ProjectName");
 
 			if (SUCCEEDED(hr))
 			{
@@ -201,15 +201,17 @@ int CKinectFusionExplorer::AskMeshName() {
 						LPOLESTR pwsz = nullptr;
 						hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pwsz);
 
-						m_MeshName = pwsz;
+						m_DirName = pwsz;
 
 						std::wstring pName(pwsz);
 
-						// TODO : CHECK VALIDITY
+						// Check directory name validity
 						if (pName.size() <= 0)
 							return -1;
 
-						std::wstring pMsg = L"Mesh name is set to ";
+						CreateDirectory(m_DirName, NULL);
+						
+						std::wstring pMsg = L"Project name is set to ";
 						std::wstring sPwszMsg = pMsg + pName;
 						
 						USES_CONVERSION;
@@ -263,8 +265,8 @@ int	CKinectFusionExplorer::SaveMesh()
 		std::wstring szMeshCount = std::to_wstring(m_nMeshCount);
 
 		// Concat
-		std::wstring szMeshName(m_MeshName);
-		std::wstring szCurrentMeshName = szMeshName + szMeshCount + szFormat;
+		std::wstring szDirName(m_DirName);
+		std::wstring szCurrentMeshName = szDirName + L"\\plan"+ szMeshCount + szFormat;
 
 		// Convert wstring to LPOLESTR
 		USES_CONVERSION;
@@ -319,7 +321,7 @@ int	CKinectFusionExplorer::SaveMesh()
 int CKinectFusionExplorer::AskTreatment()
 {
 	CString message;
-	message.Format(L"%d files have been saved in %s. Do you want to merge the objects into a unique file ?", m_nMeshCount, m_MeshName);
+	message.Format(L"%d files have been saved in %s. Do you want to merge the objects into a unique file ?", m_nMeshCount, m_DirName);
 	return MessageBoxW(NULL,
 		message,
 		_T("End of Capture"),
@@ -334,7 +336,7 @@ void CKinectFusionExplorer::ProcessTreatment()
 int CKinectFusionExplorer::AskViewer()
 {
 	CString message;
-	message.Format(L"Your scene has been saved in %s. Do you want to open it through the viewer ?", m_MeshName);
+	message.Format(L"Your scene has been saved in %s. Do you want to open it through the viewer ?", m_DirName);
 	return MessageBoxW(NULL,
 		message,
 		_T("End of Capture"),
@@ -957,7 +959,7 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
 		SetEnableConfUI(TRUE);
 
 		// Set flag
-		m_bMeshNameSet = false;
+		m_bDirNameSet = false;
 
 		// TODO: place dialogs here
 
@@ -965,18 +967,18 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
     // If it was the NEW CAPTURE / SAVE SCENE button clicked, mesh the volume and save
     if (IDC_BUTTON_NEW_CONTINUE_SCENE == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
     {
-		if (!m_bMeshNameSet)
+		if (!m_bDirNameSet)
 		{
 			// NEW SCENE 
 			
 			// Ask Mesh Name
-			int bRes = AskMeshName();
+			int bRes = AskDirName();
 
 			// Set flag
-			m_bMeshNameSet = (bRes >= 0);
+			m_bDirNameSet = (bRes >= 0);
 
 			// If valid mesh name
-			if (m_bMeshNameSet) {
+			if (m_bDirNameSet) {
 
 				// Set button text
 				SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"Save Scene");

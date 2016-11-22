@@ -56,7 +56,7 @@ public:
     /// <param name="nCmdShow"></param>
     int                         Run(HINSTANCE hInstance, int nCmdShow);
 
-	int							AskMeshName();
+	int							AskDirName();
 	int							SaveMesh();
 	void						SetEnableConfUI(int nEnable);
 
@@ -154,7 +154,7 @@ private:
     DWORD                       m_tickLastStatus;
 
 	// ADD - Antoine
-	bool						m_bMeshNameSet;
+	bool						m_bDirNameSet;
 	int							m_nMeshCount;
-	LPOLESTR					m_MeshName;
+	LPOLESTR					m_DirName;
 };
