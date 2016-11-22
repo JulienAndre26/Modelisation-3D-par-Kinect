@@ -38,7 +38,7 @@ int main() {
 */
 
 
-
+/*
 #pragma warning( disable : 4996 )
 #include <cstdio>
 #include <stdio.h>
@@ -150,12 +150,11 @@ main(int argc, char **argv)
 	v.run();
 
 	return EXIT_SUCCESS;
-}
+}*/
 
 
-/*
-#include <qapplication.h>
-#include "GeneratedFiles\ui_some_test.h"
+
+#include <QtWidgets\qapplication.h>
 #include "some_test.h"
 
 int main(int argc, char *argv[])
@@ -166,4 +165,3 @@ int main(int argc, char *argv[])
 	return a.exec();
 }
 
-*/
