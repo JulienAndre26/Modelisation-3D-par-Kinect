@@ -53,7 +53,7 @@
 
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QTransform>
-#include <Qt3DExtras/QPlaneMesh>
+#include <Qt3DRender/QPlaneMesh>
 
 class PlaneEntity : public Qt3DCore::QEntity
 {

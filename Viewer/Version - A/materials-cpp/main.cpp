@@ -1,5 +1,42 @@
+/****************************************************************************
+**
+** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
+** Contact: http://www.qt-project.org/legal
+**
+** This file is part of the Qt3D module of the Qt Toolkit.
+**
+** $QT_BEGIN_LICENSE:LGPL3$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://www.qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
+**
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 3 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPLv3 included in the
+** packaging of this file. Please review the following information to
+** ensure the GNU Lesser General Public License version 3 requirements
+** will be met: https://www.gnu.org/licenses/lgpl.html.
+**
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 2.0 or later as published by the Free
+** Software Foundation and appearing in the file LICENSE.GPL included in
+** the packaging of this file. Please review the following information to
+** ensure the GNU General Public License version 2.0 requirements will be
+** met: http://www.gnu.org/licenses/gpl-2.0.html.
+**
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
 #include <QGuiApplication>
 
+#include "window.h"
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DCore/QCamera>
@@ -10,6 +47,7 @@
 #include <Qt3DRender/QPhongMaterial>
 #include <Qt3DRender/QDiffuseMapMaterial>
 #include <Qt3DRender/QForwardRenderer>
+#include <Qt3DRender/QFrameGraph>
 #include <Qt3DRender/QTextureImage>
 
 #include "planeentity.h"
@@ -19,29 +57,43 @@ int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
 
-    Qt3DExtras::Qt3DWindow view;
+    Window view;
+    Qt3DCore::QAspectEngine engine;
+    engine.registerAspect(new Qt3DRender::QRenderAspect());
+    Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect;
+    engine.registerAspect(input);
+    QVariantMap data;
+    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
+    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));
+    engine.setData(data);
 
     // Scene Root
     Qt3DCore::QEntity *sceneRoot = new Qt3DCore::QEntity();
 
     // Scene Camera
-    Qt3DRender::QCamera *basicCamera = view.camera();
-    basicCamera->setProjectionType(Qt3DRender::QCameraLens::PerspectiveProjection);
+    Qt3DCore::QCamera *basicCamera = new Qt3DCore::QCamera(sceneRoot);
+    basicCamera->setProjectionType(Qt3DCore::QCameraLens::PerspectiveProjection);
     basicCamera->setAspectRatio(view.width() / view.height());
     basicCamera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
     basicCamera->setViewCenter(QVector3D(0.0f, 3.5f, 0.0f));
     basicCamera->setPosition(QVector3D(0.0f, 3.5f, 25.0f));
     // For camera controls
-    Qt3DExtras::QFirstPersonCameraController *camController = new Qt3DExtras::QFirstPersonCameraController(sceneRoot);
-    camController->setCamera(basicCamera);
+    input->setCamera(basicCamera);
 
-    // Scene floor
+    // Forward Renderer FrameGraph
+    Qt3DRender::QFrameGraph *frameGraphComponent = new Qt3DRender::QFrameGraph(sceneRoot);
+    Qt3DRender::QForwardRenderer *forwardRenderer = new Qt3DRender::QForwardRenderer();
+    forwardRenderer->setCamera(basicCamera);
+    frameGraphComponent->setActiveFrameGraph(forwardRenderer);
+    sceneRoot->addComponent(frameGraphComponent);
+
+//    // Scene floor
 //    PlaneEntity *planeEntity = new PlaneEntity(sceneRoot);
 //    planeEntity->mesh()->setHeight(100.0f);
 //    planeEntity->mesh()->setWidth(100.0f);
 //    planeEntity->mesh()->setMeshResolution(QSize(20, 20));
 
-//    Qt3DExtras::QDiffuseMapMaterial *normalDiffuseSpecularMapMaterial = new Qt3DExtras::QDiffuseMapMaterial();
+//    Qt3DRender::QNormalDiffuseSpecularMapMaterial *normalDiffuseSpecularMapMaterial = new Qt3DRender::QNormalDiffuseSpecularMapMaterial();
 //    normalDiffuseSpecularMapMaterial->setTextureScale(10.0f);
 //    normalDiffuseSpecularMapMaterial->setShininess(80.0f);
 //    normalDiffuseSpecularMapMaterial->setAmbient(QColor::fromRgbF(0.2f, 0.2f, 0.2f, 1.0f));
@@ -62,18 +114,15 @@ int main(int argc, char* argv[])
 
     // Chest
     RenderableEntity *chest = new RenderableEntity(sceneRoot);
-    chest->transform()->setScale(0.003f);
-//    QUrl lecoffre(QString::fromUtf8("C:\\Users\\user\\Documents\\Polytech\\SI5\\PFE\\exampleresources\\assets\\chest.obj"));
-//    lecoffre.setUrl(QString::fromUtf8("C:\\Users\\user\\Documents\\Polytech\\SI5\\PFE\\exampleresources\\assets\\chest.obj"), 0);
-    chest->mesh()->setSource(QUrl(QStringLiteral("file:C:/Users/user/Documents/Polytech/SI5/PFE/exampleresources/assets/chest/model.obj")));
-//    chest->mesh()->setSource(lecoffre);
-    Qt3DExtras::QDiffuseMapMaterial *diffuseMapMaterial = new Qt3DExtras::QDiffuseMapMaterial();
-    diffuseMapMaterial->setSpecular(QColor::fromRgbF(0.2f, 0.2f, 0.2f, 1.0f));
+    chest->transform()->setScale(0.5f);
+    chest->mesh()->setSource(QUrl(QStringLiteral("file:C:/Users/user/Desktop/PFE/Project/objects/ok.obj")));
+    Qt3DRender::QDiffuseMapMaterial *diffuseMapMaterial = new Qt3DRender::QDiffuseMapMaterial();
+    diffuseMapMaterial->setSpecular(QColor::fromRgbF(0.5f, 0.5f, 0.5f, 1.0f));
     diffuseMapMaterial->setShininess(2.0f);
 
-    Qt3DRender::QTextureImage *chestDiffuseImage = new Qt3DRender::QTextureImage();
-    chestDiffuseImage->setSource(QUrl(QStringLiteral("qrc:/assets/chest/diffuse.webp")));
-    diffuseMapMaterial->diffuse()->addTextureImage(chestDiffuseImage);
+//    Qt3DRender::QTextureImage *chestDiffuseImage = new Qt3DRender::QTextureImage();
+//    chestDiffuseImage->setSource(QUrl(QStringLiteral("qrc:/assets/chest/diffuse.webp")));
+//    diffuseMapMaterial->diffuse()->addTextureImage(chestDiffuseImage);
 
     chest->addComponent(diffuseMapMaterial);
 
@@ -82,7 +131,7 @@ int main(int argc, char* argv[])
 //    RotatingTrefoilKnot *trefoil = new RotatingTrefoilKnot(sceneRoot);
 //    trefoil->setPosition(QVector3D(0.0f, 3.5f, 0.0f));
 //    trefoil->setScale(0.5f);
-//    Qt3DExtras::QPhongMaterial *phongMaterial = new Qt3DExtras::QPhongMaterial();
+//    Qt3DRender::QPhongMaterial *phongMaterial = new Qt3DRender::QPhongMaterial();
 //    phongMaterial->setDiffuse(QColor(204, 205, 75)); // Safari Yellow #cccd4b
 //    phongMaterial->setSpecular(Qt::white);
 //    trefoil->addComponent(phongMaterial);
@@ -143,7 +192,7 @@ int main(int argc, char* argv[])
 //    crossShrub->setPosition(QVector3D(0.0f, 0.0f, 8.0f));
 //    crossShrub->setScale(0.05f);
 
-    view.setRootEntity(sceneRoot);
+    engine.setRootEntity(sceneRoot);
     view.show();
 
     return app.exec();
