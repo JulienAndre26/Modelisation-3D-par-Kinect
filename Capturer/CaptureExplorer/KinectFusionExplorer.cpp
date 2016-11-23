@@ -1195,6 +1195,7 @@ int CKinectFusionExplorer::AskImportDir()
 						if (SUCCEEDED(pfd->GetOptions(&dwOptions)))
 						{
 							pfd->SetOptions(dwOptions | FOS_PICKFOLDERS);
+							pfd->SetTitle(L"Import Capture");
 						}
 
 						// Show the File Dialog.
