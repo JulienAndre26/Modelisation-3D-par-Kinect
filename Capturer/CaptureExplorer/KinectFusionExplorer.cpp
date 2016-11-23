@@ -15,6 +15,11 @@
 
 #include <atlstr.h>
 #include <wchar.h>
+#include <locale>
+#include <codecvt>
+#include <string>
+#include <fstream>
+#include <cstdlib>
 
 #define MIN_DEPTH_DISTANCE_MM 350   // Must be greater than 0
 #define MAX_DEPTH_DISTANCE_MM 8000
@@ -44,7 +49,6 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	application.Run(hInstance, nCmdShow);
 }
 
-
 /// <summary>
 /// Constructor
 /// </summary>
@@ -63,7 +67,7 @@ CKinectFusionExplorer::CKinectFusionExplorer() :
 
 	m_bDirNameSet(false),
 	m_nMeshCount(0),
-	m_DirPath(nullptr)
+	m_lDirPath(nullptr)
 {
 }
 
@@ -594,32 +598,39 @@ void CKinectFusionExplorer::InitializeUIControls()
     swprintf_s(str, ARRAYSIZE(str), L"%d", m_params.m_cMaxIntegrationWeight);
     SetDlgItemText(m_hWnd, IDC_INTEGRATION_WEIGHT_TEXT, str);
 
-	// TODO : CHANGE
 	// Set Quality Radio Buttons
 	if ((int)m_params.m_reconstructionParams.voxelsPerMeter == 128
 		&& (int)m_params.m_reconstructionParams.voxelCountX == 640
 		&& (int)m_params.m_reconstructionParams.voxelCountY == 512)
 	{
+		CheckDlgButton(m_hWnd, IDC_CAPTURE_TYPE_LOW, BST_UNCHECKED);
 		CheckDlgButton(m_hWnd, IDC_CAPTURE_TYPE_MEDIUM, BST_CHECKED);
+		CheckDlgButton(m_hWnd, IDC_CAPTURE_TYPE_HIGH, BST_UNCHECKED);
 	}
 	else if ((int)m_params.m_reconstructionParams.voxelsPerMeter == 256
 		&& (int)m_params.m_reconstructionParams.voxelCountX == 1280
 		&& (int)m_params.m_reconstructionParams.voxelCountY == 1024)
 	{
+		CheckDlgButton(m_hWnd, IDC_CAPTURE_TYPE_LOW, BST_UNCHECKED);
+		CheckDlgButton(m_hWnd, IDC_CAPTURE_TYPE_MEDIUM, BST_UNCHECKED);
 		CheckDlgButton(m_hWnd, IDC_CAPTURE_TYPE_HIGH, BST_CHECKED);
 	}
 	else 
 	{
 		CheckDlgButton(m_hWnd, IDC_CAPTURE_TYPE_LOW, BST_CHECKED);
+		CheckDlgButton(m_hWnd, IDC_CAPTURE_TYPE_MEDIUM, BST_UNCHECKED);
+		CheckDlgButton(m_hWnd, IDC_CAPTURE_TYPE_HIGH, BST_UNCHECKED);
 	}
 
 	// Set Color Radio Buttons
 	if (m_params.m_bCaptureColor)
 	{
 		CheckDlgButton(m_hWnd, IDC_CAPTURE_COLOR_YES, BST_CHECKED);
+		CheckDlgButton(m_hWnd, IDC_CAPTURE_COLOR_NO, BST_UNCHECKED);
 	}
 	else
 	{
+		CheckDlgButton(m_hWnd, IDC_CAPTURE_COLOR_YES, BST_UNCHECKED);
 		CheckDlgButton(m_hWnd, IDC_CAPTURE_COLOR_NO, BST_CHECKED);
 	}
 
@@ -630,14 +641,20 @@ void CKinectFusionExplorer::InitializeUIControls()
     if (Stl == m_saveMeshFormat)
     {
         CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_STL_RADIO, BST_CHECKED);
+		CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_OBJ_RADIO, BST_UNCHECKED);
+		CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_PLY_RADIO, BST_UNCHECKED);
     }
     else if (Obj == m_saveMeshFormat)
     {
-        CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_OBJ_RADIO, BST_CHECKED);
+		CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_STL_RADIO, BST_UNCHECKED);
+		CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_OBJ_RADIO, BST_CHECKED);
+		CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_PLY_RADIO, BST_UNCHECKED);
     }
     else if (Ply == m_saveMeshFormat)
     {
-        CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_PLY_RADIO, BST_CHECKED);
+		CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_STL_RADIO, BST_UNCHECKED);
+		CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_OBJ_RADIO, BST_UNCHECKED);
+		CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_PLY_RADIO, BST_CHECKED);
     }
 }
 
@@ -884,7 +901,7 @@ int CKinectFusionExplorer::AskDirName() {
 						LPOLESTR pwsz = nullptr;
 						hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pwsz);
 
-						m_DirPath = pwsz;
+						m_lDirPath = pwsz;
 
 						std::wstring pName(pwsz);
 
@@ -892,7 +909,7 @@ int CKinectFusionExplorer::AskDirName() {
 						if (pName.size() <= 0)
 							return -1;
 
-						CreateDirectory(m_DirPath, NULL);
+						CreateDirectory(m_lDirPath, NULL);
 
 						std::wstring pMsg = L"Project name is set to ";
 						std::wstring sPwszMsg = pMsg + pName;
@@ -948,7 +965,7 @@ int	CKinectFusionExplorer::SaveMesh()
 		std::wstring szMeshCount = std::to_wstring(m_nMeshCount);
 
 		// Concat
-		std::wstring szDirName(m_DirPath);
+		std::wstring szDirName(m_lDirPath);
 		std::wstring szCurrentMeshName = szDirName + L"\\plan" + szMeshCount + szFormat;
 
 		// Convert wstring to LPOLESTR
@@ -1000,11 +1017,11 @@ int	CKinectFusionExplorer::SaveMesh()
 
 void CKinectFusionExplorer::UpdateCaptureNameUI()
 {
-	std::wstring szDirName(m_DirPath);
+	std::wstring szDirName(m_lDirPath);
 
 	if (!m_bDirNameSet) 
 	{	// DIR NAME NOT SET
-		szDirName = L"No Project Loaded";
+		szDirName = L"No Capture";
 	}
 	else 
 	{	// DIR NAME SET
@@ -1030,7 +1047,7 @@ void CKinectFusionExplorer::UpdateMeshCountUI()
 int CKinectFusionExplorer::AskTreatment()
 {
 	CString message;
-	message.Format(L"%d files have been saved in %s. Do you want to merge the objects into a unique file ?", m_nMeshCount, m_DirPath);
+	message.Format(L"%d files have been saved in %s. Do you want to merge the objects into a unique file ?", m_nMeshCount, m_lDirPath);
 	return MessageBoxW(NULL,
 		message,
 		_T("End of Capture"),
@@ -1045,7 +1062,7 @@ void CKinectFusionExplorer::ProcessTreatment()
 int CKinectFusionExplorer::AskViewer()
 {
 	CString message;
-	message.Format(L"Your scene has been saved in %s. Do you want to open it through the viewer ?", m_DirPath);
+	message.Format(L"Your scene has been saved in %s. Do you want to open it through the viewer ?", m_lDirPath);
 	return MessageBoxW(NULL,
 		message,
 		_T("End of Capture"),
@@ -1122,7 +1139,7 @@ void CKinectFusionExplorer::CreateConfFile()
 	std::wstring wsCount = std::to_wstring(m_nMeshCount);
 
 	// DIRECTORY
-	std::wstring wsPath(m_DirPath);
+	std::wstring wsPath(m_lDirPath);
 	
 	// Conf file
 	std::wstring wsConfPath = wsPath + L"\\conf.txt";
@@ -1198,7 +1215,7 @@ int CKinectFusionExplorer::AskImportDir()
 
 								if (PathFileExists(W2OLE((LPWSTR)wsConfFilePath.c_str())))
 								{
-									m_DirPath = pwsz;
+									m_lDirPath = pwsz;
 									LoadProject();
 								}
 								else
@@ -1225,10 +1242,12 @@ int CKinectFusionExplorer::AskImportDir()
 void CKinectFusionExplorer::LoadProject()
 {
 	// Retrieve conf.txt values
-	RetrieveProjectConf();
+	if (!RetrieveProjectConf())
+		return;
 
-	// Read file
+	InitializeUIControls();
 	UpdateCaptureNameUI();
+	UpdateMeshCountUI();
 
 	// Set button texts
 	SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"Save Scene");
@@ -1236,14 +1255,172 @@ void CKinectFusionExplorer::LoadProject()
 
 	// Disable Conf in UI
 	SetEnableConfUI(FALSE);
-
-	m_bDirNameSet = true;
 }
 
-void CKinectFusionExplorer::RetrieveProjectConf()
+bool CKinectFusionExplorer::RetrieveProjectConf()
 {
-	// TODO : READ FILE 
-	// TODO : SET UI ACCORDING TO VALUES
+	// DIRECTORY
+	std::wstring wsPath(m_lDirPath);
+
+	// Conf file
+	std::wstring wsConfPath = wsPath + L"\\conf.txt";
+
+	std::wifstream confFile(wsConfPath);
+	
+	if (!confFile.is_open())
+	{
+		CString message;
+		message.Format(L"Can't import capture because configuration file is missing.");
+		MessageBoxW(NULL,
+			message,
+			_T("Import Error"),
+			MB_OK | MB_ICONWARNING);
+		return false;
+	}
+
+	// Prepare converter UTF8
+	const std::locale empty_locale = std::locale::empty();
+	typedef std::codecvt_utf8<wchar_t> converter_type;
+	const converter_type* converter = new converter_type;
+	const std::locale utf8_locale = std::locale(empty_locale, converter);
+	
+	confFile.imbue(utf8_locale);
+	
+	std::wstring wsLine;
+	size_t nSpaceIndex;
+	bool res = true;
+
+	// PATH
+	if (std::getline(confFile, wsLine) && res)
+	{
+		nSpaceIndex = wsLine.find_first_of(L" ");
+		wsLine = wsLine.substr(nSpaceIndex + 1, wsLine.length());
+		//MessageBoxW(NULL, lDirPath, _T("Path Value"), MB_OK);
+	}
+	else
+		res = false;
+
+	// COUNT
+	int nMeshCount = -1;
+	if (std::getline(confFile, wsLine) && res)
+	{
+		nSpaceIndex = wsLine.find_first_of(L" ");
+		wsLine = wsLine.substr(nSpaceIndex + 1, wsLine.length());
+
+		nMeshCount = stoi(wsLine);
+
+		//MessageBoxW(NULL, W2OLE((LPWSTR)wsLine.c_str()), _T("Count Value"), MB_OK);
+	}
+	else
+		res = false;
+
+	// FORMAT
+	KinectFusionMeshTypes nFormat;
+	if (std::getline(confFile, wsLine) && res)
+	{
+		nSpaceIndex = wsLine.find_first_of(L" ");
+		wsLine = wsLine.substr(nSpaceIndex + 1, wsLine.length());
+
+		if (wsLine.compare(L"ply") == 0)
+			nFormat = Ply;
+		else if (wsLine.compare(L"obj") == 0)
+			nFormat = Obj;
+		else if (wsLine.compare(L"stl") == 0)
+			nFormat = Stl;
+		else
+			res = false;
+		
+		//MessageBoxW(NULL, W2OLE((LPWSTR)wsLine.c_str()), _T("Format Value"), MB_OK);
+	}
+	else
+		res = false;
+
+	// COLOR
+	bool bColor = false;
+	if (std::getline(confFile, wsLine) && res)
+	{
+		nSpaceIndex = wsLine.find_first_of(L" ");
+		wsLine = wsLine.substr(nSpaceIndex + 1, wsLine.length());
+
+		if (wsLine.compare(L"true") == 0)
+			bColor = true;
+		else if (wsLine.compare(L"false") == 0)
+			bColor = false;
+		else
+			res = false;
+
+		//MessageBoxW(NULL, W2OLE((LPWSTR)wsLine.c_str()), _T("Color Value"), MB_OK);
+	}
+	else
+		res = false;
+
+	// QUALITY
+	int nVPM = -1;
+	int nX = -1;
+	int nY = -1;
+	int nZ = 512;
+	if (std::getline(confFile, wsLine) && res)
+	{
+		nSpaceIndex = wsLine.find_first_of(L" ");
+		wsLine = wsLine.substr(nSpaceIndex + 1, wsLine.length());
+		
+		if (wsLine.compare(L"LOW") == 0)
+		{
+			nVPM = 64;
+			nX = 320;
+			nY = 256;
+		}
+		else if (wsLine.compare(L"MEDIUM") == 0)
+		{
+			nVPM = 128;
+			nX = 640;
+			nY = 512;
+		}
+		else if (wsLine.compare(L"HIGH") == 0)
+		{
+			nVPM = 256;
+			nX = 1280;
+			nY = 1024;
+		}
+		else
+			res = false;
+		
+		//MessageBoxW(NULL, W2OLE((LPWSTR)wsLine.c_str()), _T("Quality Value"), MB_OK);
+	}
+	else
+		res = false;
+
+	// If error occured
+	if (!res)
+	{
+		CString cMsg;
+		cMsg.Format(L"Invalid configuration file.");
+		MessageBoxW(NULL, cMsg, _T("Import Error"), MB_OK | MB_ICONWARNING);
+	}
+	else {
+		// VALIDATE
+		//*m_lDirPath = *lDirPath;				// Path
+		
+		m_nMeshCount = nMeshCount;			// Count
+		
+		m_saveMeshFormat = nFormat;			// Format
+
+		m_params.m_bCaptureColor = bColor;	// Color
+
+		// Dimensions
+		m_params.m_reconstructionParams.voxelsPerMeter = nVPM;
+		m_params.m_reconstructionParams.voxelCountX = nX;
+		m_params.m_reconstructionParams.voxelCountY = nY;
+		m_params.m_reconstructionParams.voxelCountZ = nZ;
+
+		// Set params
+		m_bDirNameSet = true;
+		m_processor.SetParams(m_params);
+	}
+			
+	confFile.close();
+
+	return res;
 }
 
 void CKinectFusionExplorer::OnNewCapture()
@@ -1268,7 +1445,7 @@ void CKinectFusionExplorer::OnNewCapture()
 		SetEnableConfUI(FALSE);
 
 		// Reset
-		m_nMeshCount = 0;
+		//m_nMeshCount = 0;
 	}
 }
 

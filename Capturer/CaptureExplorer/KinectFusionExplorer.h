@@ -61,7 +61,7 @@ public:
 
 	int							SaveMesh();
 	void						LoadProject();
-	void						RetrieveProjectConf();
+	bool						RetrieveProjectConf();
 
 	void						SetEnableConfUI(int nEnable);
 	void						SetEnableCaptureUI(int nEnable);
@@ -172,5 +172,5 @@ private:
 	// ADD - Antoine
 	bool						m_bDirNameSet;
 	int							m_nMeshCount;
-	LPOLESTR					m_DirPath;
+	LPOLESTR					m_lDirPath;
 };
