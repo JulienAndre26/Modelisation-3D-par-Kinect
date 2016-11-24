@@ -20,6 +20,7 @@
 #include <string>
 #include <fstream>
 #include <cstdlib>
+#include <iostream>
 
 #define MIN_DEPTH_DISTANCE_MM 350   // Must be greater than 0
 #define MAX_DEPTH_DISTANCE_MM 8000
@@ -857,7 +858,7 @@ int CKinectFusionExplorer::AskDirName() {
 	}
 
 	// Set the dialog title
-	hr = pSaveDlg->SetTitle(L"Set Project Name");
+	hr = pSaveDlg->SetTitle(L"Set Capture Name");
 	if (SUCCEEDED(hr))
 	{
 		// Set the button text
@@ -865,7 +866,7 @@ int CKinectFusionExplorer::AskDirName() {
 		if (SUCCEEDED(hr))
 		{
 			// Set a default filename
-			hr = pSaveDlg->SetFileName(L"ProjectName");
+			hr = pSaveDlg->SetFileName(L"Capture Folder Name");
 
 			if (SUCCEEDED(hr))
 			{
@@ -1108,9 +1109,6 @@ void CKinectFusionExplorer::SetEnableConfUI(int nEnable) {
 	/*hElem = GetDlgItem(m_hWnd, IDC_BUTTON_END_IMPORT_CAPTURE);
 	EnableWindow(hElem, opposit);*/
 }
-
-#include <iostream>
-#include <fstream>
 
 void CKinectFusionExplorer::CreateConfFile()
 {
