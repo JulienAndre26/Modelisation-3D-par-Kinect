@@ -34,7 +34,7 @@
 #define WM_FRAMEREADY           (WM_USER + 0)
 #define WM_UPDATESENSORSTATUS   (WM_USER + 1)
 
-/// <summary>
+/// <summary>	
 /// Entry point for the application
 /// </summary>
 /// <param name="hInstance">handle to the application instance</param>
