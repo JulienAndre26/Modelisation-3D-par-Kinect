@@ -56,7 +56,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.;C:\Qt\5.6\msvc2015_64\include;C:\Qt\5.6\msvc2015_64\include\Qt3DRender;C:\Qt\5.6\msvc2015_64\include\Qt3DInput;C:\Qt\5.6\msvc2015_64\include\Qt3DCore;C:\Qt\5.6\msvc2015_64\include\QtGui;C:\Qt\5.6\msvc2015_64\include\QtANGLE;C:\Qt\5.6\msvc2015_64\include\QtCore;release;C:\Qt\5.6\msvc2015_64\mkspecs\win32-msvc2015;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;C:\Qt\5.6\msvc2015_64\include;C:\Qt\5.6\msvc2015_64\include\Qt3DRender;C:\Qt\5.6\msvc2015_64\include\Qt3DInput;C:\Qt\5.6\msvc2015_64\include\Qt3DCore;C:\Qt\5.6\msvc2015_64\include\QtGui;C:\Qt\5.6\msvc2015_64\include\QtANGLE;C:\Qt\5.6\msvc2015_64\include\QtCore;release;C:\Qt\5.6\msvc2015_64\mkspecs\win32-msvc2015;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtUiTools;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtQuickWidgets;$(QTDIR)\include\QtCore;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zc:strictStrings -Zc:throwingNew -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>release\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
@@ -65,7 +65,7 @@
       <ExceptionHandling>Sync</ExceptionHandling>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;WIN64;QT_NO_DEBUG;QT_3DRENDER_LIB;QT_3DINPUT_LIB;QT_3DCORE_LIB;QT_GUI_LIB;QT_CORE_LIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;WIN64;QT_NO_DEBUG;QT_3DRENDER_LIB;QT_3DINPUT_LIB;QT_3DCORE_LIB;QT_GUI_LIB;QT_CORE_LIB;NDEBUG;QT_UITOOLS_LIB;QT_WIDGETS_LIB;QT_QUICKWIDGETS_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -75,7 +75,7 @@
       <WarningLevel>Level3</WarningLevel>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>C:\Qt\5.6\msvc2015_64\lib\qtmain.lib;shell32.lib;C:\Qt\5.6\msvc2015_64\lib\Qt53DRender.lib;C:\Qt\5.6\msvc2015_64\lib\Qt53DInput.lib;C:\Qt\5.6\msvc2015_64\lib\Qt53DCore.lib;C:\Qt\5.6\msvc2015_64\lib\Qt5Gui.lib;C:\Qt\5.6\msvc2015_64\lib\Qt5Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>C:\Qt\5.6\msvc2015_64\lib\qtmain.lib;shell32.lib;C:\Qt\5.6\msvc2015_64\lib\Qt53DRender.lib;C:\Qt\5.6\msvc2015_64\lib\Qt53DInput.lib;C:\Qt\5.6\msvc2015_64\lib\Qt53DCore.lib;C:\Qt\5.6\msvc2015_64\lib\Qt5Gui.lib;C:\Qt\5.6\msvc2015_64\lib\Qt5Core.lib;Qt5Gui.lib;Qt5UiTools.lib;Qt5Widgets.lib;Qt5QuickWidgets.lib;Qt5Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Qt\5.6\msvc2015_64\lib;C:\utils\my_sql\my_sql\lib;C:\utils\postgresql\pgsql\lib;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>
@@ -98,7 +98,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.;C:\Qt\5.6\msvc2015_64\include;C:\Qt\5.6\msvc2015_64\include\Qt3DRender;C:\Qt\5.6\msvc2015_64\include\Qt3DInput;C:\Qt\5.6\msvc2015_64\include\Qt3DCore;C:\Qt\5.6\msvc2015_64\include\QtGui;C:\Qt\5.6\msvc2015_64\include\QtANGLE;C:\Qt\5.6\msvc2015_64\include\QtCore;debug;C:\Qt\5.6\msvc2015_64\mkspecs\win32-msvc2015;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;debug;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtUiTools;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtQuickWidgets;$(QTDIR)\include\QtCore;$(QTDIR)\include\Qt3DCore;$(QTDIR)\include\Qt3DRender;$(QTDIR)\include\Qt3DInput;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\;$(QTDIR)\mkspecs\win32-msvc2015;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zc:strictStrings -Zc:throwingNew -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>debug\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
@@ -107,7 +107,7 @@
       <ExceptionHandling>Sync</ExceptionHandling>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;WIN64;QT_3DRENDER_LIB;QT_3DINPUT_LIB;QT_3DCORE_LIB;QT_GUI_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;WIN64;QT_3DRENDER_LIB;QT_3DINPUT_LIB;QT_3DCORE_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_UITOOLS_LIB;QT_WIDGETS_LIB;QT_QUICKWIDGETS_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -117,8 +117,8 @@
       <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>C:\Qt\5.6\msvc2015_64\lib\qtmaind.lib;shell32.lib;C:\Qt\5.6\msvc2015_64\lib\Qt53DRenderd.lib;C:\Qt\5.6\msvc2015_64\lib\Qt53DInputd.lib;C:\Qt\5.6\msvc2015_64\lib\Qt53DCored.lib;C:\Qt\5.6\msvc2015_64\lib\Qt5Guid.lib;C:\Qt\5.6\msvc2015_64\lib\Qt5Cored.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Qt\5.6\msvc2015_64\lib;C:\utils\my_sql\my_sql\lib;C:\utils\postgresql\pgsql\lib;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(QTDIR)\lib\qtmaind.lib;shell32.lib;$(QTDIR)\lib\Qt53DRenderd.lib;$(QTDIR)\lib\Qt53DInputd.lib;$(QTDIR)\lib\Qt53DCored.lib;$(QTDIR)\lib\Qt5Guid.lib;$(QTDIR)\lib\Qt5Cored.lib;Qt5Guid.lib;Qt5UiToolsd.lib;Qt5Widgetsd.lib;Qt5QuickWidgetsd.lib;Qt5Cored.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;C:\utils\my_sql\my_sql\lib;C:\utils\postgresql\pgsql\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -153,9 +153,9 @@
     <ClInclude Include="planeentity.h" />
     <ClInclude Include="renderableentity.h" />
     <CustomBuild Include="window.h">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_3DRENDER_LIB -DQT_3DINPUT_LIB -DQT_3DCORE_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DNDEBUG "-I." "-IC:\Qt\5.6\msvc2015_64\include" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DRender" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DInput" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DCore" "-IC:\Qt\5.6\msvc2015_64\include\QtGui" "-IC:\Qt\5.6\msvc2015_64\include\QtANGLE" "-IC:\Qt\5.6\msvc2015_64\include\QtCore" "-I.\release" "-IC:\Qt\5.6\msvc2015_64\mkspecs\win32-msvc2015"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_3DRENDER_LIB -DQT_3DINPUT_LIB -DQT_3DCORE_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DNDEBUG -DQT_UITOOLS_LIB -DQT_WIDGETS_LIB -DQT_QUICKWIDGETS_LIB  "-I." "-IC:\Qt\5.6\msvc2015_64\include" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DRender" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DInput" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DCore" "-IC:\Qt\5.6\msvc2015_64\include\QtGui" "-IC:\Qt\5.6\msvc2015_64\include\QtANGLE" "-IC:\Qt\5.6\msvc2015_64\include\QtCore" "-I.\release" "-IC:\Qt\5.6\msvc2015_64\mkspecs\win32-msvc2015" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtUiTools" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtQuickWidgets" "-I$(QTDIR)\include\QtCore"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing window.h...</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_3DRENDER_LIB -DQT_3DINPUT_LIB -DQT_3DCORE_LIB -DQT_GUI_LIB -DQT_CORE_LIB "-I." "-IC:\Qt\5.6\msvc2015_64\include" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DRender" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DInput" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DCore" "-IC:\Qt\5.6\msvc2015_64\include\QtGui" "-IC:\Qt\5.6\msvc2015_64\include\QtANGLE" "-IC:\Qt\5.6\msvc2015_64\include\QtCore" "-I.\debug" "-IC:\Qt\5.6\msvc2015_64\mkspecs\win32-msvc2015"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_3DRENDER_LIB -DQT_3DINPUT_LIB -DQT_3DCORE_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_UITOOLS_LIB -DQT_WIDGETS_LIB -DQT_QUICKWIDGETS_LIB  "-I." "-I.\debug" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtUiTools" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtQuickWidgets" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\Qt3DCore" "-I$(QTDIR)\include\Qt3DRender" "-I$(QTDIR)\include\Qt3DInput" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include" "-I$(QTDIR)\mkspecs\win32-msvc2015"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing window.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
