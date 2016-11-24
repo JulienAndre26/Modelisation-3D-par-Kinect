@@ -683,8 +683,17 @@ int main(int argc, char** argv)
 	// Estimated transformation
 	registration(src_features, tgt_features, src_keypoints, tgt_keypoints, &transformation);
 	Eigen::Matrix4f inverse = transformation.inverse();
+
+	cout << "Inverse size : " << inverse.size() << endl;
+
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++)
+			cout << inverse(i,j) << " | ";
+		cout << endl;
+	}
+
 	// Apply transformation to clouds
-	PointCloud::Ptr res;
+	PointCloud::Ptr res(new PointCloud);
 	pcl::transformPointCloud(*tgt, *res, inverse);
 
 	// ----- Show clouds -----
