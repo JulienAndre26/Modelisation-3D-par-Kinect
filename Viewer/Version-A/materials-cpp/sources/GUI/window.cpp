@@ -40,28 +40,42 @@
 #include <QGuiApplication>
 #include <QOpenGLContext>
 
-Window::Window(QScreen *screen)
-    : QWindow(screen)
+#include <QLABEL>
 
+//Window::Window(QScreen *screen)
+//    : QWindow(screen)
+//
+//{
+//    setSurfaceType(QSurface::OpenGLSurface);
+//
+//    resize(1024, 768);
+//
+//    QSurfaceFormat format;
+//    if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
+//        format.setVersion(4, 3);
+//        format.setProfile(QSurfaceFormat::CoreProfile);
+//    }
+//    format.setDepthBufferSize( 24 );
+//    format.setSamples( 4 );
+//    format.setStencilBufferSize(8);
+//    setFormat(format);
+//    create();
+//}
+
+Window::Window(QWidget * parent) 
+	: QMainWindow(parent),
+	ui(new Ui::MainWindow)
 {
-    setSurfaceType(QSurface::OpenGLSurface);
+	ui->setupUi(this);
 
-    resize(1024, 768);
-
-    QSurfaceFormat format;
-    if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
-        format.setVersion(4, 3);
-        format.setProfile(QSurfaceFormat::CoreProfile);
-    }
-    format.setDepthBufferSize( 24 );
-    format.setSamples( 4 );
-    format.setStencilBufferSize(8);
-    setFormat(format);
-    create();
+	
+	//ui->renderer =  new CustomWidget(parent);
+	//ui->renderer->show();
 }
 
 Window::~Window()
 {
+	delete ui;
 }
 
 void Window::keyPressEvent( QKeyEvent* e )
@@ -73,6 +87,6 @@ void Window::keyPressEvent( QKeyEvent* e )
             break;
 
         default:
-            QWindow::keyPressEvent( e );
+            QMainWindow::keyPressEvent( e );
     }
 }

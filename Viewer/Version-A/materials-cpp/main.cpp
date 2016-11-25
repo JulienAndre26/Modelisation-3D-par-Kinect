@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include <QGuiApplication>
+#include <QApplication>
 
 #include "window.h"
 #include <Qt3DCore/QEntity>
@@ -23,153 +24,86 @@
 
 int main(int argc, char* argv[])
 {
-    QGuiApplication app(argc, argv);
+	// define application
+    QApplication app(argc, argv);
+
 
 	std::cout << "test" << endl;
 
-	/*QMessageBox msgBox;
-	msgBox.setText("The document has been modified.");
-	msgBox.exec();
-*/
+
+	// define window
     Window view;
-    Qt3DCore::QAspectEngine engine;
-    engine.registerAspect(new Qt3DRender::QRenderAspect());
-    Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect;
-    engine.registerAspect(input);
-    QVariantMap data;
-    data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
-    data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));
-    engine.setData(data);
 
-    // Scene Root
-    Qt3DCore::QEntity *sceneRoot = new Qt3DCore::QEntity();
+	//// start 3D engine
+ //   Qt3DCore::QAspectEngine engine;
 
-    // Scene Camera
-    Qt3DCore::QCamera *basicCamera = new Qt3DCore::QCamera(sceneRoot);
-    basicCamera->setProjectionType(Qt3DCore::QCameraLens::PerspectiveProjection);
-    basicCamera->setAspectRatio(view.width() / view.height());
-    basicCamera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
-    basicCamera->setViewCenter(QVector3D(0.0f, 3.5f, 0.0f));
-    basicCamera->setPosition(QVector3D(0.0f, 3.5f, 25.0f));
-    
-	// For camera controls
-    input->setCamera(basicCamera);
-	
-    // Forward Renderer FrameGraph
-    Qt3DRender::QFrameGraph *frameGraphComponent = new Qt3DRender::QFrameGraph(sceneRoot);
-    Qt3DRender::QForwardRenderer *forwardRenderer = new Qt3DRender::QForwardRenderer();
-    forwardRenderer->setCamera(basicCamera);
-    frameGraphComponent->setActiveFrameGraph(forwardRenderer);
-    sceneRoot->addComponent(frameGraphComponent);
+	//// register render Aspect
+ //   engine.registerAspect(new Qt3DRender::QRenderAspect());
+	//
+	//// define & register input Aspect
+ //   Qt3DInput::QInputAspect *input = new Qt3DInput::QInputAspect;
+ //   engine.registerAspect(input);
 
-//    // Scene floor
-//    PlaneEntity *planeEntity = new PlaneEntity(sceneRoot);
-//    planeEntity->mesh()->setHeight(100.0f);
-//    planeEntity->mesh()->setWidth(100.0f);
-//    planeEntity->mesh()->setMeshResolution(QSize(20, 20));
+	//// define Variant Map
+ //   QVariantMap data;
+ //   data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(&view)));
+ //   data.insert(QStringLiteral("eventSource"), QVariant::fromValue(&view));
+ //   engine.setData(data);
 
-//    Qt3DRender::QNormalDiffuseSpecularMapMaterial *normalDiffuseSpecularMapMaterial = new Qt3DRender::QNormalDiffuseSpecularMapMaterial();
-//    normalDiffuseSpecularMapMaterial->setTextureScale(10.0f);
-//    normalDiffuseSpecularMapMaterial->setShininess(80.0f);
-//    normalDiffuseSpecularMapMaterial->setAmbient(QColor::fromRgbF(0.2f, 0.2f, 0.2f, 1.0f));
+ //   // Scene Root
+ //   Qt3DCore::QEntity *sceneRoot = new Qt3DCore::QEntity();
 
-//    Qt3DRender::QTextureImage *diffuseImage = new Qt3DRender::QTextureImage();
-//    diffuseImage->setSource(QUrl(QStringLiteral("qrc:/assets/textures/pattern_09/diffuse.webp")));
-//    normalDiffuseSpecularMapMaterial->diffuse()->addTextureImage(diffuseImage);
-
-//    Qt3DRender::QTextureImage *specularImage = new Qt3DRender::QTextureImage();
-//    specularImage->setSource(QUrl(QStringLiteral("qrc:/assets/textures/pattern_09/specular.webp")));
-//    normalDiffuseSpecularMapMaterial->specular()->addTextureImage(specularImage);
-
-//    Qt3DRender::QTextureImage *normalImage = new Qt3DRender::QTextureImage();
-//    normalImage->setSource(QUrl((QStringLiteral("qrc:/assets/textures/pattern_09/normal.webp"))));
-//    normalDiffuseSpecularMapMaterial->normal()->addTextureImage(normalImage);
-
-//    planeEntity->addComponent(normalDiffuseSpecularMapMaterial);
-
-	
-    // Chest
-    RenderableEntity *chest = new RenderableEntity(sceneRoot);
-    chest->transform()->setScale(0.5f);
-    chest->mesh()->setSource(QUrl(QStringLiteral("file:C:/Users/user/Desktop/PFE/objects/Work/plan1.obj")));
-    Qt3DRender::QDiffuseMapMaterial *diffuseMapMaterial = new Qt3DRender::QDiffuseMapMaterial();
-    diffuseMapMaterial->setSpecular(QColor::fromRgbF(0.5f, 0.5f, 0.5f, 1.0f));
-    diffuseMapMaterial->setShininess(2.0f);
-
-//    Qt3DRender::QTextureImage *chestDiffuseImage = new Qt3DRender::QTextureImage();
-//    chestDiffuseImage->setSource(QUrl(QStringLiteral("qrc:/assets/chest/diffuse.webp")));
-//    diffuseMapMaterial->diffuse()->addTextureImage(chestDiffuseImage);
-
-    chest->addComponent(diffuseMapMaterial);
+ //   // Scene Camera
+ //   Qt3DCore::QCamera *basicCamera = new Qt3DCore::QCamera(sceneRoot);
+ //   basicCamera->setProjectionType(Qt3DCore::QCameraLens::PerspectiveProjection);
+ //   basicCamera->setAspectRatio(view.width() / view.height());
+ //   basicCamera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
+ //   basicCamera->setViewCenter(QVector3D(0.0f, 3.5f, 0.0f));
+ //   basicCamera->setPosition(QVector3D(0.0f, 3.5f, 25.0f));
+ //   
+	//// For camera controls
+ //   input->setCamera(basicCamera);
+	//
+ //   // Forward Renderer FrameGraph
+ //   Qt3DRender::QFrameGraph *frameGraphComponent = new Qt3DRender::QFrameGraph(sceneRoot);
+ //   Qt3DRender::QForwardRenderer *forwardRenderer = new Qt3DRender::QForwardRenderer();
+ //   forwardRenderer->setCamera(basicCamera);
+ //   frameGraphComponent->setActiveFrameGraph(forwardRenderer);
+ //   sceneRoot->addComponent(frameGraphComponent);
 
 
-//    // TrefoilKnot
-//    RotatingTrefoilKnot *trefoil = new RotatingTrefoilKnot(sceneRoot);
-//    trefoil->setPosition(QVector3D(0.0f, 3.5f, 0.0f));
-//    trefoil->setScale(0.5f);
-//    Qt3DRender::QPhongMaterial *phongMaterial = new Qt3DRender::QPhongMaterial();
-//    phongMaterial->setDiffuse(QColor(204, 205, 75)); // Safari Yellow #cccd4b
-//    phongMaterial->setSpecular(Qt::white);
-//    trefoil->addComponent(phongMaterial);
+	//
+ //   // define entity to render
+ //   RenderableEntity *chest = new RenderableEntity(sceneRoot);
 
-//    // Barrels
-//    Barrel *basicBarrel = new Barrel(sceneRoot);
-//    basicBarrel->transform()->setTranslation(QVector3D(8.0f, 0.0f, 0.0f));
+	//// reduce size by half
+ //   chest->transform()->setScale(0.5f);
 
-//    Barrel *rustyBarrel = new Barrel(sceneRoot);
-//    rustyBarrel->setDiffuse(Barrel::RustDiffuse);
-//    rustyBarrel->setSpecular(Barrel::RustSpecular);
-//    rustyBarrel->setBumps(Barrel::HardBumps);
-//    rustyBarrel->transform()->setTranslation(QVector3D(10.0f, 0.0f, 0.0f));
+	//// load it
+ //   chest->mesh()->setSource(QUrl(QStringLiteral("file:C:/Users/user/VisualStudioProjects/man.obj")));
 
-//    Barrel *blueBarrel = new Barrel(sceneRoot);
-//    blueBarrel->setDiffuse(Barrel::Blue);
-//    blueBarrel->setBumps(Barrel::MiddleBumps);
-//    blueBarrel->transform()->setTranslation(QVector3D(12.0f, 0.0f, 0.0f));
 
-//    Barrel *greenBarrel = new Barrel(sceneRoot);
-//    greenBarrel->setDiffuse(Barrel::Green);
-//    greenBarrel->setBumps(Barrel::SoftBumps);
-//    greenBarrel->transform()->setTranslation(QVector3D(14.0f, 0.0f, 0.0f));
+ //   //Qt3DRender::QDiffuseMapMaterial *diffuseMapMaterial = new Qt3DRender::QDiffuseMapMaterial();
+ //   //diffuseMapMaterial->setSpecular(QColor::fromRgbF(0.5f, 0.5f, 0.5f, 1.0f));
+ //   //diffuseMapMaterial->setShininess(2.0f);
 
-//    Barrel *stainlessBarrel = new Barrel(sceneRoot);
-//    stainlessBarrel->setDiffuse(Barrel::StainlessSteelDiffuse);
-//    stainlessBarrel->setBumps(Barrel::NoBumps);
-//    stainlessBarrel->setSpecular(Barrel::StainlessSteelSpecular);
-//    stainlessBarrel->setShininess(150.0f);
-//    stainlessBarrel->transform()->setTranslation(QVector3D(16.0f, 0.0f, 0.0f));
+ //   //chest->addComponent(diffuseMapMaterial);
 
-//    // Plants
-//    HousePlant *squareBamboo = new HousePlant(sceneRoot);
-//    squareBamboo->setPotShape(HousePlant::Square);
-//    squareBamboo->setPosition(QVector3D(4.0f, 0.0f, 0.0f));
 
-//    HousePlant *trianglePalm = new HousePlant(sceneRoot);
-//    trianglePalm->setPlantType(HousePlant::Palm);
-//    trianglePalm->setPotShape(HousePlant::Triangle);
-//    trianglePalm->setPosition(QVector3D(0.0f, 0.0f, 4.0f));
+ //   engine.setRootEntity(sceneRoot);
+ //   
+	///*view.setTitle(QString("SUPER TITRE"));
+	//view.setHeight(200);
+	//view.setWidth(350);*/
 
-//    HousePlant *spherePine = new HousePlant(sceneRoot);
-//    spherePine->setPlantType(HousePlant::Pine);
-//    spherePine->setPotShape(HousePlant::Sphere);
-//    spherePine->setPosition(QVector3D(-4.0f, 0.0f, 0.0f));
+	view.show();
 
-//    HousePlant *crossSpikes = new HousePlant(sceneRoot);
-//    crossSpikes->setPlantType(HousePlant::Spikes);
-//    crossSpikes->setPosition(QVector3D(0.0f, 0.0f, -4.0f));
+	//QMessageBox mb;
+	//app.allWindows().at(0)->requestActivate();
+	//mb.setText(QString::number(app.allWindows().at(0)->isActive()));
+	//mb.show();
 
-//    HousePlant *crossPalm = new HousePlant(sceneRoot);
-//    crossPalm->setPlantType(HousePlant::Palm);
-//    crossPalm->setPosition(QVector3D(0.0f, 0.0f, -8.0f));
-//    crossPalm->setScale(0.05f);
-
-//    HousePlant *crossShrub = new HousePlant(sceneRoot);
-//    crossShrub->setPlantType(HousePlant::Shrub);
-//    crossShrub->setPosition(QVector3D(0.0f, 0.0f, 8.0f));
-//    crossShrub->setScale(0.05f);
-
-    engine.setRootEntity(sceneRoot);
-    view.show();
+	//view.setCentralWidget(new CustomWidget());
 
     return app.exec();
 }

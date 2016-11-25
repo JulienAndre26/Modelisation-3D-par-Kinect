@@ -47,6 +47,11 @@
     <Filter Include="Header Files\GUI">
       <UniqueIdentifier>{b2ad61b3-1e85-44ad-8c5c-dd629d7e9efa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Form Files">
+      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
+      <Extensions>ui</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -97,6 +102,15 @@
     <ClCompile Include="GeneratedFiles\Release\moc_window.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_customWidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_customWidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="customWidget.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\GUI\barrel.h">
@@ -117,6 +131,9 @@
     <ClInclude Include="headers\Processor\ProcessorPCL.h">
       <Filter>Header Files\Processor</Filter>
     </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_some_test.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="headers\GUI\houseplant.h">
@@ -126,6 +143,12 @@
       <Filter>Header Files\GUI</Filter>
     </CustomBuild>
     <CustomBuild Include="headers\GUI\window.h">
+      <Filter>Header Files\GUI</Filter>
+    </CustomBuild>
+    <CustomBuild Include="some_test.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="customWidget.h">
       <Filter>Header Files\GUI</Filter>
     </CustomBuild>
   </ItemGroup>

@@ -38,16 +38,22 @@
 #define WINDOW_H
 
 #include <QWindow>
+#include "ui_some_test.h"
+#include "customWidget.h"
 
-class Window : public QWindow
+class Window : public QMainWindow //, public Ui_MainWindow
 {
     Q_OBJECT
 public:
-    explicit Window(QScreen *screen = 0);
+    //explicit Window(QScreen *screen = 0);
+	explicit Window(QWidget * parent = 0);
     ~Window();
 
 protected:
     virtual void keyPressEvent(QKeyEvent *e);
+
+private:
+	Ui::MainWindow * ui;
 };
 
 #endif // QT3D_WINDOW_H

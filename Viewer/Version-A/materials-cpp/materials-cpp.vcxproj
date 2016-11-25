@@ -56,7 +56,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>.;C:\Qt\5.6\msvc2015_64\include;C:\Qt\5.6\msvc2015_64\include\Qt3DRender;C:\Qt\5.6\msvc2015_64\include\Qt3DInput;C:\Qt\5.6\msvc2015_64\include\Qt3DCore;C:\Qt\5.6\msvc2015_64\include\QtGui;C:\Qt\5.6\msvc2015_64\include\QtANGLE;C:\Qt\5.6\msvc2015_64\include\QtCore;release;C:\Qt\5.6\msvc2015_64\mkspecs\win32-msvc2015;$(QTDIR)\include\QtUiTools;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtWinExtras;$(QTDIR)\include\QtQuickWidgets;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;C:\Qt\5.6\msvc2015_64\include;C:\Qt\5.6\msvc2015_64\include\Qt3DRender;C:\Qt\5.6\msvc2015_64\include\Qt3DInput;C:\Qt\5.6\msvc2015_64\include\Qt3DCore;C:\Qt\5.6\msvc2015_64\include\QtGui;C:\Qt\5.6\msvc2015_64\include\QtANGLE;C:\Qt\5.6\msvc2015_64\include\QtCore;release;C:\Qt\5.6\msvc2015_64\mkspecs\win32-msvc2015;$(QTDIR)\include\QtUiTools;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtWinExtras;$(QTDIR)\include\QtQuickWidgets;.\GeneratedFiles;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zc:strictStrings -Zc:throwingNew -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>release\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
@@ -98,7 +98,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>headers\GUI;headers\Processor;headers\;$(PCL_ROOT)\include\pcl-1.7;$(PCL_ROOT)\3rdParty\Boost\include\boost-1_57;$(PCL_ROOT)\3rdParty\Eigen\eigen3;$(PCL_ROOT)\3rdParty\FLANN\include;$(PCL_ROOT)\3rdParty\QHull\include;$(PCL_ROOT)\3rdParty\VTK\include\vtk-6.2;.;debug;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtUiTools;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtQuickWidgets;$(QTDIR)\include\QtCore;$(QTDIR)\include\Qt3DCore;$(QTDIR)\include\Qt3DRender;$(QTDIR)\include\Qt3DInput;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\;$(QTDIR)\mkspecs\win32-msvc2015;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>headers\GUI;headers\Processor;headers\;$(PCL_ROOT)\include\pcl-1.7;$(PCL_ROOT)\3rdParty\Boost\include\boost-1_57;$(PCL_ROOT)\3rdParty\Eigen\eigen3;$(PCL_ROOT)\3rdParty\FLANN\include;$(PCL_ROOT)\3rdParty\QHull\include;$(PCL_ROOT)\3rdParty\VTK\include\vtk-6.2;.;debug;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtUiTools;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtQuickWidgets;$(QTDIR)\include\QtCore;$(QTDIR)\include\Qt3DCore;$(QTDIR)\include\Qt3DRender;$(QTDIR)\include\Qt3DInput;$(QTDIR)\include\QtANGLE;$(QTDIR)\include\;$(QTDIR)\mkspecs\win32-msvc2015;.\GeneratedFiles;C:\Users\user\Desktop\VTK-6.3.0\GUISupport\Qt;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zc:strictStrings -Zc:throwingNew -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>debug\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
@@ -126,7 +126,7 @@
       <IgnoreImportLibrary>true</IgnoreImportLibrary>
       <OutputFile>$(OutDir)\materials-cpp.exe</OutputFile>
       <RandomizedBaseAddress>true</RandomizedBaseAddress>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Link>
     <Midl>
@@ -139,6 +139,10 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="customWidget.cpp" />
+    <ClCompile Include="GeneratedFiles\Debug\moc_customWidget.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_houseplant.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -147,6 +151,9 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_window.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_customWidget.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_houseplant.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -169,6 +176,17 @@
     <ClCompile Include="sources\Processor\TestPCL.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <CustomBuild Include="customWidget.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing customWidget.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_3DRENDER_LIB -DQT_3DINPUT_LIB -DQT_3DCORE_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_UITOOLS_LIB -DQT_WIDGETS_LIB -DQT_WINEXTRAS_LIB -DQT_QUICKWIDGETS_LIB  "-I.\headers\GUI" "-I.\headers\Processor" "-I.\headers" "-I$(PCL_ROOT)\include\pcl-1.7" "-I$(PCL_ROOT)\3rdParty\Boost\include\boost-1_57" "-I$(PCL_ROOT)\3rdParty\Eigen\eigen3" "-I$(PCL_ROOT)\3rdParty\FLANN\include" "-I$(PCL_ROOT)\3rdParty\QHull\include" "-I$(PCL_ROOT)\3rdParty\VTK\include\vtk-6.2" "-I." "-I.\debug" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtUiTools" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtQuickWidgets" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\Qt3DCore" "-I$(QTDIR)\include\Qt3DRender" "-I$(QTDIR)\include\Qt3DInput" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include" "-I$(QTDIR)\mkspecs\win32-msvc2015" "-I.\GeneratedFiles" "-IC:\Users\user\Desktop\VTK-6.3.0\GUISupport\Qt"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing customWidget.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_3DRENDER_LIB -DQT_3DINPUT_LIB -DQT_3DCORE_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DNDEBUG -DQT_UITOOLS_LIB -DQT_WIDGETS_LIB -DQT_WINEXTRAS_LIB -DQT_QUICKWIDGETS_LIB "-I." "-IC:\Qt\5.6\msvc2015_64\include" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DRender" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DInput" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DCore" "-IC:\Qt\5.6\msvc2015_64\include\QtGui" "-IC:\Qt\5.6\msvc2015_64\include\QtANGLE" "-IC:\Qt\5.6\msvc2015_64\include\QtCore" "-I.\release" "-IC:\Qt\5.6\msvc2015_64\mkspecs\win32-msvc2015" "-I$(QTDIR)\include\QtUiTools" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtWinExtras" "-I$(QTDIR)\include\QtQuickWidgets" "-I.\GeneratedFiles"</Command>
+    </CustomBuild>
+    <ClInclude Include="GeneratedFiles\ui_some_test.h" />
     <ClInclude Include="headers\GUI\barrel.h" />
     <ClInclude Include="headers\Processor\IProcessor.h" />
     <ClInclude Include="headers\Processor\ProcessorPCL.h" />
@@ -176,11 +194,11 @@
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing houseplant.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_3DRENDER_LIB -DQT_3DINPUT_LIB -DQT_3DCORE_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_UITOOLS_LIB -DQT_WIDGETS_LIB -DQT_WINEXTRAS_LIB -DQT_QUICKWIDGETS_LIB "-I.\headers\GUI" "-I.\headers\Processor" "-I.\headers" "-I$(PCL_ROOT)\include\pcl-1.7" "-I$(PCL_ROOT)\3rdParty\Boost\include\boost-1_57" "-I$(PCL_ROOT)\3rdParty\Eigen\eigen3" "-I$(PCL_ROOT)\3rdParty\FLANN\include" "-I$(PCL_ROOT)\3rdParty\QHull\include" "-I$(PCL_ROOT)\3rdParty\VTK\include\vtk-6.2" "-I." "-I.\debug" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtUiTools" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtQuickWidgets" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\Qt3DCore" "-I$(QTDIR)\include\Qt3DRender" "-I$(QTDIR)\include\Qt3DInput" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include" "-I$(QTDIR)\mkspecs\win32-msvc2015"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_3DRENDER_LIB -DQT_3DINPUT_LIB -DQT_3DCORE_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_UITOOLS_LIB -DQT_WIDGETS_LIB -DQT_WINEXTRAS_LIB -DQT_QUICKWIDGETS_LIB  "-I.\headers\GUI" "-I.\headers\Processor" "-I.\headers" "-I$(PCL_ROOT)\include\pcl-1.7" "-I$(PCL_ROOT)\3rdParty\Boost\include\boost-1_57" "-I$(PCL_ROOT)\3rdParty\Eigen\eigen3" "-I$(PCL_ROOT)\3rdParty\FLANN\include" "-I$(PCL_ROOT)\3rdParty\QHull\include" "-I$(PCL_ROOT)\3rdParty\VTK\include\vtk-6.2" "-I." "-I.\debug" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtUiTools" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtQuickWidgets" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\Qt3DCore" "-I$(QTDIR)\include\Qt3DRender" "-I$(QTDIR)\include\Qt3DInput" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include" "-I$(QTDIR)\mkspecs\win32-msvc2015" "-I.\GeneratedFiles" "-IC:\Users\user\Desktop\VTK-6.3.0\GUISupport\Qt"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing houseplant.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_3DRENDER_LIB -DQT_3DINPUT_LIB -DQT_3DCORE_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DNDEBUG -DQT_UITOOLS_LIB -DQT_WIDGETS_LIB -DQT_WINEXTRAS_LIB -DQT_QUICKWIDGETS_LIB "-I." "-IC:\Qt\5.6\msvc2015_64\include" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DRender" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DInput" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DCore" "-IC:\Qt\5.6\msvc2015_64\include\QtGui" "-IC:\Qt\5.6\msvc2015_64\include\QtANGLE" "-IC:\Qt\5.6\msvc2015_64\include\QtCore" "-I.\release" "-IC:\Qt\5.6\msvc2015_64\mkspecs\win32-msvc2015" "-I$(QTDIR)\include\QtUiTools" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtWinExtras" "-I$(QTDIR)\include\QtQuickWidgets"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_3DRENDER_LIB -DQT_3DINPUT_LIB -DQT_3DCORE_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DNDEBUG -DQT_UITOOLS_LIB -DQT_WIDGETS_LIB -DQT_WINEXTRAS_LIB -DQT_QUICKWIDGETS_LIB  "-I." "-IC:\Qt\5.6\msvc2015_64\include" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DRender" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DInput" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DCore" "-IC:\Qt\5.6\msvc2015_64\include\QtGui" "-IC:\Qt\5.6\msvc2015_64\include\QtANGLE" "-IC:\Qt\5.6\msvc2015_64\include\QtCore" "-I.\release" "-IC:\Qt\5.6\msvc2015_64\mkspecs\win32-msvc2015" "-I$(QTDIR)\include\QtUiTools" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtWinExtras" "-I$(QTDIR)\include\QtQuickWidgets" "-I.\GeneratedFiles"</Command>
     </CustomBuild>
     <ClInclude Include="headers\GUI\planeentity.h" />
     <ClInclude Include="headers\GUI\renderableentity.h" />
@@ -189,21 +207,33 @@
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing trefoilknot.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_3DRENDER_LIB -DQT_3DINPUT_LIB -DQT_3DCORE_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_UITOOLS_LIB -DQT_WIDGETS_LIB -DQT_WINEXTRAS_LIB -DQT_QUICKWIDGETS_LIB "-I.\headers\GUI" "-I.\headers\Processor" "-I.\headers" "-I$(PCL_ROOT)\include\pcl-1.7" "-I$(PCL_ROOT)\3rdParty\Boost\include\boost-1_57" "-I$(PCL_ROOT)\3rdParty\Eigen\eigen3" "-I$(PCL_ROOT)\3rdParty\FLANN\include" "-I$(PCL_ROOT)\3rdParty\QHull\include" "-I$(PCL_ROOT)\3rdParty\VTK\include\vtk-6.2" "-I." "-I.\debug" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtUiTools" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtQuickWidgets" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\Qt3DCore" "-I$(QTDIR)\include\Qt3DRender" "-I$(QTDIR)\include\Qt3DInput" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include" "-I$(QTDIR)\mkspecs\win32-msvc2015"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_3DRENDER_LIB -DQT_3DINPUT_LIB -DQT_3DCORE_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_UITOOLS_LIB -DQT_WIDGETS_LIB -DQT_WINEXTRAS_LIB -DQT_QUICKWIDGETS_LIB  "-I.\headers\GUI" "-I.\headers\Processor" "-I.\headers" "-I$(PCL_ROOT)\include\pcl-1.7" "-I$(PCL_ROOT)\3rdParty\Boost\include\boost-1_57" "-I$(PCL_ROOT)\3rdParty\Eigen\eigen3" "-I$(PCL_ROOT)\3rdParty\FLANN\include" "-I$(PCL_ROOT)\3rdParty\QHull\include" "-I$(PCL_ROOT)\3rdParty\VTK\include\vtk-6.2" "-I." "-I.\debug" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtUiTools" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtQuickWidgets" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\Qt3DCore" "-I$(QTDIR)\include\Qt3DRender" "-I$(QTDIR)\include\Qt3DInput" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include" "-I$(QTDIR)\mkspecs\win32-msvc2015" "-I.\GeneratedFiles" "-IC:\Users\user\Desktop\VTK-6.3.0\GUISupport\Qt"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing trefoilknot.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_3DRENDER_LIB -DQT_3DINPUT_LIB -DQT_3DCORE_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DNDEBUG -DQT_UITOOLS_LIB -DQT_WIDGETS_LIB -DQT_WINEXTRAS_LIB -DQT_QUICKWIDGETS_LIB "-I." "-IC:\Qt\5.6\msvc2015_64\include" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DRender" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DInput" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DCore" "-IC:\Qt\5.6\msvc2015_64\include\QtGui" "-IC:\Qt\5.6\msvc2015_64\include\QtANGLE" "-IC:\Qt\5.6\msvc2015_64\include\QtCore" "-I.\release" "-IC:\Qt\5.6\msvc2015_64\mkspecs\win32-msvc2015" "-I$(QTDIR)\include\QtUiTools" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtWinExtras" "-I$(QTDIR)\include\QtQuickWidgets"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_3DRENDER_LIB -DQT_3DINPUT_LIB -DQT_3DCORE_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DNDEBUG -DQT_UITOOLS_LIB -DQT_WIDGETS_LIB -DQT_WINEXTRAS_LIB -DQT_QUICKWIDGETS_LIB  "-I." "-IC:\Qt\5.6\msvc2015_64\include" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DRender" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DInput" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DCore" "-IC:\Qt\5.6\msvc2015_64\include\QtGui" "-IC:\Qt\5.6\msvc2015_64\include\QtANGLE" "-IC:\Qt\5.6\msvc2015_64\include\QtCore" "-I.\release" "-IC:\Qt\5.6\msvc2015_64\mkspecs\win32-msvc2015" "-I$(QTDIR)\include\QtUiTools" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtWinExtras" "-I$(QTDIR)\include\QtQuickWidgets" "-I.\GeneratedFiles"</Command>
     </CustomBuild>
     <CustomBuild Include="headers\GUI\window.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing window.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_3DRENDER_LIB -DQT_3DINPUT_LIB -DQT_3DCORE_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_UITOOLS_LIB -DQT_WIDGETS_LIB -DQT_WINEXTRAS_LIB -DQT_QUICKWIDGETS_LIB "-I.\headers\GUI" "-I.\headers\Processor" "-I.\headers" "-I$(PCL_ROOT)\include\pcl-1.7" "-I$(PCL_ROOT)\3rdParty\Boost\include\boost-1_57" "-I$(PCL_ROOT)\3rdParty\Eigen\eigen3" "-I$(PCL_ROOT)\3rdParty\FLANN\include" "-I$(PCL_ROOT)\3rdParty\QHull\include" "-I$(PCL_ROOT)\3rdParty\VTK\include\vtk-6.2" "-I." "-I.\debug" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtUiTools" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtQuickWidgets" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\Qt3DCore" "-I$(QTDIR)\include\Qt3DRender" "-I$(QTDIR)\include\Qt3DInput" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include" "-I$(QTDIR)\mkspecs\win32-msvc2015"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_3DRENDER_LIB -DQT_3DINPUT_LIB -DQT_3DCORE_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_UITOOLS_LIB -DQT_WIDGETS_LIB -DQT_WINEXTRAS_LIB -DQT_QUICKWIDGETS_LIB  "-I.\headers\GUI" "-I.\headers\Processor" "-I.\headers" "-I$(PCL_ROOT)\include\pcl-1.7" "-I$(PCL_ROOT)\3rdParty\Boost\include\boost-1_57" "-I$(PCL_ROOT)\3rdParty\Eigen\eigen3" "-I$(PCL_ROOT)\3rdParty\FLANN\include" "-I$(PCL_ROOT)\3rdParty\QHull\include" "-I$(PCL_ROOT)\3rdParty\VTK\include\vtk-6.2" "-I." "-I.\debug" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtUiTools" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtQuickWidgets" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\Qt3DCore" "-I$(QTDIR)\include\Qt3DRender" "-I$(QTDIR)\include\Qt3DInput" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include" "-I$(QTDIR)\mkspecs\win32-msvc2015" "-I.\GeneratedFiles" "-IC:\Users\user\Desktop\VTK-6.3.0\GUISupport\Qt"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing window.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_3DRENDER_LIB -DQT_3DINPUT_LIB -DQT_3DCORE_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DNDEBUG -DQT_UITOOLS_LIB -DQT_WIDGETS_LIB -DQT_WINEXTRAS_LIB -DQT_QUICKWIDGETS_LIB "-I." "-IC:\Qt\5.6\msvc2015_64\include" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DRender" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DInput" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DCore" "-IC:\Qt\5.6\msvc2015_64\include\QtGui" "-IC:\Qt\5.6\msvc2015_64\include\QtANGLE" "-IC:\Qt\5.6\msvc2015_64\include\QtCore" "-I.\release" "-IC:\Qt\5.6\msvc2015_64\mkspecs\win32-msvc2015" "-I$(QTDIR)\include\QtUiTools" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtWinExtras" "-I$(QTDIR)\include\QtQuickWidgets"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DQT_3DRENDER_LIB -DQT_3DINPUT_LIB -DQT_3DCORE_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DNDEBUG -DQT_UITOOLS_LIB -DQT_WIDGETS_LIB -DQT_WINEXTRAS_LIB -DQT_QUICKWIDGETS_LIB  "-I." "-IC:\Qt\5.6\msvc2015_64\include" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DRender" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DInput" "-IC:\Qt\5.6\msvc2015_64\include\Qt3DCore" "-IC:\Qt\5.6\msvc2015_64\include\QtGui" "-IC:\Qt\5.6\msvc2015_64\include\QtANGLE" "-IC:\Qt\5.6\msvc2015_64\include\QtCore" "-I.\release" "-IC:\Qt\5.6\msvc2015_64\mkspecs\win32-msvc2015" "-I$(QTDIR)\include\QtUiTools" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtWinExtras" "-I$(QTDIR)\include\QtQuickWidgets" "-I.\GeneratedFiles"</Command>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="some_test.ui">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Uic%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Uic%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
     </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
