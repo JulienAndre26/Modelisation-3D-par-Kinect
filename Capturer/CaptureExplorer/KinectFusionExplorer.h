@@ -72,8 +72,6 @@ public:
 	void						OnEndCapture();
 	void						OnContinueScene();
 
-
-
 	int							AskViewer();
 	void						OpenViewer();
 
@@ -173,4 +171,5 @@ private:
 	bool						m_bDirNameSet;
 	int							m_nMeshCount;
 	LPOLESTR					m_lDirPath;
+	LPOLESTR					m_lConfPath;
 };

@@ -68,7 +68,8 @@ CKinectFusionExplorer::CKinectFusionExplorer() :
 
 	m_bDirNameSet(false),
 	m_nMeshCount(0),
-	m_lDirPath(nullptr)
+	m_lDirPath(nullptr),
+	m_lConfPath(nullptr)
 {
 }
 
@@ -395,151 +396,6 @@ void CKinectFusionExplorer::HandleCompletedFrame()
 	SetEnableCaptureUI(TRUE); // ADD - Antoine
 }
 
-/// <summary>
-/// Save Mesh to disk.
-/// </summary>
-/// <param name="mesh">The mesh to save.</param>
-/// <returns>indicates success or failure</returns>
-HRESULT CKinectFusionExplorer::SaveMeshFile(INuiFusionColorMesh* pMesh, KinectFusionMeshTypes saveMeshType)
-{
-    HRESULT hr = S_OK;
-
-    if (nullptr == pMesh)
-    {
-        return E_INVALIDARG;
-    }
-
-    CComPtr<IFileSaveDialog> pSaveDlg;
-
-    // Create the file save dialog object.
-    hr = pSaveDlg.CoCreateInstance(__uuidof(FileSaveDialog));
-
-    if (FAILED(hr))
-    {
-        return hr;
-    }
-
-    // Set the dialog title
-    hr = pSaveDlg->SetTitle(L"Save Kinect Fusion Mesh");
-    if (SUCCEEDED(hr))
-    {
-        // Set the button text
-        hr = pSaveDlg->SetOkButtonLabel (L"Save");
-        if (SUCCEEDED(hr))
-        {
-            // Set a default filename
-            if (Stl == saveMeshType)
-            {
-                hr = pSaveDlg->SetFileName(L"MeshedReconstruction.stl");
-            }
-            else if (Obj == saveMeshType)
-            {
-                hr = pSaveDlg->SetFileName(L"MeshedReconstruction.obj");
-            }
-            else if (Ply == saveMeshType)
-            {
-                hr = pSaveDlg->SetFileName(L"MeshedReconstruction.ply");
-            }
-
-            if (SUCCEEDED(hr))
-            {
-                // Set the file type extension
-                if (Stl == saveMeshType)
-                {
-                    hr = pSaveDlg->SetDefaultExtension(L"stl");
-                }
-                else if (Obj == saveMeshType)
-                {
-                    hr = pSaveDlg->SetDefaultExtension(L"obj");
-                }
-                else if (Ply == saveMeshType)
-                {
-                    hr = pSaveDlg->SetDefaultExtension(L"ply");
-                }
-
-                if (SUCCEEDED(hr))
-                {
-                    // Set the file type filters
-                    if (Stl == saveMeshType)
-                    {
-                        COMDLG_FILTERSPEC allPossibleFileTypes[] = {
-                            { L"Stl mesh files", L"*.stl" },
-                            { L"All files", L"*.*" }
-                        };
-
-                        hr = pSaveDlg->SetFileTypes(
-                            ARRAYSIZE(allPossibleFileTypes),
-                            allPossibleFileTypes);
-                    }
-                    else if (Obj == saveMeshType)
-                    {
-                        COMDLG_FILTERSPEC allPossibleFileTypes[] = {
-                            { L"Obj mesh files", L"*.obj" },
-                            { L"All files", L"*.*" }
-                        };
-
-                        hr = pSaveDlg->SetFileTypes(
-                            ARRAYSIZE(allPossibleFileTypes),
-                            allPossibleFileTypes );
-                    }
-                    else if (Ply == saveMeshType)
-                    {
-                        COMDLG_FILTERSPEC allPossibleFileTypes[] = {
-                            { L"Ply mesh files", L"*.ply" },
-                            { L"All files", L"*.*" }
-                        };
-
-                        hr = pSaveDlg->SetFileTypes(
-                            ARRAYSIZE(allPossibleFileTypes),
-                            allPossibleFileTypes );
-                    }
-
-                    if (SUCCEEDED(hr))
-                    {
-                        // Show the file selection box
-                        hr = pSaveDlg->Show(m_hWnd);
-
-                        // Save the mesh to the chosen file.
-                        if (SUCCEEDED(hr))
-                        {
-                            CComPtr<IShellItem> pItem;
-                            hr = pSaveDlg->GetResult(&pItem);
-
-                            if (SUCCEEDED(hr))
-                            {
-                                LPOLESTR pwsz = nullptr;
-                                hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pwsz);
-
-                                if (SUCCEEDED(hr))
-                                {
-                                    SetStatusMessage(L"Saving mesh file, please wait...");
-                                    SetCursor(LoadCursor(nullptr, MAKEINTRESOURCE(IDC_WAIT)));
-
-                                    if (Stl == saveMeshType)
-                                    {
-                                        hr = WriteBinarySTLMeshFile(pMesh, pwsz);
-                                    }
-                                    else if (Obj == saveMeshType)
-                                    {
-                                        hr = WriteAsciiObjMeshFile(pMesh, pwsz);
-                                    }
-                                    else if (Ply == saveMeshType)
-                                    {
-                                        hr = WriteAsciiPlyMeshFile(pMesh, pwsz, true, m_bColorCaptured);
-                                    }
-
-                                    CoTaskMemFree(pwsz);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    return hr;
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 
@@ -866,7 +722,7 @@ int CKinectFusionExplorer::AskDirName() {
 		if (SUCCEEDED(hr))
 		{
 			// Set a default filename
-			hr = pSaveDlg->SetFileName(L"Capture Folder Name");
+			hr = pSaveDlg->SetFileName(L"Capture Name");
 
 			if (SUCCEEDED(hr))
 			{
@@ -966,8 +822,14 @@ int	CKinectFusionExplorer::SaveMesh()
 		std::wstring szMeshCount = std::to_wstring(m_nMeshCount);
 
 		// Concat
+		MessageBoxW(NULL, m_lDirPath, _T("Saving in"), MB_OK | MB_ICONERROR);
+
+		
 		std::wstring szDirName(m_lDirPath);
 		std::wstring szCurrentMeshName = szDirName + L"\\plan" + szMeshCount + szFormat;
+
+		MessageBoxW(NULL, W2OLE((LPWSTR)szCurrentMeshName.c_str()), _T("Saving in"), MB_OK | MB_ICONERROR);
+
 
 		// Convert wstring to LPOLESTR
 		USES_CONVERSION;
@@ -1037,7 +899,7 @@ void CKinectFusionExplorer::UpdateCaptureNameUI()
 	
 	SetDlgItemText(m_hWnd, IDC_CAPTURE_NAME, W2OLE((LPWSTR)szDirName.c_str()));
 }
-
+	
 void CKinectFusionExplorer::UpdateMeshCountUI()
 {
 	std::wstring meshCount = std::to_wstring(m_nMeshCount);
@@ -1140,7 +1002,12 @@ void CKinectFusionExplorer::CreateConfFile()
 	std::wstring wsPath(m_lDirPath);
 	
 	// Conf file
-	std::wstring wsConfPath = wsPath + L"\\conf.txt";
+	std::wstring wsName(m_lDirPath);
+	const size_t last_slash_idx = wsName.find_last_of(L"\\/");
+	if (std::wstring::npos != last_slash_idx)
+		wsName.erase(0, last_slash_idx + 1);
+
+	std::wstring wsConfPath = wsPath + L"\\" + wsName + L".import";
 	std::wofstream confFile(wsConfPath, std::ios::out | std::ios::trunc);  //déclaration du flux et ouverture du fichier
 
 	// If success
@@ -1189,13 +1056,26 @@ int CKinectFusionExplorer::AskImportDir()
 					hr = pfd->AddPlace(psi, FDAP_BOTTOM);
 					if (SUCCEEDED(hr))
 					{
-						DWORD dwOptions;
+						/*DWORD dwOptions;
 						if (SUCCEEDED(pfd->GetOptions(&dwOptions)))
 						{
 							pfd->SetOptions(dwOptions | FOS_PICKFOLDERS);
-							pfd->SetTitle(L"Import Capture");
-						}
+						}*/
 
+						// Set the file type filters
+						COMDLG_FILTERSPEC allPossibleFileTypes[] = {
+							/*{ L"Stl mesh files", L"*.stl" },
+							{ L"Obj mesh files", L"*.obj" },
+							{ L"Ply mesh files", L"*.ply" },*/
+							{ L"Capture Import Files", L"*.import" }
+						};
+
+						hr = pfd->SetFileTypes(
+							ARRAYSIZE(allPossibleFileTypes),
+							allPossibleFileTypes);
+						
+						pfd->SetTitle(L"Import Capture");
+						
 						// Show the File Dialog.
 						hr = pfd->Show(NULL);
 						if (SUCCEEDED(hr))
@@ -1209,20 +1089,21 @@ int CKinectFusionExplorer::AskImportDir()
 								LPOLESTR pwsz = nullptr;
 								hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pwsz);
 
-								std::wstring wsConfFilePath(pwsz);
-								wsConfFilePath += L"\\conf.txt";
+								// Path of conf
+								std::wstring wsCapturePath(pwsz);
+								const size_t last_slash_idx = wsCapturePath.find_last_of(L"\\/");
+								
+								if (std::wstring::npos != last_slash_idx)
+									wsCapturePath.erase(last_slash_idx, wsCapturePath.length());
+								
+								/*m_lConfPath = pwsz;
+*/
+								//MessageBoxW(NULL, W2OLE((LPWSTR)wsCapturePath.c_str()), _T("Capture Folder"), MB_OK);
 
-								if (PathFileExists(W2OLE((LPWSTR)wsConfFilePath.c_str())))
-								{
-									m_lDirPath = pwsz;
-									LoadProject();
-								}
-								else
-								{
-									CString message;
-									message.Format(L"%s is not a valid project. Can't find conf.txt file.", pwsz);
-									MessageBoxW(NULL, message, _T("Import Error"), MB_OK | MB_ICONERROR);
-								}
+								m_lDirPath = (LPOLESTR) new wchar_t[wsCapturePath.length() + 1];
+								std::wcscpy(m_lDirPath, wsCapturePath.c_str());
+								
+								LoadProject();
 							}
 						
 						}
@@ -1240,6 +1121,7 @@ int CKinectFusionExplorer::AskImportDir()
 
 void CKinectFusionExplorer::LoadProject()
 {
+	
 	// Retrieve conf.txt values
 	if (!RetrieveProjectConf())
 		return;
@@ -1260,9 +1142,14 @@ bool CKinectFusionExplorer::RetrieveProjectConf()
 {
 	// DIRECTORY
 	std::wstring wsPath(m_lDirPath);
+	std::wstring wsName(m_lDirPath);
+
+	const size_t last_slash_idx = wsName.find_last_of(L"\\/");
+	if (std::wstring::npos != last_slash_idx)
+		wsName.erase(0, last_slash_idx + 1);
 
 	// Conf file
-	std::wstring wsConfPath = wsPath + L"\\conf.txt";
+	std::wstring wsConfPath = wsPath + L"\\" + wsName + L".import";
 
 	std::wifstream confFile(wsConfPath);
 	
