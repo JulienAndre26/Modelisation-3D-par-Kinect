@@ -22,6 +22,9 @@
 #include <cstdlib>
 #include <iostream>
 
+#include <thread>
+std::thread * t;
+
 #define MIN_DEPTH_DISTANCE_MM 350   // Must be greater than 0
 #define MAX_DEPTH_DISTANCE_MM 8000
 
@@ -69,9 +72,9 @@ CKinectFusionExplorer::CKinectFusionExplorer() :
 	m_bDirNameSet(false),
 	m_nMeshCount(0),
 	m_lDirPath(nullptr),
-	m_lConfPath(nullptr)
-{
-}
+	m_bIsAutoMode(false),
+	m_nDelay(5)
+{}
 
 /// <summary>
 /// Destructor
@@ -500,19 +503,25 @@ void CKinectFusionExplorer::InitializeUIControls()
         CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_STL_RADIO, BST_CHECKED);
 		CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_OBJ_RADIO, BST_UNCHECKED);
 		CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_PLY_RADIO, BST_UNCHECKED);
+		SetEnableColorUI(FALSE);
     }
     else if (Obj == m_saveMeshFormat)
     {
 		CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_STL_RADIO, BST_UNCHECKED);
 		CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_OBJ_RADIO, BST_CHECKED);
 		CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_PLY_RADIO, BST_UNCHECKED);
+		SetEnableColorUI(FALSE);
     }
     else if (Ply == m_saveMeshFormat)
     {
 		CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_STL_RADIO, BST_UNCHECKED);
 		CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_OBJ_RADIO, BST_UNCHECKED);
 		CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_PLY_RADIO, BST_CHECKED);
+		SetEnableColorUI(TRUE);
     }
+
+	SendMessage(GetDlgItem(m_hWnd, IDC_AUTO_PROGRESS), PBM_SETBARCOLOR, 0, RGB(255,255,0));
+
 }
 
 /// <summary>
@@ -614,20 +623,55 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
         // Toggle the pause state of the reconstruction
         m_params.m_bPauseIntegration = !m_params.m_bPauseIntegration;
     }    
+
+
 	if (IDC_MESH_FORMAT_STL_RADIO == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
     {
         m_saveMeshFormat = Stl;
+		SetEnableColorUI(FALSE);
     }
     if (IDC_MESH_FORMAT_OBJ_RADIO == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
     {
         m_saveMeshFormat = Obj;
+		SetEnableColorUI(FALSE);
     }
     if (IDC_MESH_FORMAT_PLY_RADIO == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
     {
         m_saveMeshFormat = Ply;
+		SetEnableColorUI(TRUE);
     }
 
+	if (IDC_BUTTON_AUTO_MODE == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
+	{
+		if (!m_bIsAutoMode)
+			LaunchAutoCaptureThread();
+		else
+			StopAutoCaptureThread();
+	}
+
+	if (IDC_BUTTON_AUTO_PLUS == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
+	{
+		m_nDelay++;
+		std::wstring wsAuto = L"Auto Save Mode [" + std::to_wstring(m_nDelay) + L"s]";
+		SetDlgItemText(m_hWnd, IDC_BUTTON_AUTO_MODE, wsAuto.c_str());
+	}
+
+	if (IDC_BUTTON_AUTO_MINUS == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
+	{
+		m_nDelay -= (m_nDelay > 1)?1:0;
+		std::wstring wsAuto = L"Auto Save Mode [" + std::to_wstring(m_nDelay) + L"s]";
+		SetDlgItemText(m_hWnd, IDC_BUTTON_AUTO_MODE, wsAuto.c_str());
+	}
+
     m_processor.SetParams(m_params);
+}
+
+void CKinectFusionExplorer::SetEnableColorUI(bool bEnable)
+{
+	HWND hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_COLOR_YES);
+	EnableWindow(hElem, bEnable);
+	hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_COLOR_NO);
+	EnableWindow(hElem, bEnable);
 }
 
 /// <summary>
@@ -822,14 +866,8 @@ int	CKinectFusionExplorer::SaveMesh()
 		std::wstring szMeshCount = std::to_wstring(m_nMeshCount);
 
 		// Concat
-		MessageBoxW(NULL, m_lDirPath, _T("Saving in"), MB_OK | MB_ICONERROR);
-
-		
 		std::wstring szDirName(m_lDirPath);
 		std::wstring szCurrentMeshName = szDirName + L"\\plan" + szMeshCount + szFormat;
-
-		MessageBoxW(NULL, W2OLE((LPWSTR)szCurrentMeshName.c_str()), _T("Saving in"), MB_OK | MB_ICONERROR);
-
 
 		// Convert wstring to LPOLESTR
 		USES_CONVERSION;
@@ -1127,12 +1165,15 @@ void CKinectFusionExplorer::LoadProject()
 		return;
 
 	InitializeUIControls();
+
 	UpdateCaptureNameUI();
 	UpdateMeshCountUI();
 
 	// Set button texts
 	SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"Save Scene");
 	SetDlgItemText(m_hWnd, IDC_BUTTON_END_IMPORT_CAPTURE, L"End Capture");
+
+	EnableWindow(GetDlgItem(m_hWnd, IDC_BUTTON_AUTO_MODE), TRUE);
 
 	// Disable Conf in UI
 	SetEnableConfUI(FALSE);
@@ -1326,6 +1367,7 @@ void CKinectFusionExplorer::OnNewCapture()
 		SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"Save Scene");
 		SetDlgItemText(m_hWnd, IDC_BUTTON_END_IMPORT_CAPTURE, L"End Capture");
 
+		EnableWindow(GetDlgItem(m_hWnd, IDC_BUTTON_AUTO_MODE), TRUE);
 
 		// Disable Conf in UI
 		SetEnableConfUI(FALSE);
@@ -1337,12 +1379,17 @@ void CKinectFusionExplorer::OnNewCapture()
 
 void CKinectFusionExplorer::OnEndCapture()
 {
+	if (m_bIsAutoMode)
+		StopAutoCaptureThread();
+
 	// Create / Prompt configuration file
 	CreateConfFile();
 
 	// Set button text
 	SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"New Capture");
 	SetDlgItemText(m_hWnd, IDC_BUTTON_END_IMPORT_CAPTURE, L"Import Capture");
+
+	EnableWindow(GetDlgItem(m_hWnd, IDC_BUTTON_AUTO_MODE), FALSE);
 
 	// Switch number of meshes
 	CString message;
@@ -1396,4 +1443,62 @@ void CKinectFusionExplorer::OnContinueScene()
 
 	// Update Label
 	UpdateMeshCountUI();
+}
+
+void CKinectFusionExplorer::LaunchAutoCaptureThread()
+{
+	m_bIsAutoMode = true;
+
+	SetDlgItemText(m_hWnd, IDC_BUTTON_AUTO_MODE, L"Stop Auto\nSave");
+	EnableWindow(GetDlgItem(m_hWnd, IDC_BUTTON_AUTO_MINUS), FALSE);
+	EnableWindow(GetDlgItem(m_hWnd, IDC_BUTTON_AUTO_PLUS), FALSE);
+	ShowWindow(GetDlgItem(m_hWnd, IDC_AUTO_PROGRESS), TRUE);
+
+
+	t = new std::thread( [this] { this->AutoCaptureThread();} );
+}
+
+void CKinectFusionExplorer::StopAutoCaptureThread()
+{
+	m_bIsAutoMode = false;
+	t->detach();
+
+	EnableWindow(GetDlgItem(m_hWnd, IDC_BUTTON_AUTO_MINUS), TRUE);
+	EnableWindow(GetDlgItem(m_hWnd, IDC_BUTTON_AUTO_PLUS), TRUE);
+	ShowWindow(GetDlgItem(m_hWnd, IDC_AUTO_PROGRESS), FALSE);
+
+	std::wstring msg = L"Auto Save Mode [" + std::to_wstring(m_nDelay) + L"s]";
+	SetDlgItemText(m_hWnd, IDC_BUTTON_AUTO_MODE, msg.c_str());
+}
+
+void CKinectFusionExplorer::AutoCaptureThread()
+{
+	int delay = m_nDelay;
+	int current = 0;
+
+	HWND hElem = GetDlgItem(m_hWnd, IDC_AUTO_PROGRESS);
+
+	while (true)
+	{
+		SendMessage(hElem, PBM_SETRANGE, 0, MAKELPARAM(0, delay));
+		SendMessage(hElem, PBM_SETSTEP, (WPARAM)1, 0);
+
+		for (int i = 0; i < delay; i++) {
+			Sleep((DWORD)1000);
+			current = delay - (i+1);
+
+			if (!m_bIsAutoMode)
+				return;
+
+			std::wstring count = L"Stop Auto\nSave (" + std::to_wstring(current) + L"s)";
+			SetDlgItemText(m_hWnd, IDC_BUTTON_AUTO_MODE, count.c_str());
+
+			SendMessage(hElem, PBM_STEPIT, 0, 0);
+		}
+
+		m_nMeshCount++;
+		SaveMesh();
+		UpdateMeshCountUI();
+
+	}
 }

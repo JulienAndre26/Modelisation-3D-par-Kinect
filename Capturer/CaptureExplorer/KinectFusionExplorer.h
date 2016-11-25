@@ -11,6 +11,7 @@
 #include "KinectFusionParams.h"
 #include "KinectFusionProcessor.h"
 
+
 /// <summary>
 /// KinectFusionExplorer sample.
 /// </summary>
@@ -67,6 +68,7 @@ public:
 	void						SetEnableCaptureUI(int nEnable);
 	void						UpdateMeshCountUI();
 	void						UpdateCaptureNameUI();
+	void						SetEnableColorUI(bool bEnable);
 
 	void						OnNewCapture();
 	void						OnEndCapture();
@@ -79,6 +81,10 @@ public:
 	void						ProcessTreatment();
 
 	void						CreateConfFile();
+
+	void						LaunchAutoCaptureThread();
+	void						StopAutoCaptureThread();
+	void						AutoCaptureThread();
 
 private:
     HWND                        m_hWnd;
@@ -170,6 +176,7 @@ private:
 	// ADD - Antoine
 	bool						m_bDirNameSet;
 	int							m_nMeshCount;
+	bool						m_bIsAutoMode;
+	int							m_nDelay;
 	LPOLESTR					m_lDirPath;
-	LPOLESTR					m_lConfPath;
 };
