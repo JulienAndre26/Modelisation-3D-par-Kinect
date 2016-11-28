@@ -1,92 +1,93 @@
-/****************************************************************************
-**
-** Copyright (C) 2014 Klaralvdalens Datakonsult AB (KDAB).
-** Contact: http://www.qt-project.org/legal
-**
-** This file is part of the Qt3D module of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:LGPL3$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see http://www.qt.io/terms-conditions. For further
-** information use the contact form at http://www.qt.io/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 3 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPLv3 included in the
-** packaging of this file. Please review the following information to
-** ensure the GNU Lesser General Public License version 3 requirements
-** will be met: https://www.gnu.org/licenses/lgpl.html.
-**
-** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 2.0 or later as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file. Please review the following information to
-** ensure the GNU General Public License version 2.0 requirements will be
-** met: http://www.gnu.org/licenses/gpl-2.0.html.
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
-
 #include "window.h"
+#include "ui_some_test.h"
+#include <QFileDialog>
+#include <QMessageBox>
 
-#include <QKeyEvent>
-#include <QGuiApplication>
-#include <QOpenGLContext>
+#include <pcl/point_types.h>
+#include <pcl/common/common.h>
+#include <pcl/visualization/cloud_viewer.h>
+#include <pcl/visualization/pcl_visualizer.h>
+#include <pcl/io/pcd_io.h>
+#include <pcl/io/ply_io.h>
+#include <vtkRenderWindow.h>
+#include <iostream>
+#include <boost/filesystem.hpp>
+#include <boost/thread/thread.hpp>
+#include <boost/bind.hpp>
 
-#include <QLABEL>
 
-//Window::Window(QScreen *screen)
-//    : QWindow(screen)
-//
-//{
-//    setSurfaceType(QSurface::OpenGLSurface);
-//
-//    resize(1024, 768);
-//
-//    QSurfaceFormat format;
-//    if (QOpenGLContext::openGLModuleType() == QOpenGLContext::LibGL) {
-//        format.setVersion(4, 3);
-//        format.setProfile(QSurfaceFormat::CoreProfile);
-//    }
-//    format.setDepthBufferSize( 24 );
-//    format.setSamples( 4 );
-//    format.setStencilBufferSize(8);
-//    setFormat(format);
-//    create();
-//}
 
-Window::Window(QWidget * parent) 
-	: QMainWindow(parent),
-	ui(new Ui::MainWindow)
+pcl::visualization::PCLVisualizer pviz("test_viz", false);
+pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_xyz(new pcl::PointCloud<pcl::PointXYZ>);
+
+Pclwindow::Pclwindow(QWidget *parent) :
+	QMainWindow(parent),
+	ui(new Ui::Pclwindow)
 {
 	ui->setupUi(this);
 
-	
-	//ui->renderer =  new CustomWidget(parent);
-	//ui->renderer->show();
+	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_xyz(new pcl::PointCloud<pcl::PointXYZ>);
+	for (float y = -0.5f; y <= 0.5f; y += 0.01f)
+	{
+		for (float z = -0.5f; z <= 0.5f; z += 0.01f)
+		{
+			pcl::PointXYZ point;
+			point.x = 2.0f - y;
+			point.y = y;
+			point.z = z;
+			cloud_xyz->points.push_back(point);
+		}
+	}
+	cloud_xyz->width = cloud_xyz->points.size();
+	cloud_xyz->height = 1;
+
+	vtkSmartPointer<vtkRenderWindow> renderWindow = pviz.getRenderWindow();
+	ui->widget->SetRenderWindow(renderWindow);
+
+	pviz.setupInteractor(ui->widget->GetInteractor(), ui->widget->GetRenderWindow());
+	pviz.getInteractorStyle()->setKeyboardModifier(pcl::visualization::INTERACTOR_KB_MOD_SHIFT);
+
+	pviz.addPointCloud<pcl::PointXYZ>(cloud_xyz);
+	pviz.setBackgroundColor(0, 0, 0.1);
+
+
+	ui->widget->show();
+
 }
 
-Window::~Window()
+Pclwindow::~Pclwindow()
 {
 	delete ui;
 }
 
-void Window::keyPressEvent( QKeyEvent* e )
+void Pclwindow::on_action_triggered()
 {
-    switch ( e->key() )
-    {
-        case Qt::Key_Escape:
-            QGuiApplication::quit();
-            break;
+	this->close();
+}
 
-        default:
-            QMainWindow::keyPressEvent( e );
-    }
+void Pclwindow::on_action_2_triggered()
+{
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("Files (*.ply)"));
+	if (fileName != "")
+	{
+		pviz.removeAllPointClouds();
+		ui->widget->setDisabled(true);
+		ui->menuBar->setDisabled(true);
+		boost::thread t(boost::bind(pcl::io::loadPLYFile<pcl::PointXYZ>, fileName.toStdString(), boost::ref(*cloud_xyz)));
+		//for (int i = 0; i <= (int) sec; i++)
+		//{
+		//    ui->progressBar->setValue((int) ((i/sec)*100));
+		//    ui->label->setText(QString::fromStdString("Wait for "+boost::lexical_cast<std::string>(((int)sec)-i)+" sec"));
+		//boost::this_thread::sleep(boost::posix_time::seconds(1)); // wait 1 sec
+		//}
+		t.join();
+		ui->progressBar->setValue(100);
+		ui->widget->setEnabled(true);
+		ui->menuBar->setEnabled(true);
+		if (cloud_xyz->size() > 0)
+		{
+			pviz.addPointCloud<pcl::PointXYZ>(cloud_xyz);
+			ui->progressBar->setValue(0);
+		}
+	};
 }

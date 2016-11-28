@@ -57,24 +57,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="sources\GUI\barrel.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\GUI\houseplant.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\GUI\planeentity.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\GUI\renderableentity.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\GUI\rotatingtrefoilknot.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\GUI\trefoilknot.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
     <ClCompile Include="sources\GUI\window.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
@@ -84,47 +66,14 @@
     <ClCompile Include="sources\Processor\TestPCL.cpp">
       <Filter>Source Files\Processor</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_houseplant.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_houseplant.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_trefoilknot.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_trefoilknot.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_window.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_window.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_customWidget.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_customWidget.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="customWidget.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="headers\GUI\barrel.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\GUI\planeentity.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\GUI\renderableentity.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\GUI\rotatingtrefoilknot.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="headers\Processor\IProcessor.h">
       <Filter>Header Files\Processor</Filter>
     </ClInclude>
@@ -136,20 +85,11 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="headers\GUI\houseplant.h">
-      <Filter>Header Files\GUI</Filter>
-    </CustomBuild>
-    <CustomBuild Include="headers\GUI\trefoilknot.h">
-      <Filter>Header Files\GUI</Filter>
-    </CustomBuild>
     <CustomBuild Include="headers\GUI\window.h">
       <Filter>Header Files\GUI</Filter>
     </CustomBuild>
     <CustomBuild Include="some_test.ui">
       <Filter>Form Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="customWidget.h">
-      <Filter>Header Files\GUI</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>

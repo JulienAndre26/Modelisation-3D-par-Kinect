@@ -13,91 +13,100 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
-#include <QtWidgets/QPushButton>
+#include <QtWidgets/QProgressBar>
 #include <QtWidgets/QStatusBar>
+#include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
+#include "QVTKWidget.h"
 
 QT_BEGIN_NAMESPACE
 
-class Ui_MainWindow
+class Ui_Pclwindow
 {
 public:
-    QAction *actionOpen;
-    QAction *actionSave;
-    QAction *actionQuit;
-    QWidget *centralwidget;
-    QPushButton *pushButton;
-    QWidget *renderer;
-    QMenuBar *menubar;
-    QMenu *menuFile;
-    QMenu *menuHelp;
-    QStatusBar *statusbar;
+    QAction *action;
+    QAction *action_2;
+    QWidget *centralWidget;
+    QGridLayout *gridLayout;
+    QVTKWidget *widget;
+    QProgressBar *progressBar;
+    QMenuBar *menuBar;
+    QMenu *menu;
+    QToolBar *mainToolBar;
+    QStatusBar *statusBar;
 
-    void setupUi(QMainWindow *MainWindow)
+    void setupUi(QMainWindow *Pclwindow)
     {
-        if (MainWindow->objectName().isEmpty())
-            MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(651, 594);
-        actionOpen = new QAction(MainWindow);
-        actionOpen->setObjectName(QStringLiteral("actionOpen"));
-        actionSave = new QAction(MainWindow);
-        actionSave->setObjectName(QStringLiteral("actionSave"));
-        actionQuit = new QAction(MainWindow);
-        actionQuit->setObjectName(QStringLiteral("actionQuit"));
-        centralwidget = new QWidget(MainWindow);
-        centralwidget->setObjectName(QStringLiteral("centralwidget"));
-        pushButton = new QPushButton(centralwidget);
-        pushButton->setObjectName(QStringLiteral("pushButton"));
-        pushButton->setGeometry(QRect(0, 480, 641, 71));
-        renderer = new QWidget(centralwidget);
-        renderer->setObjectName(QStringLiteral("renderer"));
-        renderer->setEnabled(false);
-        renderer->setGeometry(QRect(10, 0, 631, 481));
-        renderer->setCursor(QCursor(Qt::OpenHandCursor));
-        MainWindow->setCentralWidget(centralwidget);
-        menubar = new QMenuBar(MainWindow);
-        menubar->setObjectName(QStringLiteral("menubar"));
-        menubar->setGeometry(QRect(0, 0, 651, 18));
-        menuFile = new QMenu(menubar);
-        menuFile->setObjectName(QStringLiteral("menuFile"));
-        menuHelp = new QMenu(menubar);
-        menuHelp->setObjectName(QStringLiteral("menuHelp"));
-        MainWindow->setMenuBar(menubar);
-        statusbar = new QStatusBar(MainWindow);
-        statusbar->setObjectName(QStringLiteral("statusbar"));
-        MainWindow->setStatusBar(statusbar);
+        if (Pclwindow->objectName().isEmpty())
+            Pclwindow->setObjectName(QStringLiteral("Pclwindow"));
+        Pclwindow->resize(710, 414);
+        action = new QAction(Pclwindow);
+        action->setObjectName(QStringLiteral("action"));
+        action_2 = new QAction(Pclwindow);
+        action_2->setObjectName(QStringLiteral("action_2"));
+        centralWidget = new QWidget(Pclwindow);
+        centralWidget->setObjectName(QStringLiteral("centralWidget"));
+        gridLayout = new QGridLayout(centralWidget);
+        gridLayout->setSpacing(6);
+        gridLayout->setContentsMargins(11, 11, 11, 11);
+        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        widget = new QVTKWidget(centralWidget);
+        widget->setObjectName(QStringLiteral("widget"));
+        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(widget->sizePolicy().hasHeightForWidth());
+        widget->setSizePolicy(sizePolicy);
+        widget->setMinimumSize(QSize(601, 271));
 
-        menubar->addAction(menuFile->menuAction());
-        menubar->addAction(menuHelp->menuAction());
-        menuFile->addAction(actionOpen);
-        menuFile->addAction(actionSave);
-        menuFile->addSeparator();
-        menuFile->addAction(actionQuit);
+        gridLayout->addWidget(widget, 0, 0, 1, 1);
 
-        retranslateUi(MainWindow);
+        progressBar = new QProgressBar(centralWidget);
+        progressBar->setObjectName(QStringLiteral("progressBar"));
+        progressBar->setValue(24);
 
-        QMetaObject::connectSlotsByName(MainWindow);
+        gridLayout->addWidget(progressBar, 1, 0, 1, 1);
+
+        Pclwindow->setCentralWidget(centralWidget);
+        menuBar = new QMenuBar(Pclwindow);
+        menuBar->setObjectName(QStringLiteral("menuBar"));
+        menuBar->setGeometry(QRect(0, 0, 710, 21));
+        menu = new QMenu(menuBar);
+        menu->setObjectName(QStringLiteral("menu"));
+        Pclwindow->setMenuBar(menuBar);
+        mainToolBar = new QToolBar(Pclwindow);
+        mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
+        Pclwindow->addToolBar(Qt::TopToolBarArea, mainToolBar);
+        statusBar = new QStatusBar(Pclwindow);
+        statusBar->setObjectName(QStringLiteral("statusBar"));
+        Pclwindow->setStatusBar(statusBar);
+
+        menuBar->addAction(menu->menuAction());
+        menu->addAction(action_2);
+        menu->addAction(action);
+
+        retranslateUi(Pclwindow);
+
+        QMetaObject::connectSlotsByName(Pclwindow);
     } // setupUi
 
-    void retranslateUi(QMainWindow *MainWindow)
+    void retranslateUi(QMainWindow *Pclwindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", 0));
-        actionOpen->setText(QApplication::translate("MainWindow", "Open", 0));
-        actionSave->setText(QApplication::translate("MainWindow", "Save", 0));
-        actionQuit->setText(QApplication::translate("MainWindow", "Quit", 0));
-        pushButton->setText(QApplication::translate("MainWindow", "PushButton", 0));
-        menuFile->setTitle(QApplication::translate("MainWindow", "File", 0));
-        menuHelp->setTitle(QApplication::translate("MainWindow", "Help", 0));
+        Pclwindow->setWindowTitle(QApplication::translate("Pclwindow", "Pclwindow", 0));
+        action->setText(QApplication::translate("Pclwindow", "Exit", 0));
+        action_2->setText(QApplication::translate("Pclwindow", "Open file", 0));
+        menu->setTitle(QApplication::translate("Pclwindow", "File", 0));
     } // retranslateUi
 
 };
 
 namespace Ui {
-    class MainWindow: public Ui_MainWindow {};
+    class Pclwindow: public Ui_Pclwindow {};
 } // namespace Ui
 
 QT_END_NAMESPACE
