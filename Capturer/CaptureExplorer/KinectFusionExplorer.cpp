@@ -1499,6 +1499,6 @@ void CKinectFusionExplorer::AutoCaptureThread()
 		m_nMeshCount++;
 		SaveMesh();
 		UpdateMeshCountUI();
-
+		m_processor.ResetReconstruction();
 	}
 }
