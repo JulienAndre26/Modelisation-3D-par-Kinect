@@ -24,6 +24,8 @@
 #include <QtWidgets/QWidget>
 #include "QVTKWidget.h"
 
+#include <QMessageBox>
+
 QT_BEGIN_NAMESPACE
 
 class Ui_Pclwindow
@@ -42,6 +44,11 @@ public:
 
     void setupUi(QMainWindow *Pclwindow)
     {
+		QMessageBox msg;
+		msg.setWindowTitle("Tesssst");
+		msg.setText("Test");
+		msg.show();
+
         if (Pclwindow->objectName().isEmpty())
             Pclwindow->setObjectName(QStringLiteral("Pclwindow"));
         Pclwindow->resize(710, 414);

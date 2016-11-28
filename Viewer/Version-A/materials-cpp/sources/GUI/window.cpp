@@ -41,7 +41,12 @@ Pclwindow::Pclwindow(QWidget *parent) :
 	cloud_xyz->width = cloud_xyz->points.size();
 	cloud_xyz->height = 1;
 
-	vtkSmartPointer<vtkRenderWindow> renderWindow = pviz.getRenderWindow();
+	/*_qvtkRenderer = vtkRenderer::New();
+	_qvtkWidget->GetRenderWindow->AddRenderer(_qvtkRenderer);
+	_qvtkRenderer->SetBackground(0, 0, 0);
+	_qvtkRenderer->Render();
+*/
+	vtkSmartPointer<vtkRenderWindow> renderWindow = (vtkSmartPointer<vtkRenderWindow>) pviz.getRenderWindow();
 	ui->widget->SetRenderWindow(renderWindow);
 
 	pviz.setupInteractor(ui->widget->GetInteractor(), ui->widget->GetRenderWindow());
