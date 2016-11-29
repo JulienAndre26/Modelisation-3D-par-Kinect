@@ -114,7 +114,7 @@ void MainWindow::showPLY() {
 	pv->setShowFPS(true);
 	pv->createViewPort(0.0, 0.0, 1.0, 1.0, v);
 	
-	if (!withColor)
+	if (withColor)
 	{
 		pcl::PointCloud<pcl::PointXYZRGB>::Ptr src(new pcl::PointCloud<pcl::PointXYZRGB>);
 		pcl::io::loadPLYFile<pcl::PointXYZRGB>(filePath, *src);
