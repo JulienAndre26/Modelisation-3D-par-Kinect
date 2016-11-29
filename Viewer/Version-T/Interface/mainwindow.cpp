@@ -30,7 +30,7 @@ void MainWindow::on_btnBrowse_clicked()
 
 QStringList MainWindow::detectPlyFiles(QDir dirToImport)
 {
-    dirToImport.setNameFilters(QStringList()<<"*.ply"<<"*.obj"<<"*.stl");
+    dirToImport.setNameFilters(QStringList()<<"*.ply");
     QFileInfoList list = dirToImport.entryInfoList();
 
     QStringList res;
