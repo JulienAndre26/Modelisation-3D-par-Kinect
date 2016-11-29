@@ -22,9 +22,7 @@
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
-#include "QVTKWidget.h"
-
-#include <QMessageBox>
+#include <qvtkwidget.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -44,11 +42,6 @@ public:
 
     void setupUi(QMainWindow *Pclwindow)
     {
-		QMessageBox msg;
-		msg.setWindowTitle("Tesssst");
-		msg.setText("Test");
-		msg.show();
-
         if (Pclwindow->objectName().isEmpty())
             Pclwindow->setObjectName(QStringLiteral("Pclwindow"));
         Pclwindow->resize(710, 414);

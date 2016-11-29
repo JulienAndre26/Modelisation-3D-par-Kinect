@@ -66,12 +66,6 @@
     <ClCompile Include="sources\Processor\TestPCL.cpp">
       <Filter>Source Files\Processor</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_window.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_window.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\Processor\IProcessor.h">

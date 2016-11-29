@@ -613,10 +613,8 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
 		}
 		else { // CAPTURING
 			OnContinueScene();
+			m_processor.ResetReconstruction();
 		}
-
-		m_processor.ResetReconstruction();
-
     }
     if (IDC_CHECK_PAUSE_INTEGRATION == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
     {
@@ -1392,32 +1390,32 @@ void CKinectFusionExplorer::OnEndCapture()
 	EnableWindow(GetDlgItem(m_hWnd, IDC_BUTTON_AUTO_MODE), FALSE);
 
 	// Switch number of meshes
-	CString message;
-	int res = -1;
+	//CString message;
+	//int res = -1;
 
-	switch (m_nMeshCount)
-	{
-	case 0:
-		// Nothing
-		break;
-	case 1:
-		// SCENE OK
-		res = AskViewer();
-		if (res == IDYES)
-			OpenViewer();
-		break;
-	default:
-		// MULTIPLE 3D OBJECTS
-		res = AskTreatment();
-		if (res == IDYES)
-		{
-			ProcessTreatment();
-			res = AskViewer();
+	//switch (m_nMeshCount)
+	//{
+	//case 0:
+	//	// Nothing
+	//	break;
+	//case 1:
+	//	// SCENE OK
+	//	res = AskViewer();
+	//	if (res == IDYES)
+	//		OpenViewer();
+	//	break;
+	//default:
+	//	// MULTIPLE 3D OBJECTS
+	//	res = AskTreatment();
+	//	if (res == IDYES)
+	//	{
+	//		ProcessTreatment();
+	//		res = AskViewer();
 
-			if (res == IDYES)
-				OpenViewer();
-		}
-	}
+	//		if (res == IDYES)
+	//			OpenViewer();
+	//	}
+	//}
 
 	// Disable Conf Radio Buttons
 	SetEnableConfUI(TRUE);
