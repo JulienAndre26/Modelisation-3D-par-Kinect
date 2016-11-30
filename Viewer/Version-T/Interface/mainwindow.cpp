@@ -156,8 +156,13 @@ void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
 	filePath[path.size()] = '\0';
 	strcpy(filePath, path.toLocal8Bit().data());
 
-	std::thread *t = new std::thread([this] { this->showPlane(true); }); // THIBAUUUUUUUUUUUUUUUUUUUUUT 2D
-	t->join(); // Essayer detach pour voir si on a la main sur l'autre fenêtre en même temps
+	std::thread *t_3D_view = new std::thread([this] { this->showPLY(); });
+	std::thread *t_2D_lateral_view = new std::thread([this] { this->showPlane(false); });
+	std::thread *t_2D_plan_view = new std::thread([this] { this->showPlane(true); });
+
+	t_3D_view->join(); // Essayer detach pour voir si on a la main sur l'autre fenêtre en même temps
+	t_2D_lateral_view->join();
+	t_2D_plan_view->join();
 }
 
 /*
@@ -167,6 +172,8 @@ void MainWindow::showPLY() {
 	
 	pcl::visualization::PCLVisualizer::Ptr pv(new pcl::visualization::PCLVisualizer);
 	int v(20);
+	pv->setWindowName("3D View");
+	pv->setPosition(0, 0);
 	pv->setShowFPS(true);
 	pv->createViewPort(0.0, 0.0, 1.0, 1.0, v);
 	
@@ -250,12 +257,20 @@ void MainWindow::showPlane(bool bPlanView)
 
 	// Visualizer
 	pcl::visualization::PCLVisualizer::Ptr pv(new pcl::visualization::PCLVisualizer);
-	
 	int v(20);
+	pv->setWindowName(bPlanView ? "2D Plan View" : "2D Lateral View");
+	int xy_pos = (bPlanView ? 300 : 150);
+	pv->setPosition(xy_pos, xy_pos);
 	pv->setShowFPS(true);
 	pv->createViewPort(0.0, 0.0, 1.0, 1.0, v);
 	pv->addPointCloud<pcl::PointXYZ>(src_projected, src_rgb, "v1_source", v);
 	
+	// Set camera position if plan view
+	if (bPlanView)		
+		pv->setCameraPosition(0, 5, 0,  1, 0, 0,  0);
+	else
+		pv->setCameraPosition(0, 0, 5,  0, 1, 0,  0);
+
 	// Show
 	pv->spin();
 }
