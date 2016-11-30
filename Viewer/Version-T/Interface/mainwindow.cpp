@@ -156,7 +156,7 @@ void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
 	filePath[path.size()] = '\0';
 	strcpy(filePath, path.toLocal8Bit().data());
 
-	std::thread *t = new std::thread([this] { this->showPlane(); }); // THIBAUUUUUUUUUUUUUUUUUUUUUT 2D
+	std::thread *t = new std::thread([this] { this->showPlane(true); }); // THIBAUUUUUUUUUUUUUUUUUUUUUT 2D
 	t->join(); // Essayer detach pour voir si on a la main sur l'autre fenêtre en même temps
 }
 
@@ -199,7 +199,7 @@ void MainWindow::showPLY() {
 /*
  * Show the 3D Model selected (filePath) in 2D
  */
-void MainWindow::showPlane()
+void MainWindow::showPlane(bool bPlanView)
 {
 	// Point cloud in 2D
 	pcl::PointCloud<pcl::PointXYZ>::Ptr src_projected(new pcl::PointCloud<pcl::PointXYZ>);
@@ -221,12 +221,25 @@ void MainWindow::showPlane()
 	// --------------------------------
 
 
-	// Create a set of planar coefficients with X=Y=0,Z=1
+	// Create a set of planar coefficients with X=0,Y|Z=1|0
 	pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients());
 	coefficients->values.resize(4);
-	coefficients->values[0] = coefficients->values[1] = 0;
-	coefficients->values[2] = 1.0;
+	
+	if (!bPlanView)
+	{
+		// LATERAL (from frontside)
+		coefficients->values[0] = coefficients->values[1] = 0;	// X,Y = 0
+		coefficients->values[2] = 1.0;							// Z = 1
+	}
+	else 
+	{
+		// PLAN (from upside)
+		coefficients->values[0] = coefficients->values[2] = 0;	// X,Z = 0
+		coefficients->values[1] = 1.0;							// Y = 1
+	}
+
 	coefficients->values[3] = 0;
+
 
 	// Create the filtering object
 	pcl::ProjectInliers<pcl::PointXYZ> proj;

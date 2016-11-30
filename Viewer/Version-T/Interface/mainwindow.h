@@ -30,7 +30,7 @@ public:
     ~MainWindow();
 
 	void showPLY();
-	void showPlane();
+	void showPlane(bool bPlanView);
 
 	char *filePath;
 
