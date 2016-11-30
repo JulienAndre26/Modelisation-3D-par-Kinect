@@ -1,14 +1,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 	ui->progressBar->setVisible(false);
-//    QMainWindow::showMaximized();
 }
 
 MainWindow::~MainWindow()
@@ -90,6 +88,7 @@ bool MainWindow::readImportFile(QString import)
 //        }
 //
 //        ui->lwImportInfo->addItems(infos);
+
 		int linesCount = 0;
 		while (!stream.atEnd())
 		{
@@ -149,7 +148,6 @@ bool MainWindow::readImportFile(QString import)
 }
 
 
-
 void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
 {
     QString path = listContent.find(item->data(Qt::DisplayRole).toString()).value();
@@ -158,11 +156,13 @@ void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
 	filePath[path.size()] = '\0';
 	strcpy(filePath, path.toLocal8Bit().data());
 
-	std::thread *t = new std::thread([this] { this->showPLY(); });
-	t->join();
-	
+	std::thread *t = new std::thread([this] { this->showPlane(); }); // THIBAUUUUUUUUUUUUUUUUUUUUUT 2D
+	t->join(); // Essayer detach pour voir si on a la main sur l'autre fenêtre en même temps
 }
 
+/*
+* Show the 3D Model selected (filePath) - Handling Colors
+*/
 void MainWindow::showPLY() {
 	
 	pcl::visualization::PCLVisualizer::Ptr pv(new pcl::visualization::PCLVisualizer);
@@ -193,5 +193,56 @@ void MainWindow::showPLY() {
 	}
 	
 	// draw cloud
+	pv->spin();
+}
+
+/*
+ * Show the 3D Model selected (filePath) in 2D
+ */
+void MainWindow::showPlane()
+{
+	// Point cloud in 2D
+	pcl::PointCloud<pcl::PointXYZ>::Ptr src_projected(new pcl::PointCloud<pcl::PointXYZ>);
+	
+
+	// --------- Copied from ShowPLY()
+
+	pcl::PointCloud<pcl::PointXYZRGB>::Ptr src_raw(new pcl::PointCloud<pcl::PointXYZRGB>);
+	pcl::PointCloud<pcl::PointXYZ>::Ptr src(new pcl::PointCloud<pcl::PointXYZ>);
+	
+	pcl::io::loadPLYFile<pcl::PointXYZRGB>(filePath, *src_raw);
+
+	for (int i = 0; i < src_raw->size(); i++)
+		src->push_back(pcl::PointXYZ(src_raw->at(i).x, src_raw->at(i).y, src_raw->at(i).z));
+
+	// Color
+	pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> src_rgb(src, 50, 210, 210);
+
+	// --------------------------------
+
+
+	// Create a set of planar coefficients with X=Y=0,Z=1
+	pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients());
+	coefficients->values.resize(4);
+	coefficients->values[0] = coefficients->values[1] = 0;
+	coefficients->values[2] = 1.0;
+	coefficients->values[3] = 0;
+
+	// Create the filtering object
+	pcl::ProjectInliers<pcl::PointXYZ> proj;
+	proj.setModelType(pcl::SACMODEL_PLANE);
+	proj.setInputCloud(src);
+	proj.setModelCoefficients(coefficients);
+	proj.filter(*src_projected);
+
+	// Visualizer
+	pcl::visualization::PCLVisualizer::Ptr pv(new pcl::visualization::PCLVisualizer);
+	
+	int v(20);
+	pv->setShowFPS(true);
+	pv->createViewPort(0.0, 0.0, 1.0, 1.0, v);
+	pv->addPointCloud<pcl::PointXYZ>(src_projected, src_rgb, "v1_source", v);
+	
+	// Show
 	pv->spin();
 }

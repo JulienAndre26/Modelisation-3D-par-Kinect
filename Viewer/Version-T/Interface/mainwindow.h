@@ -12,6 +12,11 @@
 #include <pcl/visualization/pcl_visualizer.h>
 #include <thread>
 
+#include <iostream>
+#include <pcl/point_types.h>
+#include <pcl/ModelCoefficients.h>
+#include <pcl/filters/project_inliers.h>
+
 namespace Ui {
 class MainWindow;
 }
@@ -25,6 +30,7 @@ public:
     ~MainWindow();
 
 	void showPLY();
+	void showPlane();
 
 	char *filePath;
 
@@ -41,7 +47,6 @@ private:
     QStringList detectPlyFiles(QDir dirToImport);
     bool readImportFile(QString import);
 	
-
 	bool withColor = false;
     QStringList list;
 	QHash<QString, QString> listContent;
