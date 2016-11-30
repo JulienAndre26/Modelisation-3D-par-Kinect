@@ -17,7 +17,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_btnBrowse_clicked()
 {
-    QString importName = QFileDialog::getOpenFileName(this, tr("Open File"),"",tr("Import files (*.import)"));
+    QString importName = QFileDialog::getOpenFileName(this, tr("Open File"), QDir::homePath(), tr("Import files (*.import)"));
 
     QFileInfo importFileInfo(importName);
 
@@ -79,8 +79,8 @@ void MainWindow::readImportFile(QString import)
 //            QStringList split = QString(line).split(" ");
 //            infos.append(split.at(1));
             infos.append(line);
-			QStringList splitColor = line.split(" ");
-			int cmp = QString::compare("[COLOR]", splitColor.at(0), Qt::CaseInsensitive);
+			//QStringList splitColor = line.split(" ");
+			int cmp = QString::compare("[COLOR] true", line, Qt::CaseInsensitive);
 			if (cmp == 0)
 			{
 				withColor = true;
@@ -110,7 +110,6 @@ void MainWindow::showPLY() {
 	
 	pcl::visualization::PCLVisualizer::Ptr pv(new pcl::visualization::PCLVisualizer);
 	int v(20);
-	pv->setSize(800, 600);
 	pv->setShowFPS(true);
 	pv->createViewPort(0.0, 0.0, 1.0, 1.0, v);
 	
