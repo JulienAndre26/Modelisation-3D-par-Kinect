@@ -107,10 +107,10 @@ void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
 }
 
 void MainWindow::showPLY() {
-	/*std::string str(filePath);
-	cout <<  str << endl;*/
+	
 	pcl::visualization::PCLVisualizer::Ptr pv(new pcl::visualization::PCLVisualizer);
 	int v(20);
+	pv->setSize(800, 600);
 	pv->setShowFPS(true);
 	pv->createViewPort(0.0, 0.0, 1.0, 1.0, v);
 	

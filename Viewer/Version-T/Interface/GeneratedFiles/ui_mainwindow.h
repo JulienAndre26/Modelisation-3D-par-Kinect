@@ -17,12 +17,9 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMenuBar>
 #include <QtWidgets/QProgressBar>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
-#include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -41,15 +38,14 @@ public:
     QLabel *label;
     QListWidget *lwImportInfo;
     QWidget *tab_2;
-    QMenuBar *menuBar;
-    QToolBar *mainToolBar;
-    QStatusBar *statusBar;
 
     void setupUi(QMainWindow *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(507, 383);
+        MainWindow->resize(481, 311);
+        MainWindow->setMinimumSize(QSize(481, 311));
+        MainWindow->setMaximumSize(QSize(481, 311));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         tabWidget = new QTabWidget(centralWidget);
@@ -59,25 +55,25 @@ public:
         tab->setObjectName(QStringLiteral("tab"));
         btnBrowse = new QPushButton(tab);
         btnBrowse->setObjectName(QStringLiteral("btnBrowse"));
-        btnBrowse->setGeometry(QRect(330, 10, 75, 23));
+        btnBrowse->setGeometry(QRect(327, 10, 75, 23));
         btnBrowse->setStyleSheet(QStringLiteral(""));
         listWidget = new QListWidget(tab);
         listWidget->setObjectName(QStringLiteral("listWidget"));
-        listWidget->setGeometry(QRect(50, 50, 201, 151));
+        listWidget->setGeometry(QRect(22, 50, 201, 151));
         progressBar = new QProgressBar(tab);
         progressBar->setObjectName(QStringLiteral("progressBar"));
-        progressBar->setGeometry(QRect(50, 210, 241, 23));
+        progressBar->setGeometry(QRect(20, 210, 238, 23));
         progressBar->setValue(0);
         btnMerge = new QPushButton(tab);
         btnMerge->setObjectName(QStringLiteral("btnMerge"));
         btnMerge->setEnabled(true);
-        btnMerge->setGeometry(QRect(330, 210, 75, 23));
+        btnMerge->setGeometry(QRect(326, 210, 75, 23));
         lbCurrentMerge = new QLabel(tab);
         lbCurrentMerge->setObjectName(QStringLiteral("lbCurrentMerge"));
-        lbCurrentMerge->setGeometry(QRect(50, 250, 201, 16));
+        lbCurrentMerge->setGeometry(QRect(21, 250, 201, 16));
         label = new QLabel(tab);
         label->setObjectName(QStringLiteral("label"));
-        label->setGeometry(QRect(50, 10, 181, 16));
+        label->setGeometry(QRect(30, 10, 181, 16));
         lwImportInfo = new QListWidget(tab);
         lwImportInfo->setObjectName(QStringLiteral("lwImportInfo"));
         lwImportInfo->setGeometry(QRect(270, 50, 181, 151));
@@ -86,16 +82,6 @@ public:
         tab_2->setObjectName(QStringLiteral("tab_2"));
         tabWidget->addTab(tab_2, QString());
         MainWindow->setCentralWidget(centralWidget);
-        menuBar = new QMenuBar(MainWindow);
-        menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 507, 21));
-        MainWindow->setMenuBar(menuBar);
-        mainToolBar = new QToolBar(MainWindow);
-        mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
-        MainWindow->addToolBar(Qt::TopToolBarArea, mainToolBar);
-        statusBar = new QStatusBar(MainWindow);
-        statusBar->setObjectName(QStringLiteral("statusBar"));
-        MainWindow->setStatusBar(statusBar);
 
         retranslateUi(MainWindow);
 
