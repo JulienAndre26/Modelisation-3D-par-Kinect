@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+	ui->progressBar->setVisible(false);
 //    QMainWindow::showMaximized();
 }
 
@@ -20,12 +21,12 @@ void MainWindow::on_btnBrowse_clicked()
     QString importName = QFileDialog::getOpenFileName(this, tr("Open File"), QDir::homePath(), tr("Import files (*.import)"));
 
     QFileInfo importFileInfo(importName);
-
-    list = detectPlyFiles(importFileInfo.absoluteDir());
-
-    ui->listWidget->addItems(list);
-
-    readImportFile(importName);
+	if (readImportFile(importName))
+	{
+		list.clear();
+		list = detectPlyFiles(importFileInfo.absoluteDir());
+		ui->listWidget->addItems(list);
+	}    
 }
 
 QStringList MainWindow::detectPlyFiles(QDir dirToImport)
@@ -52,6 +53,7 @@ void MainWindow::on_btnMerge_clicked()
     }
     else
     {
+		ui->progressBar->setVisible(true);
         for (int i = 0; i < list.size()-1; i++)
         {
             ui->lbCurrentMerge->setText("Current merge : " + list.at(i) + " with " + list.at(i+1));
@@ -65,7 +67,7 @@ void MainWindow::on_btnMerge_clicked()
     }
 }
 
-void MainWindow::readImportFile(QString import)
+bool MainWindow::readImportFile(QString import)
 {
     QFile importFile(import);
     if(importFile.open(QIODevice::ReadOnly))
@@ -73,22 +75,77 @@ void MainWindow::readImportFile(QString import)
         QTextStream stream(&importFile);
         QStringList infos;
 
-        while(!stream.atEnd())
-        {
-            QString line = stream.readLine();
-//            QStringList split = QString(line).split(" ");
-//            infos.append(split.at(1));
-            infos.append(line);
-			//QStringList splitColor = line.split(" ");
-			int cmp = QString::compare("[COLOR] true", line, Qt::CaseInsensitive);
+//        while(!stream.atEnd())
+//        {
+//            QString line = stream.readLine();
+////            QStringList split = QString(line).split(" ");
+////            infos.append(split.at(1));
+//            infos.append(line);
+//			//QStringList splitColor = line.split(" ");
+//			int cmp = QString::compare("[COLOR] true", line, Qt::CaseInsensitive);
+//			if (cmp == 0)
+//			{
+//				withColor = true;
+//			}
+//        }
+//
+//        ui->lwImportInfo->addItems(infos);
+		int linesCount = 0;
+		while (!stream.atEnd())
+		{
+			stream.readLine();
+			linesCount++;
+		}
+
+		if (linesCount != 8)
+		{
+			QMessageBox::critical(this, "Bad file import", "Please select a correct import file");
+			return false;
+		}
+		else
+		{
+			stream.seek(0);
+			QString path = stream.readLine().split("\\").last();
+			ui->lbPath->setText("Capture name : " + path);
+
+			QString count = stream.readLine().split(" ").last();
+			ui->lbCount->setText("Files count : " + count);
+
+			QString format = stream.readLine().split(" ").last();
+			ui->lbFormat->setText("Format : " + format);
+
+			QString color = stream.readLine().split(" ").last();
+
+			int cmp = QString::compare("true", color, Qt::CaseInsensitive);
 			if (cmp == 0)
 			{
+				ui->lbColor->setText("Color : yes");
 				withColor = true;
 			}
-        }
+			else
+			{
+				ui->lbColor->setText("Color : no");
+			}
 
-        ui->lwImportInfo->addItems(infos);
+			QString voxelsPerMeter = stream.readLine().split(" ").last();
+			ui->lbVoxels->setText("Voxels/meter : " + voxelsPerMeter);
+			int vpmValue = voxelsPerMeter.toInt();
+
+			QString x = stream.readLine().split(" ").last();
+			int xValue = x.toInt();
+			ui->lbWidth->setText("Width : " + QString::number(xValue / vpmValue) + " meter(s)");
+
+			QString y = stream.readLine().split(" ").last();
+			int yValue = y.toInt();
+			ui->lbHeight->setText("Height : " + QString::number(yValue / vpmValue) + " meter(s)");
+
+			QString z = stream.readLine().split(" ").last();
+			int zValue = z.toInt();
+			ui->lbDepth->setText("Depth : " + QString::number(zValue / vpmValue) + " meter(s)");
+		}
     }
+
+	return true;
 }
 
 

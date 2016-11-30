@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>481</width>
-    <height>311</height>
+    <height>271</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>481</width>
-    <height>311</height>
+    <height>271</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -23,16 +23,16 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Modélisation par Kinect</string>
+   <string>Kinect 3D Modelling</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>1</x>
+      <x>0</x>
       <y>0</y>
       <width>481</width>
-      <height>311</height>
+      <height>271</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -40,12 +40,12 @@
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
-      <string>Traitement</string>
+      <string>Process</string>
      </attribute>
      <widget class="QPushButton" name="btnBrowse">
       <property name="geometry">
        <rect>
-        <x>327</x>
+        <x>80</x>
         <y>10</y>
         <width>75</width>
         <height>23</height>
@@ -73,12 +73,18 @@
        <rect>
         <x>22</x>
         <y>210</y>
-        <width>236</width>
+        <width>201</width>
         <height>23</height>
        </rect>
       </property>
       <property name="value">
        <number>0</number>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
+      <property name="textVisible">
+       <bool>true</bool>
       </property>
      </widget>
      <widget class="QPushButton" name="btnMerge">
@@ -87,8 +93,8 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>326</x>
-        <y>210</y>
+        <x>310</x>
+        <y>10</y>
         <width>75</width>
         <height>23</height>
        </rect>
@@ -100,8 +106,8 @@
      <widget class="QLabel" name="lbCurrentMerge">
       <property name="geometry">
        <rect>
-        <x>21</x>
-        <y>250</y>
+        <x>260</x>
+        <y>214</y>
         <width>201</width>
         <height>16</height>
        </rect>
@@ -110,33 +116,114 @@
        <string/>
       </property>
      </widget>
-     <widget class="QLabel" name="label">
+     <widget class="QLabel" name="lbPath">
       <property name="geometry">
        <rect>
-        <x>30</x>
-        <y>10</y>
-        <width>181</width>
+        <x>280</x>
+        <y>44</y>
+        <width>161</width>
         <height>16</height>
        </rect>
       </property>
       <property name="text">
-       <string>Choisir le fichier .import :</string>
+       <string>Capture name : </string>
       </property>
      </widget>
-     <widget class="QListWidget" name="lwImportInfo">
+     <widget class="QLabel" name="lbCount">
       <property name="geometry">
        <rect>
-        <x>270</x>
-        <y>50</y>
-        <width>181</width>
-        <height>151</height>
+        <x>280</x>
+        <y>64</y>
+        <width>161</width>
+        <height>16</height>
        </rect>
+      </property>
+      <property name="text">
+       <string>Files count :</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbFormat">
+      <property name="geometry">
+       <rect>
+        <x>280</x>
+        <y>84</y>
+        <width>161</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Format :</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbColor">
+      <property name="geometry">
+       <rect>
+        <x>280</x>
+        <y>104</y>
+        <width>161</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Color :</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbVoxels">
+      <property name="geometry">
+       <rect>
+        <x>280</x>
+        <y>124</y>
+        <width>161</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Voxels/meter :</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbWidth">
+      <property name="geometry">
+       <rect>
+        <x>280</x>
+        <y>144</y>
+        <width>161</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Width :</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbHeight">
+      <property name="geometry">
+       <rect>
+        <x>280</x>
+        <y>164</y>
+        <width>161</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Height :</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lbDepth">
+      <property name="geometry">
+       <rect>
+        <x>280</x>
+        <y>184</y>
+        <width>161</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Depth :</string>
       </property>
      </widget>
     </widget>
     <widget class="QWidget" name="tab_2">
      <attribute name="title">
-      <string>Visualisation</string>
+      <string>Visualization</string>
      </attribute>
     </widget>
    </widget>

@@ -39,7 +39,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QStringList detectPlyFiles(QDir dirToImport);
-    void readImportFile(QString import);
+    bool readImportFile(QString import);
 	
 
 	bool withColor = false;
