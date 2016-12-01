@@ -30,8 +30,9 @@ public:
     ~MainWindow();
 
 	void showPLY();
-	void showPlane(bool bPlanView);
+	void showPlaneNoColor(bool bPlanView);
 	void showPlaneColor(bool bPlanView);
+	void showPlane(bool bPlanView);
 	char *filePath;
 
 private slots:

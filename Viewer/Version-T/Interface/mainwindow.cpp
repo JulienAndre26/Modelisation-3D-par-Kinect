@@ -116,31 +116,20 @@ void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
 	strcpy(filePath, path.toLocal8Bit().data());
 
 	std::thread *t_3D_view = new std::thread([this] { this->showPLY(); });
-	std::thread *t_2D_lateral_view = new std::thread([this] {
-		if (withColor)
-		{
-			this->showPlaneColor(false);
-		}
-		else
-		{
-			this->showPlane(false);
-		}
-	});
-	
-	std::thread *t_2D_plan_view = new std::thread([this] {
-		if (withColor)
-		{
-			this->showPlaneColor(true);
-		}
-		else
-		{
-			this->showPlane(true);
-		}
-	});
+	std::thread *t_2D_lateral_view = new std::thread([this] { this->showPlane(false); });
+	std::thread *t_2D_plan_view = new std::thread([this] { this->showPlane(true); });
 
-	t_3D_view->join(); // Essayer detach pour voir si on a la main sur l'autre fenêtre en même temps
+	t_3D_view->join();
 	t_2D_lateral_view->join();
 	t_2D_plan_view->join();
+}
+
+void MainWindow::showPlane(bool bPlanView)
+{
+	if (withColor)
+		this->showPlaneColor(bPlanView);
+	else
+		this->showPlaneNoColor(bPlanView);
 }
 
 /*
@@ -249,7 +238,7 @@ void MainWindow::showPlaneColor(bool bPlanView)
 }/*
  * Show the 3D Model selected (filePath) in 2D
  */
-void MainWindow::showPlane(bool bPlanView)
+void MainWindow::showPlaneNoColor(bool bPlanView)
 {
 	// Point cloud in 2D
 	pcl::PointCloud<pcl::PointXYZ>::Ptr src_projected(new pcl::PointCloud<pcl::PointXYZ>);
