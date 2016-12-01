@@ -19,7 +19,6 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QProgressBar>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QTabWidget>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -28,91 +27,64 @@ class Ui_MainWindow
 {
 public:
     QWidget *centralWidget;
-    QTabWidget *tabWidget;
-    QWidget *tab;
-    QPushButton *btnBrowse;
     QListWidget *listWidget;
     QProgressBar *progressBar;
-    QPushButton *btnMerge;
     QLabel *lbCurrentMerge;
-    QLabel *lbPath;
-    QLabel *lbCount;
-    QLabel *lbFormat;
-    QLabel *lbColor;
-    QLabel *lbVoxels;
-    QLabel *lbWidth;
-    QLabel *lbHeight;
-    QLabel *lbDepth;
-    QWidget *tab_2;
+    QPushButton *btnMerge;
+    QPushButton *btnBrowse;
+    QLabel *lbCaptureName;
+    QPushButton *pushButton;
+    QPushButton *pushButton_2;
+    QPushButton *pushButton_3;
+    QPushButton *pushButton_4;
 
     void setupUi(QMainWindow *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(481, 271);
-        MainWindow->setMinimumSize(QSize(481, 271));
-        MainWindow->setMaximumSize(QSize(481, 311));
+        MainWindow->resize(1200, 600);
+        MainWindow->setMinimumSize(QSize(1200, 600));
+        MainWindow->setMaximumSize(QSize(1200, 600));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        tabWidget = new QTabWidget(centralWidget);
-        tabWidget->setObjectName(QStringLiteral("tabWidget"));
-        tabWidget->setGeometry(QRect(0, 0, 481, 271));
-        tab = new QWidget();
-        tab->setObjectName(QStringLiteral("tab"));
-        btnBrowse = new QPushButton(tab);
-        btnBrowse->setObjectName(QStringLiteral("btnBrowse"));
-        btnBrowse->setGeometry(QRect(80, 10, 75, 23));
-        btnBrowse->setStyleSheet(QStringLiteral(""));
-        listWidget = new QListWidget(tab);
+        listWidget = new QListWidget(centralWidget);
         listWidget->setObjectName(QStringLiteral("listWidget"));
-        listWidget->setGeometry(QRect(22, 50, 201, 151));
-        progressBar = new QProgressBar(tab);
+        listWidget->setGeometry(QRect(30, 150, 201, 151));
+        progressBar = new QProgressBar(centralWidget);
         progressBar->setObjectName(QStringLiteral("progressBar"));
-        progressBar->setGeometry(QRect(22, 210, 201, 23));
+        progressBar->setGeometry(QRect(30, 460, 201, 23));
         progressBar->setValue(0);
         progressBar->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
         progressBar->setTextVisible(true);
-        btnMerge = new QPushButton(tab);
+        lbCurrentMerge = new QLabel(centralWidget);
+        lbCurrentMerge->setObjectName(QStringLiteral("lbCurrentMerge"));
+        lbCurrentMerge->setGeometry(QRect(30, 430, 201, 16));
+        btnMerge = new QPushButton(centralWidget);
         btnMerge->setObjectName(QStringLiteral("btnMerge"));
         btnMerge->setEnabled(true);
-        btnMerge->setGeometry(QRect(310, 10, 75, 23));
-        lbCurrentMerge = new QLabel(tab);
-        lbCurrentMerge->setObjectName(QStringLiteral("lbCurrentMerge"));
-        lbCurrentMerge->setGeometry(QRect(260, 214, 201, 16));
-        lbPath = new QLabel(tab);
-        lbPath->setObjectName(QStringLiteral("lbPath"));
-        lbPath->setGeometry(QRect(280, 44, 161, 16));
-        lbCount = new QLabel(tab);
-        lbCount->setObjectName(QStringLiteral("lbCount"));
-        lbCount->setGeometry(QRect(280, 64, 161, 16));
-        lbFormat = new QLabel(tab);
-        lbFormat->setObjectName(QStringLiteral("lbFormat"));
-        lbFormat->setGeometry(QRect(280, 84, 161, 16));
-        lbColor = new QLabel(tab);
-        lbColor->setObjectName(QStringLiteral("lbColor"));
-        lbColor->setGeometry(QRect(280, 104, 161, 16));
-        lbVoxels = new QLabel(tab);
-        lbVoxels->setObjectName(QStringLiteral("lbVoxels"));
-        lbVoxels->setGeometry(QRect(280, 124, 161, 16));
-        lbWidth = new QLabel(tab);
-        lbWidth->setObjectName(QStringLiteral("lbWidth"));
-        lbWidth->setGeometry(QRect(280, 144, 161, 16));
-        lbHeight = new QLabel(tab);
-        lbHeight->setObjectName(QStringLiteral("lbHeight"));
-        lbHeight->setGeometry(QRect(280, 164, 161, 16));
-        lbDepth = new QLabel(tab);
-        lbDepth->setObjectName(QStringLiteral("lbDepth"));
-        lbDepth->setGeometry(QRect(280, 184, 161, 16));
-        tabWidget->addTab(tab, QString());
-        tab_2 = new QWidget();
-        tab_2->setObjectName(QStringLiteral("tab_2"));
-        tabWidget->addTab(tab_2, QString());
+        btnMerge->setGeometry(QRect(100, 350, 75, 23));
+        btnBrowse = new QPushButton(centralWidget);
+        btnBrowse->setObjectName(QStringLiteral("btnBrowse"));
+        btnBrowse->setGeometry(QRect(90, 70, 75, 23));
+        btnBrowse->setStyleSheet(QStringLiteral(""));
+        lbCaptureName = new QLabel(centralWidget);
+        lbCaptureName->setObjectName(QStringLiteral("lbCaptureName"));
+        lbCaptureName->setGeometry(QRect(32, 110, 201, 16));
+        pushButton = new QPushButton(centralWidget);
+        pushButton->setObjectName(QStringLiteral("pushButton"));
+        pushButton->setGeometry(QRect(260, 10, 491, 451));
+        pushButton_2 = new QPushButton(centralWidget);
+        pushButton_2->setObjectName(QStringLiteral("pushButton_2"));
+        pushButton_2->setGeometry(QRect(260, 470, 491, 121));
+        pushButton_3 = new QPushButton(centralWidget);
+        pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
+        pushButton_3->setGeometry(QRect(770, 10, 421, 281));
+        pushButton_4 = new QPushButton(centralWidget);
+        pushButton_4->setObjectName(QStringLiteral("pushButton_4"));
+        pushButton_4->setGeometry(QRect(770, 310, 421, 281));
         MainWindow->setCentralWidget(centralWidget);
 
         retranslateUi(MainWindow);
-
-        tabWidget->setCurrentIndex(0);
-
 
         QMetaObject::connectSlotsByName(MainWindow);
     } // setupUi
@@ -120,19 +92,14 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "Kinect 3D Modelling", 0));
-        btnBrowse->setText(QApplication::translate("MainWindow", "Browse", 0));
-        btnMerge->setText(QApplication::translate("MainWindow", "Merge", 0));
         lbCurrentMerge->setText(QString());
-        lbPath->setText(QApplication::translate("MainWindow", "Capture name : ", 0));
-        lbCount->setText(QApplication::translate("MainWindow", "Files count :", 0));
-        lbFormat->setText(QApplication::translate("MainWindow", "Format :", 0));
-        lbColor->setText(QApplication::translate("MainWindow", "Color :", 0));
-        lbVoxels->setText(QApplication::translate("MainWindow", "Voxels/meter :", 0));
-        lbWidth->setText(QApplication::translate("MainWindow", "Width :", 0));
-        lbHeight->setText(QApplication::translate("MainWindow", "Height :", 0));
-        lbDepth->setText(QApplication::translate("MainWindow", "Depth :", 0));
-        tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("MainWindow", "Process", 0));
-        tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("MainWindow", "Visualization", 0));
+        btnMerge->setText(QApplication::translate("MainWindow", "Merge", 0));
+        btnBrowse->setText(QApplication::translate("MainWindow", "Browse", 0));
+        lbCaptureName->setText(QApplication::translate("MainWindow", "Capture name : ", 0));
+        pushButton->setText(QApplication::translate("MainWindow", "3D model", 0));
+        pushButton_2->setText(QApplication::translate("MainWindow", "m\303\251triques (position du point s\303\251lectionn\303\251, distance pour 2 points)", 0));
+        pushButton_3->setText(QApplication::translate("MainWindow", "premi\303\250re vue 2D", 0));
+        pushButton_4->setText(QApplication::translate("MainWindow", "une autre vue 2D", 0));
     } // retranslateUi
 
 };

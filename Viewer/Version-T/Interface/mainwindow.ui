@@ -6,226 +6,164 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>481</width>
-    <height>271</height>
+    <width>1200</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>481</width>
-    <height>271</height>
+    <width>1200</width>
+    <height>600</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>481</width>
-    <height>311</height>
+    <width>1200</width>
+    <height>600</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>Kinect 3D Modelling</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QTabWidget" name="tabWidget">
+   <widget class="QListWidget" name="listWidget">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>481</width>
-      <height>271</height>
+      <x>30</x>
+      <y>150</y>
+      <width>201</width>
+      <height>151</height>
      </rect>
     </property>
-    <property name="currentIndex">
+   </widget>
+   <widget class="QProgressBar" name="progressBar">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>460</y>
+      <width>201</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="value">
      <number>0</number>
     </property>
-    <widget class="QWidget" name="tab">
-     <attribute name="title">
-      <string>Process</string>
-     </attribute>
-     <widget class="QPushButton" name="btnBrowse">
-      <property name="geometry">
-       <rect>
-        <x>80</x>
-        <y>10</y>
-        <width>75</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true"/>
-      </property>
-      <property name="text">
-       <string>Browse</string>
-      </property>
-     </widget>
-     <widget class="QListWidget" name="listWidget">
-      <property name="geometry">
-       <rect>
-        <x>22</x>
-        <y>50</y>
-        <width>201</width>
-        <height>151</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="QProgressBar" name="progressBar">
-      <property name="geometry">
-       <rect>
-        <x>22</x>
-        <y>210</y>
-        <width>201</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="value">
-       <number>0</number>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-      </property>
-      <property name="textVisible">
-       <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="btnMerge">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>310</x>
-        <y>10</y>
-        <width>75</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Merge</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="lbCurrentMerge">
-      <property name="geometry">
-       <rect>
-        <x>260</x>
-        <y>214</y>
-        <width>201</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-     <widget class="QLabel" name="lbPath">
-      <property name="geometry">
-       <rect>
-        <x>280</x>
-        <y>44</y>
-        <width>161</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Capture name : </string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="lbCount">
-      <property name="geometry">
-       <rect>
-        <x>280</x>
-        <y>64</y>
-        <width>161</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Files count :</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="lbFormat">
-      <property name="geometry">
-       <rect>
-        <x>280</x>
-        <y>84</y>
-        <width>161</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Format :</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="lbColor">
-      <property name="geometry">
-       <rect>
-        <x>280</x>
-        <y>104</y>
-        <width>161</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Color :</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="lbVoxels">
-      <property name="geometry">
-       <rect>
-        <x>280</x>
-        <y>124</y>
-        <width>161</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Voxels/meter :</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="lbWidth">
-      <property name="geometry">
-       <rect>
-        <x>280</x>
-        <y>144</y>
-        <width>161</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Width :</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="lbHeight">
-      <property name="geometry">
-       <rect>
-        <x>280</x>
-        <y>164</y>
-        <width>161</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Height :</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="lbDepth">
-      <property name="geometry">
-       <rect>
-        <x>280</x>
-        <y>184</y>
-        <width>161</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Depth :</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="tab_2">
-     <attribute name="title">
-      <string>Visualization</string>
-     </attribute>
-    </widget>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+    </property>
+    <property name="textVisible">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lbCurrentMerge">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>430</y>
+      <width>201</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnMerge">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>350</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Merge</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnBrowse">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>70</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string>Browse</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lbCaptureName">
+    <property name="geometry">
+     <rect>
+      <x>32</x>
+      <y>110</y>
+      <width>201</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Capture name : </string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>10</y>
+      <width>491</width>
+      <height>451</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>3D model</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>470</y>
+      <width>491</width>
+      <height>121</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>métriques (position du point sélectionné, distance pour 2 points)</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_3">
+    <property name="geometry">
+     <rect>
+      <x>770</x>
+      <y>10</y>
+      <width>421</width>
+      <height>281</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>première vue 2D</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_4">
+    <property name="geometry">
+     <rect>
+      <x>770</x>
+      <y>310</y>
+      <width>421</width>
+      <height>281</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>une autre vue 2D</string>
+    </property>
    </widget>
   </widget>
  </widget>

@@ -31,7 +31,7 @@ public:
 
 	void showPLY();
 	void showPlane(bool bPlanView);
-
+	void showPlaneColor(bool bPlanView);
 	char *filePath;
 
 private slots:

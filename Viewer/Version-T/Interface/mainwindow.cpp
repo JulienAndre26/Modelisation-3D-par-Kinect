@@ -73,22 +73,6 @@ bool MainWindow::readImportFile(QString import)
         QTextStream stream(&importFile);
         QStringList infos;
 
-//        while(!stream.atEnd())
-//        {
-//            QString line = stream.readLine();
-////            QStringList split = QString(line).split(" ");
-////            infos.append(split.at(1));
-//            infos.append(line);
-//			//QStringList splitColor = line.split(" ");
-//			int cmp = QString::compare("[COLOR] true", line, Qt::CaseInsensitive);
-//			if (cmp == 0)
-//			{
-//				withColor = true;
-//			}
-//        }
-//
-//        ui->lwImportInfo->addItems(infos);
-
 		int linesCount = 0;
 		while (!stream.atEnd())
 		{
@@ -105,43 +89,18 @@ bool MainWindow::readImportFile(QString import)
 		{
 			stream.seek(0);
 			QString path = stream.readLine().split("\\").last();
-			ui->lbPath->setText("Capture name : " + path);
-
-			QString count = stream.readLine().split(" ").last();
-			ui->lbCount->setText("Files count : " + count);
-
-			QString format = stream.readLine().split(" ").last();
-			ui->lbFormat->setText("Format : " + format);
-
+			ui->lbCaptureName->setText("Capture name : " + path);
+			stream.readLine();
+			stream.readLine();
 			QString color = stream.readLine().split(" ").last();
 
 			int cmp = QString::compare("true", color, Qt::CaseInsensitive);
 			if (cmp == 0)
 			{
-				ui->lbColor->setText("Color : yes");
 				withColor = true;
 			}
-			else
-			{
-				ui->lbColor->setText("Color : no");
+
 			}
-
-			QString voxelsPerMeter = stream.readLine().split(" ").last();
-			ui->lbVoxels->setText("Voxels/meter : " + voxelsPerMeter);
-			int vpmValue = voxelsPerMeter.toInt();
-
-			QString x = stream.readLine().split(" ").last();
-			int xValue = x.toInt();
-			ui->lbWidth->setText("Width : " + QString::number(xValue / vpmValue) + " meter(s)");
-
-			QString y = stream.readLine().split(" ").last();
-			int yValue = y.toInt();
-			ui->lbHeight->setText("Height : " + QString::number(yValue / vpmValue) + " meter(s)");
-
-			QString z = stream.readLine().split(" ").last();
-			int zValue = z.toInt();
-			ui->lbDepth->setText("Depth : " + QString::number(zValue / vpmValue) + " meter(s)");
-		}
     }
 
 	return true;
@@ -157,8 +116,27 @@ void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
 	strcpy(filePath, path.toLocal8Bit().data());
 
 	std::thread *t_3D_view = new std::thread([this] { this->showPLY(); });
-	std::thread *t_2D_lateral_view = new std::thread([this] { this->showPlane(false); });
-	std::thread *t_2D_plan_view = new std::thread([this] { this->showPlane(true); });
+	std::thread *t_2D_lateral_view = new std::thread([this] {
+		if (withColor)
+		{
+			this->showPlaneColor(false);
+		}
+		else
+		{
+			this->showPlane(false);
+		}
+	});
+	
+	std::thread *t_2D_plan_view = new std::thread([this] {
+		if (withColor)
+		{
+			this->showPlaneColor(true);
+		}
+		else
+		{
+			this->showPlane(true);
+		}
+	});
 
 	t_3D_view->join(); // Essayer detach pour voir si on a la main sur l'autre fenêtre en même temps
 	t_2D_lateral_view->join();
@@ -203,7 +181,72 @@ void MainWindow::showPLY() {
 	pv->spin();
 }
 
-/*
+
+void MainWindow::showPlaneColor(bool bPlanView)
+{
+	// Point cloud in 2D
+	pcl::PointCloud<pcl::PointXYZRGB>::Ptr src_projected(new pcl::PointCloud<pcl::PointXYZRGB>);
+
+
+	// --------- Copied from ShowPLY()
+
+	pcl::PointCloud<pcl::PointXYZRGB>::Ptr src(new pcl::PointCloud<pcl::PointXYZRGB>);
+	pcl::io::loadPLYFile<pcl::PointXYZRGB>(filePath, *src);
+	// color
+	pcl::visualization::PointCloudColorHandlerRGBField<pcl::PointXYZRGB> src_rgb(src);
+
+	// --------------------------------
+
+	// Create a set of planar coefficients with X=0,Y|Z=1|0
+	pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients());
+	coefficients->values.resize(4);
+
+	if (!bPlanView)
+	{
+		// LATERAL (from frontside)
+		coefficients->values[0] = coefficients->values[1] = 0;	// X,Y = 0
+		coefficients->values[2] = 1.0;							// Z = 1
+	}
+	else
+	{
+		// PLAN (from upside)
+		coefficients->values[0] = coefficients->values[2] = 0;	// X,Z = 0
+		coefficients->values[1] = 1.0;							// Y = 1
+	}
+
+	coefficients->values[3] = 0;
+
+
+	// Create the filtering object
+	pcl::ProjectInliers<pcl::PointXYZRGB> proj;
+	proj.setModelType(pcl::SACMODEL_PLANE);
+	proj.setInputCloud(src);
+	proj.setModelCoefficients(coefficients);
+	proj.filter(*src_projected);
+
+	// Visualizer
+	pcl::visualization::PCLVisualizer::Ptr pv(new pcl::visualization::PCLVisualizer);
+	int v(20);
+	pv->setWindowName(bPlanView ? "2D Plan View" : "2D Lateral View");
+	int xy_pos = (bPlanView ? 300 : 150);
+	pv->setPosition(xy_pos, xy_pos);
+	pv->setShowFPS(true);
+	pv->createViewPort(0.0, 0.0, 1.0, 1.0, v);
+
+	// point cloud
+	pv->addPointCloud<pcl::PointXYZRGB>(src_projected, src_rgb, "v1_source", v);
+
+	//pv->addPointCloud<pcl::PointXYZ>(src_projected, src_rgb, "v1_source", v);
+
+	// Set camera position if plan view
+	if (bPlanView)
+		pv->setCameraPosition(0, 5, 0, 1, 0, 0, 0);
+	else
+		pv->setCameraPosition(0, 0, 5, 0, 1, 0, 0);
+
+	// Show
+	pv->spin();
+}/*
  * Show the 3D Model selected (filePath) in 2D
  */
 void MainWindow::showPlane(bool bPlanView)
