@@ -613,10 +613,8 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
 		}
 		else { // CAPTURING
 			OnContinueScene();
+			m_processor.ResetReconstruction();
 		}
-
-		m_processor.ResetReconstruction();
-
     }
     if (IDC_CHECK_PAUSE_INTEGRATION == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
     {
@@ -1013,13 +1011,17 @@ void CKinectFusionExplorer::SetEnableConfUI(int nEnable) {
 void CKinectFusionExplorer::CreateConfFile()
 {
 	// QUALITY
-	std::wstring wsQuality;
-	if (m_params.m_reconstructionParams.voxelsPerMeter == 64)
-		wsQuality = L"LOW";
-	else if (m_params.m_reconstructionParams.voxelsPerMeter == 128)
-		wsQuality = L"MEDIUM";
-	else
-		wsQuality = L"HIGH";
+	//std::wstring wsQuality;
+	std::wstring wsVPM = std::to_wstring(m_params.m_reconstructionParams.voxelsPerMeter);
+	std::wstring wsX = std::to_wstring(m_params.m_reconstructionParams.voxelCountX);
+	std::wstring wsY = std::to_wstring(m_params.m_reconstructionParams.voxelCountY);
+	std::wstring wsZ = std::to_wstring(m_params.m_reconstructionParams.voxelCountZ);
+	//if (m_params.m_reconstructionParams.voxelsPerMeter == 64)
+	//	wsQuality = L"LOW";
+	//else if (m_params.m_reconstructionParams.voxelsPerMeter == 128)
+	//	wsQuality = L"MEDIUM";
+	//else
+	//	wsQuality = L"HIGH";
 
 	// FORMAT
 	std::wstring wsFormat;
@@ -1055,7 +1057,10 @@ void CKinectFusionExplorer::CreateConfFile()
 		confFile << L"[COUNT] " + wsCount + L"\n";
 		confFile << L"[FORMAT] " + wsFormat + L"\n";
 		confFile << L"[COLOR] " + wsColor + L"\n";
-		confFile << L"[QUALITY] " + wsQuality;
+		confFile << L"[VPM] " + wsVPM + L"\n";
+		confFile << L"[X] " + wsX + L"\n";
+		confFile << L"[Y] " + wsY + L"\n";
+		confFile << L"[Z] " + wsZ;
 
 		confFile.close();
 	}
@@ -1285,34 +1290,48 @@ bool CKinectFusionExplorer::RetrieveProjectConf()
 	int nVPM = -1;
 	int nX = -1;
 	int nY = -1;
-	int nZ = 512;
+	int nZ = -1;
+
+	// VPM
 	if (std::getline(confFile, wsLine) && res)
 	{
 		nSpaceIndex = wsLine.find_first_of(L" ");
 		wsLine = wsLine.substr(nSpaceIndex + 1, wsLine.length());
 		
-		if (wsLine.compare(L"LOW") == 0)
-		{
-			nVPM = 64;
-			nX = 320;
-			nY = 256;
-		}
-		else if (wsLine.compare(L"MEDIUM") == 0)
-		{
-			nVPM = 128;
-			nX = 640;
-			nY = 512;
-		}
-		else if (wsLine.compare(L"HIGH") == 0)
-		{
-			nVPM = 256;
-			nX = 1280;
-			nY = 1024;
-		}
-		else
-			res = false;
-		
-		//MessageBoxW(NULL, W2OLE((LPWSTR)wsLine.c_str()), _T("Quality Value"), MB_OK);
+		nVPM = std::stoi(wsLine);
+	}
+	else
+		res = false;
+
+	// X
+	if (std::getline(confFile, wsLine) && res)
+	{
+		nSpaceIndex = wsLine.find_first_of(L" ");
+		wsLine = wsLine.substr(nSpaceIndex + 1, wsLine.length());
+
+		nX = std::stoi(wsLine);
+	}
+	else
+		res = false;
+
+	// Y
+	if (std::getline(confFile, wsLine) && res)
+	{
+		nSpaceIndex = wsLine.find_first_of(L" ");
+		wsLine = wsLine.substr(nSpaceIndex + 1, wsLine.length());
+
+		nY = std::stoi(wsLine);
+	}
+	else
+		res = false;
+
+	// Z
+	if (std::getline(confFile, wsLine) && res)
+	{
+		nSpaceIndex = wsLine.find_first_of(L" ");
+		wsLine = wsLine.substr(nSpaceIndex + 1, wsLine.length());
+
+		nZ = std::stoi(wsLine);
 	}
 	else
 		res = false;
@@ -1392,32 +1411,32 @@ void CKinectFusionExplorer::OnEndCapture()
 	EnableWindow(GetDlgItem(m_hWnd, IDC_BUTTON_AUTO_MODE), FALSE);
 
 	// Switch number of meshes
-	CString message;
-	int res = -1;
+	//CString message;
+	//int res = -1;
 
-	switch (m_nMeshCount)
-	{
-	case 0:
-		// Nothing
-		break;
-	case 1:
-		// SCENE OK
-		res = AskViewer();
-		if (res == IDYES)
-			OpenViewer();
-		break;
-	default:
-		// MULTIPLE 3D OBJECTS
-		res = AskTreatment();
-		if (res == IDYES)
-		{
-			ProcessTreatment();
-			res = AskViewer();
+	//switch (m_nMeshCount)
+	//{
+	//case 0:
+	//	// Nothing
+	//	break;
+	//case 1:
+	//	// SCENE OK
+	//	res = AskViewer();
+	//	if (res == IDYES)
+	//		OpenViewer();
+	//	break;
+	//default:
+	//	// MULTIPLE 3D OBJECTS
+	//	res = AskTreatment();
+	//	if (res == IDYES)
+	//	{
+	//		ProcessTreatment();
+	//		res = AskViewer();
 
-			if (res == IDYES)
-				OpenViewer();
-		}
-	}
+	//		if (res == IDYES)
+	//			OpenViewer();
+	//	}
+	//}
 
 	// Disable Conf Radio Buttons
 	SetEnableConfUI(TRUE);

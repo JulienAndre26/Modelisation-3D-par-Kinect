@@ -8,8 +8,8 @@ class IOPLY /*: public IIO*/ {
 
 public:
 	// inherited method
-	/*int load(char * filename, void* objectToLoad);
-	int save(char * filename, void* objectToSave);*/
+	int load(char * filename, void* objectToLoad);
+	int save(char * filename, void* objectToSave);
 
 	static int load(char* filename, PointCloud::Ptr objectToLoad);
 	static int load(char* filename, PointCloudNormals::Ptr objectToLoad);
