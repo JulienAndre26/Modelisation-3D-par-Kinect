@@ -496,6 +496,9 @@ void CKinectFusionExplorer::InitializeUIControls()
 
 	// Set Tilt Radio Buttons + Tilt Position
 	CheckDlgButton(m_hWnd, IDC_SENSOR_TILT_MIDDLE, BST_CHECKED);
+	CheckDlgButton(m_hWnd, IDC_SENSOR_TILT_TOP, BST_UNCHECKED);
+	CheckDlgButton(m_hWnd, IDC_SENSOR_TILT_BOTTOM, BST_UNCHECKED);
+
 	m_processor.TiltSensor(0);
 	
     if (Stl == m_saveMeshFormat)
