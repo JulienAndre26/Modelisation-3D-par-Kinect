@@ -22,7 +22,6 @@
 //#include <QtWidgets/QStatusBar>
 //#include <QtWidgets/QToolBar>
 //#include <QtWidgets/QWidget>
-//#include <qvtkwidget.h>
 //
 //QT_BEGIN_NAMESPACE
 //
@@ -33,7 +32,6 @@
 //    QAction *action_2;
 //    QWidget *centralWidget;
 //    QGridLayout *gridLayout;
-//    QVTKWidget *widget;
 //    QProgressBar *progressBar;
 //    QMenuBar *menuBar;
 //    QMenu *menu;
@@ -55,27 +53,16 @@
 //        gridLayout->setSpacing(6);
 //        gridLayout->setContentsMargins(11, 11, 11, 11);
 //        gridLayout->setObjectName(QStringLiteral("gridLayout"));
-//        widget = new QVTKWidget(centralWidget);
-//        widget->setObjectName(QStringLiteral("widget"));
-//        QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-//        sizePolicy.setHorizontalStretch(0);
-//        sizePolicy.setVerticalStretch(0);
-//        sizePolicy.setHeightForWidth(widget->sizePolicy().hasHeightForWidth());
-//        widget->setSizePolicy(sizePolicy);
-//        widget->setMinimumSize(QSize(601, 271));
-//
-//        gridLayout->addWidget(widget, 0, 0, 1, 1);
-//
 //        progressBar = new QProgressBar(centralWidget);
 //        progressBar->setObjectName(QStringLiteral("progressBar"));
 //        progressBar->setValue(24);
 //
-//        gridLayout->addWidget(progressBar, 1, 0, 1, 1);
+//        gridLayout->addWidget(progressBar, 0, 0, 1, 1);
 //
 //        Pclwindow->setCentralWidget(centralWidget);
 //        menuBar = new QMenuBar(Pclwindow);
 //        menuBar->setObjectName(QStringLiteral("menuBar"));
-//        menuBar->setGeometry(QRect(0, 0, 710, 21));
+//        menuBar->setGeometry(QRect(0, 0, 710, 18));
 //        menu = new QMenu(menuBar);
 //        menu->setObjectName(QStringLiteral("menu"));
 //        Pclwindow->setMenuBar(menuBar);

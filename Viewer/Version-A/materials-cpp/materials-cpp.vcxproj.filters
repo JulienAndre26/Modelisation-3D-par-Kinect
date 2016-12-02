@@ -52,6 +52,15 @@
       <Extensions>ui</Extensions>
       <ParseFiles>true</ParseFiles>
     </Filter>
+    <Filter Include="Header Files\IO">
+      <UniqueIdentifier>{cf49a090-3248-42b1-9429-9b1b8887c88e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\IO">
+      <UniqueIdentifier>{e03e8d33-78cd-4f3b-b652-1e52cb197ebc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utils">
+      <UniqueIdentifier>{0e3f07f2-9973-47ad-a6e6-8a00d78945b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -66,6 +75,15 @@
     <ClCompile Include="sources\Processor\TestPCL.cpp">
       <Filter>Source Files\Processor</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_window.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_window.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="IOPLY.cpp">
+      <Filter>Source Files\IO</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\Processor\IProcessor.h">
@@ -76,6 +94,15 @@
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_some_test.h">
       <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IIO.h">
+      <Filter>Header Files\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="IOPLY.h">
+      <Filter>Header Files\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="custom_typedef.h">
+      <Filter>Header Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
