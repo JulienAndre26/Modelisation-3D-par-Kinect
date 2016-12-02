@@ -11,6 +11,9 @@
 #include <pcl/io/ply_io.h>
 #include <pcl/visualization/pcl_visualizer.h>
 #include <thread>
+#include <QDragEnterEvent>
+#include <QDropEvent>
+#include <QMimeData>
 
 #include <iostream>
 #include <pcl/point_types.h>
@@ -30,9 +33,9 @@ public:
     ~MainWindow();
 
 	void showPLY();
+	void showPlane(bool bPlanView);
 	void showPlaneNoColor(bool bPlanView);
 	void showPlaneColor(bool bPlanView);
-	void showPlane(bool bPlanView);
 	char *filePath;
 
 private slots:
@@ -47,6 +50,8 @@ private:
     Ui::MainWindow *ui;
     QStringList detectPlyFiles(QDir dirToImport);
     bool readImportFile(QString import);
+	void dropEvent(QDropEvent *e);
+	void dragEnterEvent(QDragEnterEvent *e);
 	
 	bool withColor = false;
     QStringList list;
