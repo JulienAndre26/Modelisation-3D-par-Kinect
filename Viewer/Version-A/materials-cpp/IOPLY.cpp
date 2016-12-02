@@ -12,6 +12,11 @@ int IOPLY::load(char * filename, PointCloud::Ptr objectToLoad) {
 	return 0;
 }
 
+int IOPLY::load(char * filename, PointCloudColored::Ptr objectToLoad) {
+	pcl::io::loadPLYFile<PointColorT>(filename, *objectToLoad);
+	return 0;
+}
+
 int IOPLY::load(char * filename, PointCloudNormals::Ptr objectToLoad) {
 	pcl::io::loadPLYFile<PointNormalT>(filename, *objectToLoad);
 	return 0;
@@ -31,6 +36,11 @@ int IOPLY::save(char * filename, void* objectToSave) {
 
 int IOPLY::save(char* filename, PointCloud::Ptr objectToSave) {
 	pcl::io::savePLYFile<PointT>(filename, *objectToSave);
+	return 0;
+}
+
+int IOPLY::save(char* filename, PointCloudColored::Ptr objectToSave) {
+	pcl::io::savePLYFile<PointColorT>(filename, *objectToSave);
 	return 0;
 }
 

@@ -4,7 +4,9 @@
 
 //convenient typedefs
 typedef pcl::PointXYZ PointT;
+typedef pcl::PointXYZRGB PointColorT;
 typedef pcl::PointCloud<PointT> PointCloud;
+typedef pcl::PointCloud<PointColorT> PointCloudColored;
 typedef pcl::PointNormal PointNormalT;
 typedef pcl::PointCloud<PointNormalT> PointCloudNormals;
 typedef pcl::FPFHSignature33 FPFHSignature33T;

@@ -124,16 +124,15 @@ void keyboardEventOccurred(const pcl::visualization::KeyboardEvent &event, void*
 	}
 }
 
-
-
-void reduce_size(PointCloud::Ptr cloud, PointCloud::Ptr res) {
+// COLORED VERSION
+void reduce_size(PointCloudColored::Ptr cloud, PointCloudColored::Ptr res) {
 	cout << "PointCloud before filtering: " << cloud->width * cloud->height
 		<< " data points (" << pcl::getFieldsList(*cloud) << ")." << endl;
 
 	// Create the filtering object
-	pcl::VoxelGrid<PointT> sor;
+	pcl::VoxelGrid<PointColorT> sor;
 	sor.setInputCloud(cloud);
-	sor.setLeafSize(0.01f, 0.01f, 0.01f);
+	sor.setLeafSize(0.001f, 0.001f, 0.001f);
 	sor.filter(*res);
 	cout << "bleh" << endl;
 
@@ -167,6 +166,80 @@ void reduce_size(PointCloud::Ptr cloud, PointCloud::Ptr res) {
 	Eigen::Vector4f::Zero(), Eigen::Quaternionf::Identity(), false); */
 }
 
+
+// NO COLOR VERSION
+void reduce_size(PointCloud::Ptr cloud, PointCloud::Ptr res) {
+	cout << "PointCloud before filtering: " << cloud->width * cloud->height
+		<< " data points (" << pcl::getFieldsList(*cloud) << ")." << endl;
+
+	// Create the filtering object
+	pcl::VoxelGrid<PointT> sor;
+	sor.setInputCloud(cloud);
+	sor.setLeafSize(0.001f, 0.001f, 0.001f);
+	sor.filter(*res);
+	cout << "bleh" << endl;
+
+	// Create a KD-Tree
+	//pcl::search::KdTree<PointT>::Ptr tree(new pcl::search::KdTree<PointT>);
+
+	//pcl::MovingLeastSquares<PointT, PointNormalT> mls;
+	//mls.setComputeNormals(true);
+
+	//// Set parameters
+	//mls.setInputCloud(cloud);
+	//mls.setPolynomialFit(true);
+	//mls.setSearchMethod(tree);
+	//mls.setSearchRadius(0.03);
+
+	//// Reconstruct
+	//mls.process(*res);
+
+	//pcl::BilateralFilter<pcl::PointXYZI> fbFilter;
+	//fbFilter.setInputCloud(cloud);
+	//fbFilter.setHalfSize(1.0);
+	//fbFilter.setStdDev(0.2);
+	//fbFilter.applyFilter(cloud_filtered);
+
+	cout << "PointCloud after filtering: " << res->width * res->height
+		<< " data points (" << pcl::getFieldsList(*res) << ")." << endl;
+
+	// Write filtered object
+	/*	pcl::PLYWriter writer;
+	writer.write("table_scene_lms400_downsampled.pcd", *cloud_filtered,
+	Eigen::Vector4f::Zero(), Eigen::Quaternionf::Identity(), false); */
+}
+
+// COLORED VERSION
+double computeCloudResolution(const PointCloudColored::ConstPtr &cloud) {
+	double res = 0.0;
+	int n_points = 0;
+	int nres;
+	std::vector<int> indices(2);
+	std::vector<float> sqr_distances(2);
+	pcl::search::KdTree<PointColorT> tree;
+	tree.setInputCloud(cloud);
+
+	for (size_t i = 0; i < cloud->size(); ++i) {
+		if (!pcl_isfinite((*cloud)[i].x)) {
+			continue;
+		}
+		//Considering the second neighbor since the first is the point itself.
+		nres = tree.nearestKSearch(i, 2, indices, sqr_distances);
+		if (nres == 2) {
+			res += sqrt(sqr_distances[1]);
+			++n_points;
+		}
+	}
+
+	if (n_points != 0) {
+		res /= n_points;
+	}
+
+	return res;
+}
+
+
+// NO COLOR VERSION
 double computeCloudResolution(const PointCloud::ConstPtr &cloud) {
 	double res = 0.0;
 	int n_points = 0;
@@ -196,6 +269,39 @@ double computeCloudResolution(const PointCloud::ConstPtr &cloud) {
 }
 
 
+// COLORED VERSION
+void ISS(PointCloudColored::Ptr cloud, PointCloudColored::Ptr keypoints, IndicesT::Ptr indices) {
+	cout << "Cloud with size = " << cloud->size() << endl;
+	// ----- ISS keypoints -----
+	pcl::ISSKeypoint3D<PointColorT, PointColorT> iss_detector;
+	// ----- Cloud resolution -----
+	double model_resolution = computeCloudResolution(cloud);
+	// ISS parameters
+	double gamma_21(0.975);
+	double gamma_32(0.975);
+	double min_neighbors(5);
+	int threads(4);
+	double salient_radius = 6 * model_resolution;
+	double non_max_radius = 4 * model_resolution;
+	// double normal_radius = 4 * model_resolution;
+	// double border_radius = 1 * model_resolution;
+	iss_detector.setSalientRadius(salient_radius);
+	iss_detector.setNonMaxRadius(non_max_radius);
+	// iss_detector.setNormalRadius(normal_radius);
+	// iss_detector.setBorderRadius(border_radius);
+	iss_detector.setThreshold21(gamma_21);
+	iss_detector.setThreshold32(gamma_32);
+	iss_detector.setMinNeighbors(min_neighbors);
+	iss_detector.setNumberOfThreads(threads);
+	iss_detector.setInputCloud(cloud);
+	// ISS result
+	iss_detector.compute(*keypoints);
+	for (int i = 0; i < keypoints->size(); i++)
+		indices->indices.push_back(iss_detector.getIndices()->at(i));
+	cout << "Keypoints found : " << keypoints->size() << endl;
+}
+
+// NO COLOR VERSION
 void ISS(PointCloud::Ptr cloud, PointCloud::Ptr keypoints, IndicesT::Ptr indices) {
 	cout << "Cloud with size = " << cloud->size() << endl;
 	// ----- ISS keypoints -----
@@ -294,6 +400,53 @@ void normals(PointCloud::Ptr cloud, PointCloudNormals::Ptr normals) {
 }
 
 
+// COLORED VERSION
+void showClouds(PointCloudColored::Ptr src, PointCloudColored::Ptr tgt, PointCloudColored::Ptr res,
+	PointCloudColored::Ptr src_keypoints, PointCloudNormals::Ptr src_normals,
+	PointCloudColored::Ptr tgt_keypoints, PointCloudNormals::Ptr tgt_normals) {
+	pcl::visualization::PCLVisualizer::Ptr v(new pcl::visualization::PCLVisualizer);
+
+	int v1(1), v2(2), v3(3), v4(4);
+	v->setShowFPS(true);
+	// ----- FINAL RESULT -----
+	v->createViewPort(0.0, 0.0, 0.5, 0.5, v1); // bot-left view
+											   // Bot-left view content
+	PointCloudColorHandlerCustom<PointColorT> src_rgb(src, 210, 50, 50); // Red
+	PointCloudColorHandlerCustom<PointColorT> tgt_rgb(tgt, 50, 210, 50); // Green
+	PointCloudColorHandlerCustom<PointColorT> res_rgb(res, 50, 50, 210); // Blue
+	PointCloudColorHandlerCustom<PointColorT> keypoints_rgb(src, 210, 50, 210); // Yellow
+	PointCloudColorHandlerCustom<PointColorT> normals_rgb(src, 190, 190, 190); // Snow white
+	v->addPointCloud(src, src_rgb, "v1_source", v1);
+	v->addPointCloud(tgt, tgt_rgb, "v1_target", v1);
+	//v->addPointCloud(res, res_rgb, "v1_result", v1);
+	// ----- SOURCE -----
+	v->createViewPort(0.5, 0.0, 1.0, 0.5, v2); // bot-right view 
+											   // Bot-right view content
+	v->addPointCloud(src, src_rgb, "v2_source", v2);
+	v->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 3, "v2_source", v2);
+	v->addPointCloud(src_keypoints, keypoints_rgb, "v2_keypoints", v2);
+	v->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 5, "v2_keypoints", v2);
+	v->addPointCloudNormals<PointColorT, PointNormalT>(src, src_normals, 10, 0.05, "v2_normals", v2);
+	// ----- TARGET -----
+	v->createViewPort(0.0, 0.5, 0.5, 1.0, v3); // top-left view
+											   // Top-left view content
+	v->addPointCloud(tgt, tgt_rgb, "v3_target", v3);
+	v->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 3, "v3_target", v3);
+	v->addPointCloud(tgt_keypoints, keypoints_rgb, "v3_keypoints", v3);
+	v->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 5, "v3_keypoints", v3);
+	v->addPointCloudNormals<PointColorT, PointNormalT>(tgt, tgt_normals, 10, 0.05, "v3_normals", v3);
+	// ----- RESULT -----
+	v->createViewPort(0.5, 0.5, 1.0, 1.0, v4); // top-right view
+											   // Top-right view content
+	v->addPointCloud(src, src_rgb, "v4_source, v4");
+	//v->addPointCloud(tgt, tgt_rgb, "v4_target, v4");
+	v->addPointCloud(res, res_rgb, "v4_result", v4);
+
+	// Spinning (drawing result)
+	v->spin();
+}
+
+// NO COLOR VERSION
 void showClouds(PointCloud::Ptr src, PointCloud::Ptr tgt, PointCloud::Ptr res,
 	PointCloud::Ptr src_keypoints, PointCloudNormals::Ptr src_normals,
 	PointCloud::Ptr tgt_keypoints, PointCloudNormals::Ptr tgt_normals) {
@@ -361,6 +514,39 @@ void showIntermediateCloud(PointCloud::Ptr src, PointCloud::Ptr tgt, pcl::visual
 	pv->spinOnce(100);
 }
 
+
+// COLORED VERSION
+void registration_ICP(PointCloudColored::Ptr src_corr, PointCloudColored::Ptr tgt_corr,
+	PointCloudColored::Ptr res, float distance_max,
+	Eigen::Matrix4f *transformation) {
+	// Align
+	pcl::IterativeClosestPoint<PointColorT, PointColorT> reg;
+	reg.setTransformationEpsilon(1e-6);
+	// Set the maximum distance between two correspondences (src<->tgt) to 10cm
+	// Note: adjust this based on the size of your datasets
+	reg.setMaxCorrespondenceDistance(3 * distance_max);
+	reg.setRANSACOutlierRejectionThreshold(distance_max / 5);
+
+	//	reg.setInputSource(src_corr);
+	reg.setInputTarget(tgt_corr);
+
+	// Run the same optimization in a loop and visualize the results
+	Eigen::Matrix4f Ti = Eigen::Matrix4f::Identity(), prev;
+
+	reg.setMaximumIterations(1000);
+
+	// Get the transformation from target to source
+	Ti = reg.getFinalTransformation();
+	(*transformation) = Ti.inverse();
+	// Print matrix
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++)
+			cout << (*transformation)(i, j) << " | ";
+		cout << endl;
+	}
+}
+
+// NO COLOR VERSION
 void registration_ICP(PointCloud::Ptr src_corr, PointCloud::Ptr tgt_corr,
 	PointCloud::Ptr res, float distance_max,
 	Eigen::Matrix4f *transformation) {
@@ -391,7 +577,53 @@ void registration_ICP(PointCloud::Ptr src_corr, PointCloud::Ptr tgt_corr,
 	}
 }
 
+// COLORED VERSION
+void showCorrespondences(PointCloudColored::Ptr src, PointCloudColored::Ptr tgt,
+	PointCloudColored::Ptr src_corr, PointCloudColored::Ptr tgt_corr,
+	pcl::CorrespondencesPtr correspondences, float distance_max) {
+	pcl::visualization::PCLVisualizer::Ptr v(new pcl::visualization::PCLVisualizer);
+	int v1(10), v2(11);
+	v->setShowFPS(true);
+	v->createViewPort(0.0, 0.0, 1.0, 0.5, v1);
+	v->createViewPort(0.0, 0.5, 1.0, 1.0, v2);
 
+	v->registerKeyboardCallback(keyboardEventOccurred, (void*)&v);
+	//v->registerMouseCallback(mouseEventOccurred, (void*)&v);
+	struct callback_args cb_args;
+	PointCloud::Ptr clicked_points_3d(new PointCloud);
+	cb_args.clicked_points_3d = clicked_points_3d;
+	cb_args.viewerPtr = pcl::visualization::PCLVisualizer::Ptr(v);
+	cb_args.distance = new char[128];
+	sprintf(cb_args.distance, "%f", 0);
+	v->registerPointPickingCallback(pp_callback, (void*)&cb_args);
+
+	cout << "Correspondences found: " << correspondences->size() << endl;
+	for (int i = 0; i < correspondences->size(); i++) {
+		if (correspondences->at(i).index_match != -1) { // only add if correspondence found
+			src_corr->push_back(src->at(correspondences->at(i).index_query));
+			tgt_corr->push_back(tgt->at(correspondences->at(i).index_match));
+			distance_max = std::fmaxf(correspondences->at(i).distance, distance_max);
+		}
+	}
+	cout << src_corr->size() << " Correpondences rly found" << endl;
+	// Content
+	PointCloudColorHandlerCustom<PointColorT> src_rgb(src, 210, 50, 50); // Red
+	PointCloudColorHandlerCustom<PointColorT> tgt_rgb(tgt, 50, 210, 50); // Green
+	PointCloudColorHandlerCustom<PointColorT> src_corr_rgb(src, 50, 210, 210); // Red contrary
+	PointCloudColorHandlerCustom<PointColorT> tgt_corr_rgb(tgt, 210, 50, 210); // Green contrary
+	v->addPointCloud(src, src_rgb, "v1_source", v1);
+	v->addPointCloud(tgt, tgt_rgb, "v1_target", v1);
+	v->addPointCloud(src_corr, src_corr_rgb, "v2_source", v2);
+	v->addPointCloud(tgt_corr, tgt_corr_rgb, "v2_target", v2);
+
+	cout << "max distance: " << distance_max << endl;
+	// Spinning (drawing result)
+	v->spin();
+}
+
+
+
+// NO COLOR VERSION
 void showCorrespondences(PointCloud::Ptr src, PointCloud::Ptr tgt,
 	PointCloud::Ptr src_corr, PointCloud::Ptr tgt_corr,
 	pcl::CorrespondencesPtr correspondences, float distance_max) {
@@ -432,16 +664,6 @@ void showCorrespondences(PointCloud::Ptr src, PointCloud::Ptr tgt,
 
 	cout << "max distance: " << distance_max << endl;
 	// Spinning (drawing result)
-	v->spin();
-}
-
-void showCloud(PointCloud::Ptr source) {
-
-	pcl::visualization::PCLVisualizer::Ptr v(new pcl::visualization::PCLVisualizer("BY NICO"));
-	int v1(10);
-	v->createViewPort(0.0, 0.0, 1.0, 1.0, v1);
-	PointCloudColorHandlerCustom<PointT> src_color(source, 50, 210, 50); // Green
-	v->addPointCloud(source, src_color, "v1_target", v1);
 	v->spin();
 }
 
