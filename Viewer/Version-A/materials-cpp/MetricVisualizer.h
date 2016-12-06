@@ -44,7 +44,7 @@ void pp_callback(const pcl::visualization::PointPickingEvent& event, void* args)
 		PointT point2 = data->clicked_points_3d->points.at(1);
 
 		// compute distance
-		dist = sqrt(pow(point1.x - point2.x, 2) + pow(point1.y - point2.y, 2) + pow(point1.z - point2.z, 2));
+		dist = ProcessorPCL::computeMetrics(point1.x, point2.x, point1.y, point2.y, point1.z, point2.z).returnedDouble;
 		// set value
 		sprintf(data->distance, "%f", dist);
 		// debug it
@@ -62,10 +62,6 @@ void pp_callback(const pcl::visualization::PointPickingEvent& event, void* args)
 class MetricVisualizer : public Visualizer  {
 private:
 	struct callback_args args;
-
-	
-
-
 
 public:
 

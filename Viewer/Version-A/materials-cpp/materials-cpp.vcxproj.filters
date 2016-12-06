@@ -107,9 +107,6 @@
     <ClInclude Include="MetricVisualizer.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
-    <ClInclude Include="CallbackArgs.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="headers\GUI\window.h">

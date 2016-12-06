@@ -153,7 +153,6 @@
     <ClCompile Include="sources\Processor\TestPCL.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CallbackArgs.h" />
     <ClInclude Include="custom_typedef.h" />
     <ClInclude Include="GeneratedFiles\ui_some_test.h" />
     <ClInclude Include="headers\Processor\IProcessor.h" />
