@@ -19,6 +19,8 @@
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/filters/bilateral.h>
 #include <pcl/filters/impl/bilateral.hpp>
+#include <pcl/filters/fast_bilateral.h>
+#include <pcl/filters/statistical_outlier_removal.h>
 #include <pcl/surface/mls.h>
 #include <pcl/point_representation.h>
 
@@ -126,15 +128,17 @@ void keyboardEventOccurred(const pcl::visualization::KeyboardEvent &event, void*
 
 // COLORED VERSION
 void reduce_size(PointCloudColored::Ptr cloud, PointCloudColored::Ptr res) {
-	cout << "PointCloud before filtering: " << cloud->width * cloud->height
+	cout << "PointCloud Colored before filtering: " << cloud->width * cloud->height
 		<< " data points (" << pcl::getFieldsList(*cloud) << ")." << endl;
 
+	
 	// Create the filtering object
-	pcl::VoxelGrid<PointColorT> sor;
-	sor.setInputCloud(cloud);
-	sor.setLeafSize(0.001f, 0.001f, 0.001f);
-	sor.filter(*res);
+	pcl::VoxelGrid<PointColorT> colored_vg;
+	colored_vg.setInputCloud(cloud);
+	colored_vg.setLeafSize(0.01f, 0.01f, 0.01f);
+	colored_vg.filter(*res);
 	cout << "bleh" << endl;
+
 
 	// Create a KD-Tree
 	//pcl::search::KdTree<PointT>::Ptr tree(new pcl::search::KdTree<PointT>);
@@ -169,15 +173,44 @@ void reduce_size(PointCloudColored::Ptr cloud, PointCloudColored::Ptr res) {
 
 // NO COLOR VERSION
 void reduce_size(PointCloud::Ptr cloud, PointCloud::Ptr res) {
-	cout << "PointCloud before filtering: " << cloud->width * cloud->height
+	cout << "PointCloud without color before filtering: " << cloud->width * cloud->height
 		<< " data points (" << pcl::getFieldsList(*cloud) << ")." << endl;
 
-	// Create the filtering object
-	pcl::VoxelGrid<PointT> sor;
+	/*PointCloud::Ptr temp(new PointCloud);
+
+	pcl::StatisticalOutlierRemoval<PointT> sor;
 	sor.setInputCloud(cloud);
-	sor.setLeafSize(0.001f, 0.001f, 0.001f);
-	sor.filter(*res);
-	cout << "bleh" << endl;
+	sor.setMeanK(50);
+	sor.setStddevMulThresh(1.0);
+	sor.filter(*temp);*/
+
+	// Create the filtering object
+	/*pcl::VoxelGrid<PointT> vg;
+	vg.setInputCloud(cloud);
+	vg.setLeafSize(0.01f, 0.01f, 0.01f);
+	vg.filter(*res)*/;
+
+	int _w, _h;
+	_w = cloud->width;
+	_h = cloud->height;
+
+	cloud->width = 640;
+	cloud->height = 480;
+	std::cout << cloud->width << " ; " << cloud->height << "->ORG ? " << cloud->isOrganized() << std::endl;
+
+	pcl::FastBilateralFilter<PointT> bilateral_filter;
+	bilateral_filter.setInputCloud(cloud);
+	bilateral_filter.setSigmaS(5);
+	bilateral_filter.setSigmaR(1.0f);
+	bilateral_filter.filter(*res);
+	// --- cheat  ----
+	//*res = *cloud;
+	// ---------------
+	res->width = _w;
+	res->height = _h;
+	cloud->width = _w;
+	cloud->height = _h;
+	std::cout << "DONE!" << std::endl;
 
 	// Create a KD-Tree
 	//pcl::search::KdTree<PointT>::Ptr tree(new pcl::search::KdTree<PointT>);
@@ -202,6 +235,8 @@ void reduce_size(PointCloud::Ptr cloud, PointCloud::Ptr res) {
 
 	cout << "PointCloud after filtering: " << res->width * res->height
 		<< " data points (" << pcl::getFieldsList(*res) << ")." << endl;
+
+	cout << "Find " << res->points.size() << " points " << std::endl;
 
 	// Write filtered object
 	/*	pcl::PLYWriter writer;
@@ -527,23 +562,32 @@ void registration_ICP(PointCloudColored::Ptr src_corr, PointCloudColored::Ptr tg
 	reg.setMaxCorrespondenceDistance(3 * distance_max);
 	reg.setRANSACOutlierRejectionThreshold(distance_max / 5);
 
-	//	reg.setInputSource(src_corr);
+	reg.setInputCloud(src_corr);
 	reg.setInputTarget(tgt_corr);
 
+
+	pcl::PointCloud<PointColorT> Final;
+	reg.align(Final);
+
+	cout << "there are " << Final.points.size() << " in final " << std::endl;
+
+	std::cout << "conv ? " << reg.hasConverged() << ", score ? " << reg.getFitnessScore() << std::endl;
+	std::cout << reg.getFinalTransformation() << std::endl;
+
 	// Run the same optimization in a loop and visualize the results
-	Eigen::Matrix4f Ti = Eigen::Matrix4f::Identity(), prev;
+	//Eigen::Matrix4f Ti = Eigen::Matrix4f::Identity(), prev;
 
-	reg.setMaximumIterations(1000);
+	//reg.setMaximumIterations(1000);
 
-	// Get the transformation from target to source
-	Ti = reg.getFinalTransformation();
-	(*transformation) = Ti.inverse();
-	// Print matrix
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++)
-			cout << (*transformation)(i, j) << " | ";
-		cout << endl;
-	}
+	//// Get the transformation from target to source
+	//Ti = reg.getFinalTransformation();
+	//(*transformation) = Ti.inverse();
+	//// Print matrix
+	//for (int i = 0; i < 4; i++) {
+	//	for (int j = 0; j < 4; j++)
+	//		cout << (*transformation)(i, j) << " | ";
+	//	cout << endl;
+	//}
 }
 
 // NO COLOR VERSION
@@ -557,24 +601,34 @@ void registration_ICP(PointCloud::Ptr src_corr, PointCloud::Ptr tgt_corr,
 	// Note: adjust this based on the size of your datasets
 	reg.setMaxCorrespondenceDistance(3 * distance_max);
 	reg.setRANSACOutlierRejectionThreshold(distance_max / 5);
-
-	//	reg.setInputSource(src_corr);
+//	reg.setRANSACIterations(0);
+	reg.setInputCloud(src_corr);
 	reg.setInputTarget(tgt_corr);
 
+	//pcl::PointCloud<PointT> Final;
+	reg.align(*src_corr);
+
+	//*res = *src_corr + *tgt_corr;
+
+	cout << "there are " << res->points.size() << " in res " << std::endl;
+	std::cout << "conv ? " << reg.hasConverged() << ", score ? " << reg.getFitnessScore() << std::endl;
+
+	//S(*transformation) = reg.getFinalTransformation();
+	std::cout << reg.getFinalTransformation() << std::endl;
 	// Run the same optimization in a loop and visualize the results
-	Eigen::Matrix4f Ti = Eigen::Matrix4f::Identity(), prev;
+	//Eigen::Matrix4f Ti = Eigen::Matrix4f::Identity(), prev;
 
-	reg.setMaximumIterations(1000);
+	//reg.setMaximumIterations(1000);
 
-	// Get the transformation from target to source
-	Ti = reg.getFinalTransformation();
-	(*transformation) = Ti.inverse();
-	// Print matrix
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++)
-			cout << (*transformation)(i, j) << " | ";
-		cout << endl;
-	}
+	//// Get the transformation from target to source
+	//Ti = reg.getFinalTransformation();
+	//(*transformation) = Ti.inverse();
+	//// Print matrix
+	//for (int i = 0; i < 4; i++) {
+	//	for (int j = 0; j < 4; j++)
+	//		cout << (*transformation)(i, j) << " | ";
+	//	cout << endl;
+	//}
 }
 
 // COLORED VERSION
@@ -675,6 +729,72 @@ char * TOTO2() {
 	return strdup("PourJulien2.ply");
 }
 
+#include <pcl/registration/lum.h>
+#include <pcl/registration/transformation_estimation_point_to_plane_lls.h>
+void method_nico(PointCloud::Ptr source, PointCloud::Ptr target, PointCloud::Ptr result) {
+
+	PointCloud::Ptr src_keypoints(new PointCloud);
+	PointCloud::Ptr tgt_keypoints(new PointCloud);
+
+	IndicesT::Ptr src_indices(new IndicesT);
+	IndicesT::Ptr tgt_indices(new IndicesT);
+
+	if (boost::filesystem::exists("keypoints1.ply")) IOPLY::load(strdup("keypoints1.ply"), src_keypoints);
+	else { ISS(source, src_keypoints, src_indices); IOPLY::save(strdup("keypoints1.ply"), src_keypoints); }
+	if (boost::filesystem::exists("keypoints2.ply")) IOPLY::load(strdup("keypoints2.ply"), tgt_keypoints);
+	else { ISS(target, tgt_keypoints, tgt_indices); IOPLY::save(strdup("keypoints2.ply"), tgt_keypoints); }
+
+	/*ISS(source, src_keypoints, src_indices);
+	ISS(target, tgt_keypoints, tgt_indices);*/
+
+	// Use your favorite pairwise correspondence estimation algorithm(s)
+	pcl::CorrespondencesPtr corrs_0_to_1(new pcl::Correspondences); //= someAlgo(source, target);
+	pcl::CorrespondencesPtr corrs_1_to_0(new pcl::Correspondences); // = someAlgo(target, source);
+	pcl::registration::CorrespondenceEstimation<PointT, PointT> cest;
+	// Correspondences parameters
+	cest.setInputSource(src_keypoints);
+	cest.setInputTarget(tgt_keypoints);
+	// Correspondences result
+	cest.determineCorrespondences(*corrs_0_to_1);
+	// Correspondences parameters
+	cest.setInputSource(tgt_keypoints);
+	cest.setInputTarget(src_keypoints);
+	// Correspondences result
+	cest.determineCorrespondences(*corrs_1_to_0);
+	
+	
+	//Eigen::Matrix4f transformation;
+	//pcl::registration::TransformationEstimationPointToPlaneLLS<boost::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>,
+	//	boost::shared_ptr<pcl::PointCloud<pcl::PointXYZ>>, Eigen::Matrix4>	teptplls;
+	//teptplls.estimateRigidTransformation(source, target, &transformation);
+
+	//pcl::registration::LUM<PointT> lum;
+	//// Add point clouds as vertices to the SLAM graph
+	//lum.addPointCloud(source);
+	//lum.addPointCloud(target);
+	//// Add the correspondence results as edges to the SLAM graph
+	//lum.setCorrespondences(0, 1, corrs_0_to_1);
+	//lum.setCorrespondences(1, 0, corrs_1_to_0);
+	//// Change the computation parameters
+	//lum.setMaxIterations(150);
+	//lum.setConvergenceThreshold(0.0);
+	//// Perform the actual LUM computation
+	//lum.compute();
+	//// Return the concatenated point cloud result
+	//result = lum.getConcatenatedCloud();
+	// Return the separate point cloud transformations
+	/*for (int i = 0; i < lum.getNumVertices(); i++)
+	{
+		transforms_out[i] = lum.getTransformation(i);
+	}*/
+
+
+	pcl::visualization::PCLVisualizer::Ptr v(new pcl::visualization::PCLVisualizer);
+	v->setShowFPS(true);
+	v->addPointCloud(result);
+	v->spin();
+
+}
 
 Status ProcessorPCL::merge(string path) {
 	Status s;
@@ -694,77 +814,79 @@ Status ProcessorPCL::merge(string path) {
 	if (boost::filesystem::exists("organized2.ply")) IOPLY::load(strdup("organized2.ply"), tgt);
 	else { IOPLY::load(f2, tgt_raw); reduce_size(tgt_raw, tgt); IOPLY::save(strdup("organized2.ply"), tgt); }
 
-	// ----- Keypoints ------
-	PointCloud::Ptr src_keypoints(new PointCloud);
-	PointCloud::Ptr tgt_keypoints(new PointCloud);
-	IndicesT::Ptr src_indices(new IndicesT);
-	IndicesT::Ptr tgt_indices(new IndicesT);
-
-	if (boost::filesystem::exists("keypoints1.ply")) IOPLY::load(strdup("keypoints1.ply"), src_keypoints);
-	else { ISS(src, src_keypoints, src_indices); IOPLY::save(strdup("keypoints1.ply"), src_keypoints); }
-	if (boost::filesystem::exists("keypoints2.ply")) IOPLY::load(strdup("keypoints2.ply"), tgt_keypoints);
-	else { ISS(tgt, tgt_keypoints, tgt_indices); IOPLY::save(strdup("keypoints2.ply"), tgt_keypoints); }
-
-	ISS(src, src_keypoints, src_indices);
-	ISS(tgt, tgt_keypoints, tgt_indices);
-
-	// ----- Normals -----
-	PointCloudNormals::Ptr src_normals_raw(new PointCloudNormals);
-	PointCloudNormals::Ptr tgt_normals_raw(new PointCloudNormals);
-	PointCloudNormals::Ptr src_normals(new PointCloudNormals);
-	PointCloudNormals::Ptr tgt_normals(new PointCloudNormals);
-	/*	if (boost::filesystem::exists("normals1.pcd")) LoadNormals("normals1.pcd", src_normals);
-	else { normals(src_keypoints, src_normals); SaveNormals("normals1.pcd", src_keypoints, src_normals); }
-	if (boost::filesystem::exists("normals2.pcd")) LoadNormals("normals2.pcd", tgt_normals);
-	else { normals(tgt_keypoints, tgt_normals); SaveNormals("normals2.pcd", tgt_keypoints, tgt_normals); } */
-	/*	normals(src, src_normals_raw);
-	normals(tgt, tgt_normals_raw);
-
-	for (int i = 0; i < src_indices->indices.size(); i++)
-	src_normals->push_back(
-	src_normals_raw->at(
-	src_indices->indices.at(i)));
-	for (int i = 0; i < tgt_indices->indices.size(); i++)
-	tgt_normals->push_back(
-	tgt_normals_raw->at(
-	tgt_indices->indices.at(i))); */
-
-	// ----- Features ------
-	/* PointCloudFPFH::Ptr src_features(new PointCloudFPFH);
-	PointCloudFPFH::Ptr tgt_features(new PointCloudFPFH);
-	if (boost::filesystem::exists("features1.ply")) LoadFeatures("features1.ply", src_features);
-	else { FPFH(src, src_normals, src_keypoints, src_features); SaveFeatures("features1.ply", src_features); }
-	if (boost::filesystem::exists("features2.ply")) LoadFeatures("features2.ply", tgt_features);
-	else { FPFH(tgt, tgt_normals, tgt_keypoints, tgt_features); SaveFeatures("features2.ply", tgt_features); } */
-
-	// ----- Correspondences -----
-	pcl::CorrespondencesPtr correspondences(new pcl::Correspondences);
-	pcl::registration::CorrespondenceEstimation<PointT, PointT> cest;
-	PointCloud::Ptr src_corr(new PointCloud), tgt_corr(new PointCloud);
-	// Correspondences parameters
-	cest.setInputSource(src_keypoints);
-	cest.setInputTarget(tgt_keypoints);
-	// Correspondences result
-	cest.determineCorrespondences(*correspondences);
-	float distance_max = 0;
-	showCorrespondences(src_keypoints, tgt_keypoints, src_corr, tgt_corr, correspondences, distance_max);
-
-	// ----- Registration ------
-	Eigen::Matrix4f transformation;
-	// Estimated transformation
-	// registration_transformation_estimation(src_features, tgt_features, src_keypoints, tgt_keypoints, &transformation);
 	PointCloud::Ptr res(new PointCloud);
-	registration_ICP(src_corr, tgt_corr, res, distance_max, &transformation);
-	Eigen::Matrix4f inverse = transformation.inverse();
+	method_nico(src, tgt, res);
+	//// ----- Keypoints ------
+	//PointCloud::Ptr src_keypoints(new PointCloud);
+	//PointCloud::Ptr tgt_keypoints(new PointCloud);
+	//IndicesT::Ptr src_indices(new IndicesT);
+	//IndicesT::Ptr tgt_indices(new IndicesT);
 
-	/* PointCloud::Ptr res_xyz(new PointCloud);
-	for (int i = 0; i < res->size(); i++)
-	res_xyz->push_back(PointT(res->at(i).x, res->at(i).y, res->at(i).z)); */
+	//if (boost::filesystem::exists("keypoints1.ply")) IOPLY::load(strdup("keypoints1.ply"), src_keypoints);
+	//else { ISS(src, src_keypoints, src_indices); IOPLY::save(strdup("keypoints1.ply"), src_keypoints); }
+	//if (boost::filesystem::exists("keypoints2.ply")) IOPLY::load(strdup("keypoints2.ply"), tgt_keypoints);
+	//else { ISS(tgt, tgt_keypoints, tgt_indices); IOPLY::save(strdup("keypoints2.ply"), tgt_keypoints); }
 
-	pcl::transformPointCloud(*tgt, *res, transformation);
-	pcl::transformPointCloud(*tgt, *tgt, inverse);
-	// ----- Show clouds -----
-	showClouds(src, tgt, res, src_keypoints, src_normals, tgt_keypoints, tgt_normals);
+	//ISS(src, src_keypoints, src_indices);
+	//ISS(tgt, tgt_keypoints, tgt_indices);
+
+	//// ----- Normals -----
+	//PointCloudNormals::Ptr src_normals_raw(new PointCloudNormals);
+	//PointCloudNormals::Ptr tgt_normals_raw(new PointCloudNormals);
+	//PointCloudNormals::Ptr src_normals(new PointCloudNormals);
+	//PointCloudNormals::Ptr tgt_normals(new PointCloudNormals);
+	///*	if (boost::filesystem::exists("normals1.pcd")) LoadNormals("normals1.pcd", src_normals);
+	//else { normals(src_keypoints, src_normals); SaveNormals("normals1.pcd", src_keypoints, src_normals); }
+	//if (boost::filesystem::exists("normals2.pcd")) LoadNormals("normals2.pcd", tgt_normals);
+	//else { normals(tgt_keypoints, tgt_normals); SaveNormals("normals2.pcd", tgt_keypoints, tgt_normals); } */
+	///*	normals(src, src_normals_raw);
+	//normals(tgt, tgt_normals_raw);
+
+	//for (int i = 0; i < src_indices->indices.size(); i++)
+	//src_normals->push_back(
+	//src_normals_raw->at(
+	//src_indices->indices.at(i)));
+	//for (int i = 0; i < tgt_indices->indices.size(); i++)
+	//tgt_normals->push_back(
+	//tgt_normals_raw->at(
+	//tgt_indices->indices.at(i))); */
+
+	//// ----- Features ------
+	///* PointCloudFPFH::Ptr src_features(new PointCloudFPFH);
+	//PointCloudFPFH::Ptr tgt_features(new PointCloudFPFH);
+	//if (boost::filesystem::exists("features1.ply")) LoadFeatures("features1.ply", src_features);
+	//else { FPFH(src, src_normals, src_keypoints, src_features); SaveFeatures("features1.ply", src_features); }
+	//if (boost::filesystem::exists("features2.ply")) LoadFeatures("features2.ply", tgt_features);
+	//else { FPFH(tgt, tgt_normals, tgt_keypoints, tgt_features); SaveFeatures("features2.ply", tgt_features); } */
+
+	//// ----- Correspondences -----
+	//pcl::CorrespondencesPtr correspondences(new pcl::Correspondences);
+	//pcl::registration::CorrespondenceEstimation<PointT, PointT> cest;
+	//PointCloud::Ptr src_corr(new PointCloud), tgt_corr(new PointCloud);
+	//// Correspondences parameters
+	//cest.setInputSource(src_keypoints);
+	//cest.setInputTarget(tgt_keypoints);
+	//// Correspondences result
+	//cest.determineCorrespondences(*correspondences);
+	//float distance_max = 0;
+	//showCorrespondences(src_keypoints, tgt_keypoints, src_corr, tgt_corr, correspondences, distance_max);
+
+	//// ----- Registration ------
+	//Eigen::Matrix4f transformation;
+	//// Estimated transformation
+	//// registration_transformation_estimation(src_features, tgt_features, src_keypoints, tgt_keypoints, &transformation);
+	//PointCloud::Ptr res(new PointCloud);
+	//registration_ICP(src_corr, tgt_corr, res, distance_max, &transformation);
+	//Eigen::Matrix4f inverse = transformation.inverse();
+
+	///* PointCloud::Ptr res_xyz(new PointCloud);
+	//for (int i = 0; i < res->size(); i++)
+	//res_xyz->push_back(PointT(res->at(i).x, res->at(i).y, res->at(i).z)); */
+
+	//pcl::transformPointCloud(*tgt, *res, transformation);
+	//pcl::transformPointCloud(*tgt, *tgt, inverse);
+	//// ----- Show clouds -----
+	//showClouds(src, tgt, res, src_keypoints, src_normals, tgt_keypoints, tgt_normals);
 	return s;
 }
 
