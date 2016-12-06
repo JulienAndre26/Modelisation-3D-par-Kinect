@@ -16,7 +16,7 @@
 #include <pcl/registration/icp_nl.h>
 #include <pcl/registration/transforms.h>
 #include <pcl/registration/transformation_estimation_svd.h>
-#include <pcl/visualization/pcl_visualizer.h>
+//#include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/filters/bilateral.h>
 #include <pcl/filters/impl/bilateral.hpp>
 #include <pcl/filters/fast_bilateral.h>
@@ -27,6 +27,8 @@
 #include "custom_typedef.h"
 #include "IOPLY.h"
 
+
+#include "MetricVisualizer.h"
 
 using pcl::visualization::PointCloudColorHandlerGenericField;
 using pcl::visualization::PointCloudColorHandlerCustom;
@@ -49,63 +51,63 @@ void mouseEventOccurred(const pcl::visualization::MouseEvent &event, void* viewe
 }
 
 
-struct callback_args {
-	// structure used to pass arguments to the callback function
-	PointCloud::Ptr clicked_points_3d;
-	pcl::visualization::PCLVisualizer::Ptr viewerPtr;
-	char * distance;
-};
+//struct callback_args {
+//	// structure used to pass arguments to the callback function
+//	PointCloud::Ptr clicked_points_3d;
+//	Visualizer::Ptr viewerPtr;
+//	char * distance;
+//};
 
-
-void pp_callback(const pcl::visualization::PointPickingEvent& event, void* args)
-{
-	// retrieve parameter
-	struct callback_args* data = (struct callback_args *)args;
-	// in case not point found, exit
-	if (event.getPointIndex() == -1)
-		return;
-
-	// instanciate point
-	PointT current_point;
-
-	// retrieve values
-	event.getPoint(current_point.x, current_point.y, current_point.z);
-
-	// if two points are already in the list
-	if (data->clicked_points_3d->points.size() == 2) {
-		// empty the list
-		data->clicked_points_3d->points.clear();
-		// reset distance value
-		sprintf(data->distance, "%f", 0);
-	}
-
-	// add point to the list
-	data->clicked_points_3d->points.push_back(current_point);
-
-	// if there are two points in the list
-	if (data->clicked_points_3d->points.size() == 2) {
-		double dist;
-		// retrieve values
-		PointT point1 = data->clicked_points_3d->points.at(0);
-		PointT point2 = data->clicked_points_3d->points.at(1);
-
-		// compute distance
-		dist = sqrt(pow(point1.x - point2.x, 2) + pow(point1.y - point2.y, 2) + pow(point1.z - point2.z, 2));
-		// set value
-		sprintf(data->distance, "%f", dist);
-		// debug it
-		std::cout << "DISTANCE : " << data->distance << std::endl;
-	}
-
-	// Draw clicked points in red:
-	pcl::visualization::PointCloudColorHandlerCustom<PointT> red(data->clicked_points_3d, 255, 0, 0);
-	data->viewerPtr->removePointCloud("clicked_points");
-	data->viewerPtr->addPointCloud(data->clicked_points_3d, red, "clicked_points");
-	data->viewerPtr->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 10, "clicked_points");
-	// debug 
-	std::cout << current_point.x << " " << current_point.y << " " << current_point.z << std::endl;
-}
-
+//
+//void pp_callback(const pcl::visualization::PointPickingEvent& event, void* args)
+//{
+//	// retrieve parameter
+//	struct callback_args* data = (struct callback_args *)args;
+//	// in case not point found, exit
+//	if (event.getPointIndex() == -1)
+//		return;
+//
+//	// instanciate point
+//	PointT current_point;
+//
+//	// retrieve values
+//	event.getPoint(current_point.x, current_point.y, current_point.z);
+//
+//	// if two points are already in the list
+//	if (data->clicked_points_3d->points.size() == 2) {
+//		// empty the list
+//		data->clicked_points_3d->points.clear();
+//		// reset distance value
+//		sprintf(data->distance, "%f", 0);
+//	}
+//
+//	// add point to the list
+//	data->clicked_points_3d->points.push_back(current_point);
+//
+//	// if there are two points in the list
+//	if (data->clicked_points_3d->points.size() == 2) {
+//		double dist;
+//		// retrieve values
+//		PointT point1 = data->clicked_points_3d->points.at(0);
+//		PointT point2 = data->clicked_points_3d->points.at(1);
+//
+//		// compute distance
+//		dist = sqrt(pow(point1.x - point2.x, 2) + pow(point1.y - point2.y, 2) + pow(point1.z - point2.z, 2));
+//		// set value
+//		sprintf(data->distance, "%f", dist);
+//		// debug it
+//		std::cout << "DISTANCE : " << data->distance << std::endl;
+//	}
+//
+//	// Draw clicked points in red:
+//	pcl::visualization::PointCloudColorHandlerCustom<PointT> red(data->clicked_points_3d, 255, 0, 0);
+//	data->viewerPtr->removePointCloud("clicked_points");
+//	data->viewerPtr->addPointCloud(data->clicked_points_3d, red, "clicked_points");
+//	data->viewerPtr->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 10, "clicked_points");
+//	// debug 
+//	std::cout << current_point.x << " " << current_point.y << " " << current_point.z << std::endl;
+//}
+//
 
 void keyboardEventOccurred(const pcl::visualization::KeyboardEvent &event, void* viewer_void) {
 	// retrieve visualizer
@@ -635,6 +637,8 @@ void registration_ICP(PointCloud::Ptr src_corr, PointCloud::Ptr tgt_corr,
 void showCorrespondences(PointCloudColored::Ptr src, PointCloudColored::Ptr tgt,
 	PointCloudColored::Ptr src_corr, PointCloudColored::Ptr tgt_corr,
 	pcl::CorrespondencesPtr correspondences, float distance_max) {
+/*
+	MetricVisualizer v(strdup("SOME FRAME"), src);*/
 	pcl::visualization::PCLVisualizer::Ptr v(new pcl::visualization::PCLVisualizer);
 	int v1(10), v2(11);
 	v->setShowFPS(true);
@@ -642,11 +646,11 @@ void showCorrespondences(PointCloudColored::Ptr src, PointCloudColored::Ptr tgt,
 	v->createViewPort(0.0, 0.5, 1.0, 1.0, v2);
 
 	v->registerKeyboardCallback(keyboardEventOccurred, (void*)&v);
-	//v->registerMouseCallback(mouseEventOccurred, (void*)&v);
+	v->registerMouseCallback(mouseEventOccurred, (void*)&v);
 	struct callback_args cb_args;
 	PointCloud::Ptr clicked_points_3d(new PointCloud);
 	cb_args.clicked_points_3d = clicked_points_3d;
-	cb_args.viewerPtr = pcl::visualization::PCLVisualizer::Ptr(v);
+	cb_args.viewerPtr = Visualizer::Ptr(v);
 	cb_args.distance = new char[128];
 	sprintf(cb_args.distance, "%f", 0);
 	v->registerPointPickingCallback(pp_callback, (void*)&cb_args);
@@ -681,21 +685,23 @@ void showCorrespondences(PointCloudColored::Ptr src, PointCloudColored::Ptr tgt,
 void showCorrespondences(PointCloud::Ptr src, PointCloud::Ptr tgt,
 	PointCloud::Ptr src_corr, PointCloud::Ptr tgt_corr,
 	pcl::CorrespondencesPtr correspondences, float distance_max) {
-	pcl::visualization::PCLVisualizer::Ptr v(new pcl::visualization::PCLVisualizer);
+
+	MetricVisualizer * v = new MetricVisualizer (strdup("SOME FRAME"), src);
+	//pcl::visualization::PCLVisualizer::Ptr v(new pcl::visualization::PCLVisualizer);
 	int v1(10), v2(11);
-	v->setShowFPS(true);
+	//v->setShowFPS(true);
 	v->createViewPort(0.0, 0.0, 1.0, 0.5, v1);
 	v->createViewPort(0.0, 0.5, 1.0, 1.0, v2);
 
-	v->registerKeyboardCallback(keyboardEventOccurred, (void*)&v);
-	//v->registerMouseCallback(mouseEventOccurred, (void*)&v);
-	struct callback_args cb_args;
-	PointCloud::Ptr clicked_points_3d(new PointCloud);
-	cb_args.clicked_points_3d = clicked_points_3d;
-	cb_args.viewerPtr = pcl::visualization::PCLVisualizer::Ptr(v);
-	cb_args.distance = new char[128];
-	sprintf(cb_args.distance, "%f", 0);
-	v->registerPointPickingCallback(pp_callback, (void*)&cb_args);
+	//v->registerKeyboardCallback(keyboardEventOccurred, (void*)&v);
+	////v->registerMouseCallback(mouseEventOccurred, (void*)&v);
+	//struct callback_args cb_args;
+	//PointCloud::Ptr clicked_points_3d(new PointCloud);
+	//cb_args.clicked_points_3d = clicked_points_3d;
+	//cb_args.viewerPtr = pcl::visualization::PCLVisualizer::Ptr(v);
+	//cb_args.distance = new char[128];
+	//sprintf(cb_args.distance, "%f", 0);
+	//v->registerPointPickingCallback(pp_callback, (void*)&cb_args);
 
 	cout << "Correspondences found: " << correspondences->size() << endl;
 	for (int i = 0; i < correspondences->size(); i++) {
@@ -789,7 +795,7 @@ void method_nico(PointCloud::Ptr source, PointCloud::Ptr target, PointCloud::Ptr
 	}*/
 
 
-	pcl::visualization::PCLVisualizer::Ptr v(new pcl::visualization::PCLVisualizer);
+	Visualizer::Ptr v(new Visualizer);
 	v->setShowFPS(true);
 	v->addPointCloud(result);
 	v->spin();
