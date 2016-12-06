@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+	setAcceptDrops(true);
 	ui->progressBar->setVisible(false);
 }
 
@@ -22,22 +23,25 @@ void MainWindow::on_btnBrowse_clicked()
 	if (readImportFile(importName))
 	{
 		list.clear();
+		listContent.clear();
+		
 		list = detectPlyFiles(importFileInfo.absoluteDir());
-		ui->listWidget->addItems(list);
+		ui->listWidget->clear();
+		ui->listWidget->addItems(listContent.keys());
 	}    
 }
 
 QStringList MainWindow::detectPlyFiles(QDir dirToImport)
 {
     dirToImport.setNameFilters(QStringList()<<"*.ply");
-    QFileInfoList list = dirToImport.entryInfoList();
+    QFileInfoList listInfo = dirToImport.entryInfoList();
 
     QStringList res;
 
-    for (int i = 0; i < list.size(); i++)
+    for (int i = 0; i < listInfo.size(); i++)
     {
-		listContent.insert(list.at(i).fileName(), list.at(i).absoluteFilePath());
-        res.append(list.at(i).fileName());
+		listContent.insert(listInfo.at(i).fileName(), listInfo.at(i).absoluteFilePath());
+        res.append(listInfo.at(i).fileName());
     }
 
     return res;
@@ -87,9 +91,10 @@ bool MainWindow::readImportFile(QString import)
 		}
 		else
 		{
+			withColor = false;
 			stream.seek(0);
 			QString path = stream.readLine().split("\\").last();
-			ui->lbCaptureName->setText("Capture name : " + path);
+			ui->lbCaptureName->setText(path);
 			stream.readLine();
 			stream.readLine();
 			QString color = stream.readLine().split(" ").last();
@@ -110,7 +115,7 @@ bool MainWindow::readImportFile(QString import)
 void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
 {
     QString path = listContent.find(item->data(Qt::DisplayRole).toString()).value();
-	
+	cout << path.toLocal8Bit().data() << endl;
 	filePath = new char[path.size()+1];
 	filePath[path.size()] = '\0';
 	strcpy(filePath, path.toLocal8Bit().data());
@@ -305,4 +310,35 @@ void MainWindow::showPlaneNoColor(bool bPlanView)
 
 	// Show
 	pv->spin();
+}
+
+void MainWindow::dragEnterEvent(QDragEnterEvent *e)
+{
+	if (e->mimeData()->hasUrls()) {
+		e->acceptProposedAction();
+	}
+}
+
+void MainWindow::dropEvent(QDropEvent *e)
+{
+	QString filePath;
+	foreach(const QUrl &url, e->mimeData()->urls()) {
+		QString fileName = url.toLocalFile();
+		QFileInfo importFileInfo(fileName);
+		if (QString::compare("import", importFileInfo.suffix(), Qt::CaseSensitive) == 0)
+		{
+			filePath = fileName;
+		}
+	}
+
+	QFileInfo importFileInfo(filePath);
+	if (readImportFile(filePath))
+	{
+		list.clear();
+		listContent.clear();
+
+		list = detectPlyFiles(importFileInfo.absoluteDir());
+		ui->listWidget->clear();
+		ui->listWidget->addItems(listContent.keys());
+	}
 }

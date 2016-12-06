@@ -40,9 +40,9 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>460</y>
+      <y>470</y>
       <width>201</width>
-      <height>23</height>
+      <height>121</height>
      </rect>
     </property>
     <property name="value">
@@ -67,6 +67,9 @@
     <property name="text">
      <string/>
     </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
    </widget>
    <widget class="QPushButton" name="btnMerge">
     <property name="enabled">
@@ -74,10 +77,10 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>350</y>
-      <width>75</width>
-      <height>23</height>
+      <x>30</x>
+      <y>320</y>
+      <width>201</width>
+      <height>91</height>
      </rect>
     </property>
     <property name="text">
@@ -87,10 +90,10 @@
    <widget class="QPushButton" name="btnBrowse">
     <property name="geometry">
      <rect>
-      <x>90</x>
-      <y>70</y>
-      <width>75</width>
-      <height>23</height>
+      <x>30</x>
+      <y>10</y>
+      <width>201</width>
+      <height>91</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -104,13 +107,16 @@
     <property name="geometry">
      <rect>
       <x>32</x>
-      <y>110</y>
+      <y>120</y>
       <width>201</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>Capture name : </string>
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton">
