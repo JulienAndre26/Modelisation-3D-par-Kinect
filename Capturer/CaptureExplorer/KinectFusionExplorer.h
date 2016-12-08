@@ -58,7 +58,7 @@ public:
     int                         Run(HINSTANCE hInstance, int nCmdShow);
 
 	int							AskDirName();
-	int							AskImportDir();
+	int							AskImportFile();
 
 	int							SaveMesh();
 	void						LoadProject();
