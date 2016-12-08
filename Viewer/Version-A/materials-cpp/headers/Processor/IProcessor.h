@@ -25,5 +25,7 @@ public:
 
 	static Status computeMetrics(float x1, float y1, float z1, float x2, float y2, float z2);
 
+	virtual Status reduceSize(string pathToLoad, string pathToSave) = 0;
+
 };
 #endif
