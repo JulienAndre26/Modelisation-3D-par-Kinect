@@ -33,6 +33,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+	void loadWidgets(QString path);
 	void showPLY();
 	void showPlane(bool bPlanView);
 	void showPlaneNoColor(bool bPlanView);
@@ -41,12 +42,11 @@ public:
 
 private slots:
     void on_btnBrowse_clicked();
-
     void on_btnMerge_clicked();
-
-    void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
-
-
+	void on_btnOpen_clicked();
+	void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
+	void on_listWidget_itemClicked(QListWidgetItem *item);
+	
 private:
     Ui::MainWindow *ui;
     QStringList detectPlyFiles(QDir dirToImport);
@@ -55,6 +55,7 @@ private:
 	void dragEnterEvent(QDragEnterEvent *e);
 	
 	bool withColor = false;
+	QString selectedFile;
     QStringList list;
 	QHash<QString, QString> listContent;
 };

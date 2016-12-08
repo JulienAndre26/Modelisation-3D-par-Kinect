@@ -32,9 +32,9 @@
     <property name="styleSheet">
      <string notr="true">border-style: outset;
 border-width: 2px;
-border-radius: 6px;
+border-radius: 10px;
 border-color: grey;
-padding: 4px;</string>
+padding: 6px;</string>
     </property>
    </widget>
    <widget class="QProgressBar" name="progressBar">
@@ -74,7 +74,7 @@ padding: 4px;</string>
    </widget>
    <widget class="QPushButton" name="btnMerge">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
@@ -85,26 +85,12 @@ padding: 4px;</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">QPushButton#btnMerge {
-	font: 11pt &quot;Nirmala UI&quot;;
-	background-color:#d1e0e0;
-	border-style: outset;
-	border-width: 2px;
-	border-radius: 10px;
-	border-color: grey;
-	padding: 1px;
-}
-
-QPushButton#btnMerge:hover {
-	background-color:#BCC9C9;
-}
-
-QPushButton#btnMerge:pressed {
-	background-color:#a7b3b3;
-}
-
-
-</string>
+     <string notr="true">background-color:#d1e0e0;
+border-style: outset;
+border-width: 2px;
+border-radius: 10px;
+border-color: grey;
+padding: 6px;</string>
     </property>
     <property name="text">
      <string>Merge</string>
@@ -120,26 +106,12 @@ QPushButton#btnMerge:pressed {
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">QPushButton#btnBrowse {
-	font: 11pt &quot;Nirmala UI&quot;;
-	background-color:#d1e0e0;
-	border-style: outset;
-	border-width: 2px;
-	border-radius: 10px;
-	border-color: grey;
-	padding: 1px;
-}
-
-QPushButton#btnBrowse:hover {
-	background-color:#BCC9C9;
-}
-
-QPushButton#btnBrowse:pressed {
-	background-color:#a7b3b3;
-}
-
-
-</string>
+     <string notr="true">background-color:#d1e0e0;
+border-style: outset;
+border-width: 2px;
+border-radius: 10px;
+border-color: grey;
+padding: 6px;</string>
     </property>
     <property name="text">
      <string>Browse</string>
@@ -290,7 +262,7 @@ padding: 6px;</string>
    </widget>
    <widget class="QPushButton" name="btnOpen">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
@@ -307,26 +279,12 @@ padding: 6px;</string>
      </size>
     </property>
     <property name="styleSheet">
-     <string notr="true">QPushButton#btnOpen {
-	font: 11pt &quot;Nirmala UI&quot;;
-	background-color:#d1e0e0;
-	border-style: outset;
-	border-width: 2px;
-	border-radius: 10px;
-	border-color: grey;
-	padding: 1px;
-}
-
-QPushButton#btnOpen:hover {
-	background-color:#BCC9C9;
-}
-
-QPushButton#btnOpen:pressed {
-	background-color:#a7b3b3;
-}
-
-
-</string>
+     <string notr="true">background-color:#d1e0e0;
+border-style: outset;
+border-width: 2px;
+border-radius: 10px;
+border-color: grey;
+padding: 6px;</string>
     </property>
     <property name="text">
      <string>Open</string>

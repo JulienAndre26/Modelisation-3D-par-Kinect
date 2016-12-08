@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->qvtkWidgetLateral->setVisible(false);
 	ui->qvtkWidgetPlan->setVisible(false);
 
-	QMovie *movie = new QMovie("ripple.gif");
+	QMovie *movie = new QMovie("box_grey.gif");
 	ui->label3D->setMovie(movie);
 	ui->labelLateral->setMovie(movie);
 	ui->labelPlan->setMovie(movie);
@@ -52,6 +52,8 @@ void MainWindow::on_btnBrowse_clicked()
 		list = detectPlyFiles(importFileInfo.absoluteDir());
 		ui->listWidget->clear();
 		ui->listWidget->addItems(listContent.keys());
+
+		ui->btnMerge->setEnabled(true);
 	}    
 }
 
@@ -93,6 +95,18 @@ void MainWindow::on_btnMerge_clicked()
     }
 }
 
+void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
+{
+	ui->btnOpen->setEnabled(true);
+	selectedFile = listContent.find(item->data(Qt::DisplayRole).toString()).value();
+	cout << selectedFile.toLocal8Bit().data() << endl;
+}
+
+void MainWindow::on_btnOpen_clicked()
+{
+	loadWidgets(selectedFile);
+}
+
 bool MainWindow::readImportFile(QString import)
 {
     QFile importFile(import);
@@ -129,7 +143,7 @@ bool MainWindow::readImportFile(QString import)
 				withColor = true;
 			}
 
-			}
+		}
     }
 
 	return true;
@@ -140,41 +154,39 @@ void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
 {
     QString path = listContent.find(item->data(Qt::DisplayRole).toString()).value();
 	cout << path.toLocal8Bit().data() << endl;
-	filePath = new char[path.size()+1];
+	
+	loadWidgets(path);
+}
+
+void MainWindow::loadWidgets(QString path)
+{
+	filePath = new char[path.size() + 1];
 	filePath[path.size()] = '\0';
 	strcpy(filePath, path.toLocal8Bit().data());
 
-	// 3D
+	ui->label3D->setVisible(true);
+	ui->qvtkWidget3D->setVisible(false);
+
+	ui->labelLateral->setVisible(true);
+	ui->qvtkWidgetLateral->setVisible(false);
+
+	ui->labelPlan->setVisible(true);
+	ui->qvtkWidgetPlan->setVisible(false);
+
+	this->showPLY();
+
 	ui->label3D->setVisible(false);
 	ui->qvtkWidget3D->setVisible(true);
-	ui->label3D->update();
-	ui->qvtkWidget3D->update();
-	showPLY();
+
+	this->showPlane(false);
 
 	ui->labelLateral->setVisible(false);
 	ui->qvtkWidgetLateral->setVisible(true);
-	ui->labelLateral->update();
-	ui->qvtkWidgetLateral->update();
-	showPlane(false);
+
+	this->showPlane(true);
 
 	ui->labelPlan->setVisible(false);
 	ui->qvtkWidgetPlan->setVisible(true);
-	ui->labelPlan->update();
-	ui->qvtkWidgetPlan->update();
-	showPlane(true);
-
-
-	/*showPlane(true);
-	ui->qvtkWidgetPlan->update();
-*/
-
-	/*std::thread *t_3D_view = new std::thread([this] { this->showPLY(); });
-	std::thread *t_2D_lateral_view = new std::thread([this] { this->showPlane(false); });
-	std::thread *t_2D_plan_view = new std::thread([this] { this->showPlane(true); });
-
-	t_3D_view->join();
-	t_2D_lateral_view->join();
-	t_2D_plan_view->join();*/
 }
 
 void MainWindow::showPlane(bool bPlanView)
