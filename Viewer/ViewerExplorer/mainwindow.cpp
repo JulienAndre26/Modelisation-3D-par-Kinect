@@ -177,16 +177,20 @@ void MainWindow::loadWidgets(QString path)
 
 	ui->label3D->setVisible(false);
 	ui->qvtkWidget3D->setVisible(true);
+	setWidgetBorderRadius(ui->qvtkWidget3D, 6);
 
 	this->showPlane(false);
 
 	ui->labelLateral->setVisible(false);
 	ui->qvtkWidgetLateral->setVisible(true);
+	setWidgetBorderRadius(ui->qvtkWidgetLateral, 6);
 
 	this->showPlane(true);
 
 	ui->labelPlan->setVisible(false);
 	ui->qvtkWidgetPlan->setVisible(true);
+	setWidgetBorderRadius(ui->qvtkWidgetPlan, 6);
+
 }
 
 void MainWindow::showPlane(bool bPlanView)
@@ -420,4 +424,39 @@ void MainWindow::dropEvent(QDropEvent *e)
 		ui->listWidget->clear();
 		ui->listWidget->addItems(listContent.keys());
 	}
+}
+
+void MainWindow::setWidgetBorderRadius(QWidget* widget, int radius) {
+
+	// cache widget with and height
+	int width = widget->width();
+	int height = widget->height();
+
+	// Initialize a rectangular masked region
+	QRegion region(0, 0, width, height, QRegion::Rectangle);
+
+	// now clip off the sharp edges
+
+	// top left
+	QRegion round(0, 0, 2 * radius, 2 * radius, QRegion::Ellipse);
+	QRegion corner(0, 0, radius, radius, QRegion::Rectangle);
+	region = region.subtracted(corner.subtracted(round));
+
+	// top right
+	round = QRegion(width - 2 * radius, 0, 2 * radius, 2 * radius, QRegion::Ellipse);
+	corner = QRegion(width - radius, 0, radius, radius, QRegion::Rectangle);
+	region = region.subtracted(corner.subtracted(round));
+
+	// bottom right
+	round = QRegion(width - 2 * radius, height - 2 * radius, 2 * radius, 2 * radius, QRegion::Ellipse);
+	corner = QRegion(width - radius, height - radius, radius, radius, QRegion::Rectangle);
+	region = region.subtracted(corner.subtracted(round));
+
+	// bottom left
+	round = QRegion(0, height - 2 * radius, 2 * radius, 2 * radius, QRegion::Ellipse);
+	corner = QRegion(0, height - radius, radius, radius, QRegion::Rectangle);
+	region = region.subtracted(corner.subtracted(round));
+
+	// Set mask
+	widget->setMask(region);
 }

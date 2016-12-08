@@ -53,6 +53,7 @@ private:
     bool readImportFile(QString import);
 	void dropEvent(QDropEvent *e);
 	void dragEnterEvent(QDragEnterEvent *e);
+	void setWidgetBorderRadius(QWidget* widget, int radius);
 	
 	bool withColor = false;
 	QString selectedFile;
