@@ -21,6 +21,8 @@
 #include <pcl/ModelCoefficients.h>
 #include <pcl/filters/project_inliers.h>
 
+#include <vtkMutexLock.h>
+
 namespace Ui {
 class MainWindow;
 }
@@ -39,6 +41,7 @@ public:
 	void showPlaneNoColor(bool bPlanView);
 	void showPlaneColor(bool bPlanView);
 	char *filePath;
+	vtkMutexLock *renderLock;
 
 private slots:
     void on_btnBrowse_clicked();
@@ -55,6 +58,8 @@ private:
 	void dragEnterEvent(QDragEnterEvent *e);
 	void setWidgetBorderRadius(QWidget* widget, int radius);
 	
+	QMovie * movie_grey;
+
 	bool withColor = false;
 	QString selectedFile;
     QStringList list;

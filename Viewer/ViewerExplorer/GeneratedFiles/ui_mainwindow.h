@@ -38,9 +38,9 @@ public:
     QVTKWidget *qvtkWidgetLateral;
     QVTKWidget *qvtkWidgetPlan;
     QVTKWidget *qvtkWidget3D;
-    QLabel *label3D;
-    QLabel *labelLateral;
-    QLabel *labelPlan;
+    QLabel *gif3D;
+    QLabel *gifLateral;
+    QLabel *gifPlan;
     QPushButton *btnOpen;
 
     void setupUi(QMainWindow *MainWindow)
@@ -49,6 +49,9 @@ public:
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
         MainWindow->resize(1150, 590);
         MainWindow->setMaximumSize(QSize(1150, 590));
+        QIcon icon;
+        icon.addFile(QStringLiteral("app.ico"), QSize(), QIcon::Normal, QIcon::Off);
+        MainWindow->setWindowIcon(icon);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         listWidget = new QListWidget(centralWidget);
@@ -135,33 +138,33 @@ public:
         qvtkWidget3D->setObjectName(QStringLiteral("qvtkWidget3D"));
         qvtkWidget3D->setGeometry(QRect(220, 10, 631, 571));
         qvtkWidget3D->setStyleSheet(QStringLiteral(""));
-        label3D = new QLabel(centralWidget);
-        label3D->setObjectName(QStringLiteral("label3D"));
-        label3D->setGeometry(QRect(220, 10, 631, 571));
-        label3D->setLayoutDirection(Qt::LeftToRight);
-        label3D->setStyleSheet(QLatin1String("border-style: outset;\n"
+        gif3D = new QLabel(centralWidget);
+        gif3D->setObjectName(QStringLiteral("label3D"));
+        gif3D->setGeometry(QRect(220, 10, 631, 571));
+        gif3D->setLayoutDirection(Qt::LeftToRight);
+        gif3D->setStyleSheet(QLatin1String("border-style: outset;\n"
 "border-width: 2px;\n"
 "border-radius: 10px;\n"
 "border-color: grey;\n"
 "font: bold 14px;\n"
 "min-width: 10em;\n"
 "padding: 6px;"));
-        labelLateral = new QLabel(centralWidget);
-        labelLateral->setObjectName(QStringLiteral("labelLateral"));
-        labelLateral->setGeometry(QRect(860, 10, 281, 281));
-        labelLateral->setLayoutDirection(Qt::LeftToRight);
-        labelLateral->setStyleSheet(QLatin1String("border-style: outset;\n"
+        gifLateral = new QLabel(centralWidget);
+        gifLateral->setObjectName(QStringLiteral("labelLateral"));
+        gifLateral->setGeometry(QRect(860, 10, 281, 281));
+        gifLateral->setLayoutDirection(Qt::LeftToRight);
+        gifLateral->setStyleSheet(QLatin1String("border-style: outset;\n"
 "border-width: 2px;\n"
 "border-radius: 10px;\n"
 "border-color: grey;\n"
 "font: bold 14px;\n"
 "min-width: 10em;\n"
 "padding: 6px;"));
-        labelPlan = new QLabel(centralWidget);
-        labelPlan->setObjectName(QStringLiteral("labelPlan"));
-        labelPlan->setGeometry(QRect(860, 300, 281, 281));
-        labelPlan->setLayoutDirection(Qt::LeftToRight);
-        labelPlan->setStyleSheet(QLatin1String("border-style: outset;\n"
+        gifPlan = new QLabel(centralWidget);
+        gifPlan->setObjectName(QStringLiteral("labelPlan"));
+        gifPlan->setGeometry(QRect(860, 300, 281, 281));
+        gifPlan->setLayoutDirection(Qt::LeftToRight);
+        gifPlan->setStyleSheet(QLatin1String("border-style: outset;\n"
 "border-width: 2px;\n"
 "border-radius: 10px;\n"
 "border-color: grey;\n"
@@ -207,10 +210,10 @@ public:
         btnMerge->setText(QApplication::translate("MainWindow", "Merge", 0));
         btnBrowse->setText(QApplication::translate("MainWindow", "Browse", 0));
         lbCaptureName->setText(QString());
-        pushButton_2->setText(QApplication::translate("MainWindow", "m\303\251triques (position du point s\303\251lectionn\303\251, distance pour 2 points)", 0));
-        label3D->setText(QApplication::translate("MainWindow", "Loading", 0));
-        labelLateral->setText(QApplication::translate("MainWindow", "Loading", 0));
-        labelPlan->setText(QApplication::translate("MainWindow", "Loading", 0));
+        pushButton_2->setText(QApplication::translate("MainWindow", "Measure Area", 0));
+        gif3D->setText(QApplication::translate("MainWindow", "Loading", 0));
+        gifLateral->setText(QApplication::translate("MainWindow", "Loading", 0));
+        gifPlan->setText(QApplication::translate("MainWindow", "Loading", 0));
         btnOpen->setText(QApplication::translate("MainWindow", "Open", 0));
     } // retranslateUi
 

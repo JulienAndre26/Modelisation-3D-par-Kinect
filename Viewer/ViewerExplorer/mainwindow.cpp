@@ -9,6 +9,7 @@ VTK_MODULE_INIT(vtkInteractionStyle)
 #include <vtkSmartPointer.h>
 #include <QVTKWidget.h>
 #include <vtkRenderWindow.h>
+
 // ---------------
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -16,22 +17,28 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
 	setAcceptDrops(true);
 	ui->progressBar->setVisible(false);
 
-	ui->label3D->setAlignment(Qt::AlignCenter);
-	ui->labelLateral->setAlignment(Qt::AlignCenter);
-	ui->labelPlan->setAlignment(Qt::AlignCenter);
+	renderLock = vtkMutexLock::New();
+
+	ui->gif3D->setAlignment(Qt::AlignCenter);
+	ui->gifLateral->setAlignment(Qt::AlignCenter);
+	ui->gifPlan->setAlignment(Qt::AlignCenter);
 
 	ui->qvtkWidget3D->setVisible(false);
 	ui->qvtkWidgetLateral->setVisible(false);
 	ui->qvtkWidgetPlan->setVisible(false);
 
-	QMovie *movie = new QMovie("box_grey.gif");
-	ui->label3D->setMovie(movie);
-	ui->labelLateral->setMovie(movie);
-	ui->labelPlan->setMovie(movie);
-	movie->start();
+	movie_grey = new QMovie("box_grey.gif");
+
+	ui->gif3D->setMovie(movie_grey);
+	ui->gifLateral->setMovie(movie_grey);
+	ui->gifPlan->setMovie(movie_grey);
+
+	movie_grey->start();
+
 }
 
 MainWindow::~MainWindow()
@@ -164,30 +171,32 @@ void MainWindow::loadWidgets(QString path)
 	filePath[path.size()] = '\0';
 	strcpy(filePath, path.toLocal8Bit().data());
 
-	ui->label3D->setVisible(true);
+	ui->gif3D->setVisible(true);
 	ui->qvtkWidget3D->setVisible(false);
 
-	ui->labelLateral->setVisible(true);
+	ui->gifLateral->setVisible(true);
 	ui->qvtkWidgetLateral->setVisible(false);
 
-	ui->labelPlan->setVisible(true);
+	ui->gifPlan->setVisible(true);
 	ui->qvtkWidgetPlan->setVisible(false);
 
-	this->showPLY();
+	std::thread *t_3D_view = new std::thread([this] { this->showPLY(); });
+	std::thread *t_2D_lateral_view = new std::thread([this] { this->showPlane(false); });
+	std::thread *t_2D_plan_view = new std::thread([this] { this->showPlane(true); });
 
-	ui->label3D->setVisible(false);
+	t_3D_view->join();
+	t_2D_lateral_view->join();
+	t_2D_plan_view->join();
+
+	ui->gif3D->setVisible(false);
 	ui->qvtkWidget3D->setVisible(true);
 	setWidgetBorderRadius(ui->qvtkWidget3D, 6);
 
-	this->showPlane(false);
-
-	ui->labelLateral->setVisible(false);
+	ui->gifLateral->setVisible(false);
 	ui->qvtkWidgetLateral->setVisible(true);
 	setWidgetBorderRadius(ui->qvtkWidgetLateral, 6);
 
-	this->showPlane(true);
-
-	ui->labelPlan->setVisible(false);
+	ui->gifPlan->setVisible(false);
 	ui->qvtkWidgetPlan->setVisible(true);
 	setWidgetBorderRadius(ui->qvtkWidgetPlan, 6);
 
@@ -241,8 +250,10 @@ void MainWindow::showPLY() {
 	pv->setPosition(0, 0);
 	pv->setShowFPS(true);
 
+	renderLock->Lock();
 	vtkSmartPointer<vtkRenderWindow> renderWindow = pv->getRenderWindow();
 	ui->qvtkWidget3D->SetRenderWindow(renderWindow);
+	renderLock->Unlock();
 }
 
 
@@ -303,6 +314,7 @@ void MainWindow::showPlaneColor(bool bPlanView)
 	//pv->addPointCloud<pcl::PointXYZ>(src_projected, src_rgb, "v1_source", v);
 	vtkSmartPointer<vtkRenderWindow> renderWindow = pv->getRenderWindow();
 
+	renderLock->Lock();
 	// Set camera position if plan view
 	if (bPlanView)
 	{
@@ -313,6 +325,7 @@ void MainWindow::showPlaneColor(bool bPlanView)
 		pv->setCameraPosition(0, 0, 5, 0, 1, 0, 0);
 		ui->qvtkWidgetLateral->SetRenderWindow(renderWindow);
 	}
+	renderLock->Unlock();
 }
 
 /*
@@ -381,6 +394,7 @@ void MainWindow::showPlaneNoColor(bool bPlanView)
 	//pv->addPointCloud<pcl::PointXYZ>(src_projected, src_rgb, "v1_source", v);
 	vtkSmartPointer<vtkRenderWindow> renderWindow = pv->getRenderWindow();
 
+	renderLock->Lock();
 	// Set camera position if plan view
 	if (bPlanView)
 	{
@@ -391,6 +405,8 @@ void MainWindow::showPlaneNoColor(bool bPlanView)
 		pv->setCameraPosition(0, 0, 5, 0, 1, 0, 0);
 		ui->qvtkWidgetLateral->SetRenderWindow(renderWindow);
 	}
+	renderLock->Unlock();
+
 	// Show
 	//pv->spin();
 }

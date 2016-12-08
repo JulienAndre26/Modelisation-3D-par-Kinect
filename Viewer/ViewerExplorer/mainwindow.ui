@@ -19,6 +19,10 @@
   <property name="windowTitle">
    <string>Kinect 3D Modelling</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>app.ico</normaloff>app.ico</iconset>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QListWidget" name="listWidget">
     <property name="geometry">
@@ -171,7 +175,7 @@ QPushButton#btnBrowse:pressed {
      </rect>
     </property>
     <property name="text">
-     <string>métriques (position du point sélectionné, distance pour 2 points)</string>
+     <string>Measure Area</string>
     </property>
    </widget>
    <widget class="QVTKWidget" name="qvtkWidgetLateral">
