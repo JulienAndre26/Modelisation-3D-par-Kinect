@@ -1,16 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-// ------ This need to be placed before each VTK include
-#include <vtkAutoInit.h> 
-VTK_MODULE_INIT(vtkRenderingOpenGL2)
-VTK_MODULE_INIT(vtkInteractionStyle)
-
-#include <vtkSmartPointer.h>
-#include <QVTKWidget.h>
-#include <vtkRenderWindow.h>
-
-// ---------------
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -38,7 +28,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->gifPlan->setMovie(movie_grey);
 
 	movie_grey->start();
-
 }
 
 MainWindow::~MainWindow()
@@ -171,35 +160,39 @@ void MainWindow::loadWidgets(QString path)
 	filePath[path.size()] = '\0';
 	strcpy(filePath, path.toLocal8Bit().data());
 
-	ui->gif3D->setVisible(true);
+	/*ui->gif3D->setVisible(true);
 	ui->qvtkWidget3D->setVisible(false);
 
 	ui->gifLateral->setVisible(true);
 	ui->qvtkWidgetLateral->setVisible(false);
 
 	ui->gifPlan->setVisible(true);
-	ui->qvtkWidgetPlan->setVisible(false);
+	ui->qvtkWidgetPlan->setVisible(false);*/
 
-	std::thread *t_3D_view = new std::thread([this] { this->showPLY(); });
+	Thread * t = new Thread();
+	t->prepareThread(this);
+	QObject::connect(t, SIGNAL(finished()), t, SLOT(onEnd()));
+	t->start();
+
+	/*std::thread *t_3D_view = new std::thread([this] { this->showPLY(); });
 	std::thread *t_2D_lateral_view = new std::thread([this] { this->showPlane(false); });
 	std::thread *t_2D_plan_view = new std::thread([this] { this->showPlane(true); });
 
 	t_3D_view->join();
 	t_2D_lateral_view->join();
-	t_2D_plan_view->join();
+	t_2D_plan_view->join();*/
 
-	ui->gif3D->setVisible(false);
-	ui->qvtkWidget3D->setVisible(true);
-	setWidgetBorderRadius(ui->qvtkWidget3D, 6);
+	//ui->gif3D->setVisible(false);
+	//ui->qvtkWidget3D->setVisible(true);
+	//setWidgetBorderRadius(ui->qvtkWidget3D, 6);
 
-	ui->gifLateral->setVisible(false);
-	ui->qvtkWidgetLateral->setVisible(true);
-	setWidgetBorderRadius(ui->qvtkWidgetLateral, 6);
+	//ui->gifLateral->setVisible(false);
+	//ui->qvtkWidgetLateral->setVisible(true);
+	//setWidgetBorderRadius(ui->qvtkWidgetLateral, 6);
 
-	ui->gifPlan->setVisible(false);
-	ui->qvtkWidgetPlan->setVisible(true);
-	setWidgetBorderRadius(ui->qvtkWidgetPlan, 6);
-
+	//ui->gifPlan->setVisible(false);
+	//ui->qvtkWidgetPlan->setVisible(true);
+	//setWidgetBorderRadius(ui->qvtkWidgetPlan, 6);
 }
 
 void MainWindow::showPlane(bool bPlanView)
@@ -371,8 +364,7 @@ void MainWindow::showPlaneNoColor(bool bPlanView)
 	}
 
 	coefficients->values[3] = 0;
-
-
+	
 	// Create the filtering object
 	pcl::ProjectInliers<pcl::PointXYZ> proj;
 	proj.setModelType(pcl::SACMODEL_PLANE);

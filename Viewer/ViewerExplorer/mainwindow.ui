@@ -217,7 +217,7 @@ QPushButton#btnBrowse:pressed {
      <string notr="true"/>
     </property>
    </widget>
-   <widget class="QLabel" name="label3D">
+   <widget class="QLabel" name="gif3D">
     <property name="geometry">
      <rect>
       <x>220</x>
@@ -242,7 +242,7 @@ padding: 6px;</string>
      <string>Loading</string>
     </property>
    </widget>
-   <widget class="QLabel" name="labelLateral">
+   <widget class="QLabel" name="gifLateral">
     <property name="geometry">
      <rect>
       <x>860</x>
@@ -267,7 +267,7 @@ padding: 6px;</string>
      <string>Loading</string>
     </property>
    </widget>
-   <widget class="QLabel" name="labelPlan">
+   <widget class="QLabel" name="gifPlan">
     <property name="geometry">
      <rect>
       <x>860</x>

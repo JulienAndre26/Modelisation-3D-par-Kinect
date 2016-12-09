@@ -139,7 +139,7 @@ public:
         qvtkWidget3D->setGeometry(QRect(220, 10, 631, 571));
         qvtkWidget3D->setStyleSheet(QStringLiteral(""));
         gif3D = new QLabel(centralWidget);
-        gif3D->setObjectName(QStringLiteral("label3D"));
+        gif3D->setObjectName(QStringLiteral("gif3D"));
         gif3D->setGeometry(QRect(220, 10, 631, 571));
         gif3D->setLayoutDirection(Qt::LeftToRight);
         gif3D->setStyleSheet(QLatin1String("border-style: outset;\n"
@@ -150,7 +150,7 @@ public:
 "min-width: 10em;\n"
 "padding: 6px;"));
         gifLateral = new QLabel(centralWidget);
-        gifLateral->setObjectName(QStringLiteral("labelLateral"));
+        gifLateral->setObjectName(QStringLiteral("gifLateral"));
         gifLateral->setGeometry(QRect(860, 10, 281, 281));
         gifLateral->setLayoutDirection(Qt::LeftToRight);
         gifLateral->setStyleSheet(QLatin1String("border-style: outset;\n"
@@ -161,7 +161,7 @@ public:
 "min-width: 10em;\n"
 "padding: 6px;"));
         gifPlan = new QLabel(centralWidget);
-        gifPlan->setObjectName(QStringLiteral("labelPlan"));
+        gifPlan->setObjectName(QStringLiteral("gifPlan"));
         gifPlan->setGeometry(QRect(860, 300, 281, 281));
         gifPlan->setLayoutDirection(Qt::LeftToRight);
         gifPlan->setStyleSheet(QLatin1String("border-style: outset;\n"

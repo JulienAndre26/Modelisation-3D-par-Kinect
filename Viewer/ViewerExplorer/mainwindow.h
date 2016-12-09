@@ -1,6 +1,17 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+// ------ This need to be placed before each VTK include
+#include <vtkAutoInit.h> 
+VTK_MODULE_INIT(vtkRenderingOpenGL2)
+VTK_MODULE_INIT(vtkInteractionStyle)
+
+#include <QVTKWidget.h>
+#include <vtkSmartPointer.h>
+#include <vtkRenderWindow.h>
+#include <vtkMutexLock.h>
+// ---------------
+
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QThread>
@@ -15,13 +26,12 @@
 #include <QDropEvent>
 #include <QMimeData>
 #include <QMovie>
+#include <QtGui>
 
 #include <iostream>
 #include <pcl/point_types.h>
 #include <pcl/ModelCoefficients.h>
 #include <pcl/filters/project_inliers.h>
-
-#include <vtkMutexLock.h>
 
 namespace Ui {
 class MainWindow;
@@ -64,6 +74,37 @@ private:
 	QString selectedFile;
     QStringList list;
 	QHash<QString, QString> listContent;
+};
+
+class Thread : public QThread
+{
+	Q_OBJECT
+
+public:
+	Thread() {}
+	void prepareThread(MainWindow * mw) {
+		this->mw = mw; 
+	}
+
+
+public slots :
+	void onEnd()
+	{
+		cout << "Thread::stop called from main thread: " << currentThreadId() << endl;
+		
+		// TODO : create method in MW displayQWidget3D()
+	}
+
+private:
+	MainWindow * mw;
+
+	void run()
+	{
+		// TODO : create method in MW displayGif3D()
+
+		cout << "From worker thread: " << currentThreadId() << endl;
+		mw->showPLY();
+	};
 };
 
 #endif // MAINWINDOW_H
