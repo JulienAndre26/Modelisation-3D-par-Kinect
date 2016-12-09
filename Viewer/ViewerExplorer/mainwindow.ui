@@ -217,7 +217,7 @@ QPushButton#btnBrowse:pressed {
      <string notr="true"/>
     </property>
    </widget>
-   <widget class="QLabel" name="gif3D">
+   <widget class="QLabel" name="gifInit3D">
     <property name="geometry">
      <rect>
       <x>220</x>
@@ -242,7 +242,7 @@ padding: 6px;</string>
      <string>Loading</string>
     </property>
    </widget>
-   <widget class="QLabel" name="gifLateral">
+   <widget class="QLabel" name="gifInitLateral">
     <property name="geometry">
      <rect>
       <x>860</x>
@@ -267,7 +267,7 @@ padding: 6px;</string>
      <string>Loading</string>
     </property>
    </widget>
-   <widget class="QLabel" name="gifPlan">
+   <widget class="QLabel" name="gifInitPlan">
     <property name="geometry">
      <rect>
       <x>860</x>
@@ -334,6 +334,81 @@ QPushButton#btnOpen:pressed {
     </property>
     <property name="text">
      <string>Open</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="gifLoading3D">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>10</y>
+      <width>631</width>
+      <height>571</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-style: outset;
+border-width: 2px;
+border-radius: 10px;
+border-color: grey;
+font: bold 14px;
+min-width: 10em;
+padding: 6px;</string>
+    </property>
+    <property name="text">
+     <string>Loading</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="gifLoadingLateral">
+    <property name="geometry">
+     <rect>
+      <x>860</x>
+      <y>10</y>
+      <width>281</width>
+      <height>281</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-style: outset;
+border-width: 2px;
+border-radius: 10px;
+border-color: grey;
+font: bold 14px;
+min-width: 10em;
+padding: 6px;</string>
+    </property>
+    <property name="text">
+     <string>Loading</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="gifLoadingPlan">
+    <property name="geometry">
+     <rect>
+      <x>860</x>
+      <y>300</y>
+      <width>281</width>
+      <height>281</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-style: outset;
+border-width: 2px;
+border-radius: 10px;
+border-color: grey;
+font: bold 14px;
+min-width: 10em;
+padding: 6px;</string>
+    </property>
+    <property name="text">
+     <string>Loading</string>
     </property>
    </widget>
   </widget>
