@@ -86,7 +86,10 @@ void MainWindow::onMerge()
 	else
 	{
 		ui->progressBar->setVisible(true);
-		ui->progressBar->update();
+		ui->progressBar->setValue(0);
+
+		ui->progressBar->setMaximum(0);
+		ui->progressBar->setMinimum(0);
 
 		setAllViewDisplay(false, MOVIE_MERGE);
 
@@ -98,16 +101,21 @@ void MainWindow::onMerge()
 
 void MainWindow::processMerge()
 {
+	QString sTotal = QString::number(list.size() - 1);
 	for (int i = 0; i < list.size() - 1; i++)
 	{
-		ui->lbCurrentMerge->setText("Current merge : " + list.at(i) + " with " + list.at(i + 1));
-		ui->progressBar->setValue(((float)i / (list.size() - 1) * 100));
+		QString sCurrent = QString::number(i + 1);
+		ui->lbCurrentMerge->setText("Merging... (" + sCurrent + "/" + (sTotal) + ")");
+		
+		//ui->progressBar->setValue(((float)n / (list.size() - 1) * 100));
+		
 		QThread::sleep(5);
 	}
 }
 
 void MainWindow::onMergeEnd()
 {
+	ui->progressBar->setMaximum(100);
 	ui->progressBar->setValue(100);
 	ui->lbCurrentMerge->setText("Finished");
 
@@ -184,6 +192,8 @@ void MainWindow::loadWidgets(QString path)
 	strcpy(filePath, path.toLocal8Bit().data());
 
 	setAllViewDisplay(false, MOVIE_LOAD);
+	ui->progressBar->setVisible(false);
+	ui->lbCurrentMerge->setText("");
 
 	ThreadOpen * t_3D = new ThreadOpen(this, VIEW_3D);
 	QObject::connect(t_3D, SIGNAL(finished()), t_3D, SLOT(onEnd()));
@@ -549,4 +559,5 @@ void MainWindow::processView(int nView)
 		cout << "MainWindow::processView : Invalid view number " + nView << endl;
 	}
 }
+
 

@@ -81,6 +81,7 @@ private slots:
 	void on_btnOpen_clicked();
 	void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
 	void on_listWidget_itemClicked(QListWidgetItem *item);
+
 	
 private:
     Ui::MainWindow *ui;
@@ -146,7 +147,6 @@ private:
 	{
 		cout << "Merge Thread launched..." << endl;
 		mw->processMerge();
-		//mw->onMergeEnd();
 	}
 };
 
