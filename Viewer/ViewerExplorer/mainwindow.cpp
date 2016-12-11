@@ -55,6 +55,8 @@ void MainWindow::on_btnBrowse_clicked()
 		ui->btnOpen->setEnabled(false);
 		ui->progressBar->setVisible(false);
 		ui->lbCurrentMerge->setText("");
+
+		ui->btnMerge->setEnabled(list.size() > 1);
 	}    
 }
 

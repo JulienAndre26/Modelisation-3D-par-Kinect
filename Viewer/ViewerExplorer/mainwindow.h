@@ -112,7 +112,7 @@ public slots :
 	void onEnd()
 	{
 		mw->setViewDisplay(nView, true, NULL);
-		cout << "Thread " << (nView+1) << " finished" << endl;
+		cout << "Thread " << nView << " finished" << endl;
 	}
 
 private:
@@ -121,7 +121,7 @@ private:
 
 	void run()
 	{
-		cout << "Thread " << (nView+1) << " launched..." << endl;
+		cout << "Thread " << nView << " launched..." << endl;
 		mw->processView(nView);
 	}
 };
