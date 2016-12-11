@@ -38,13 +38,10 @@ public:
     QVTKWidget *qvtkWidgetLateral;
     QVTKWidget *qvtkWidgetPlan;
     QVTKWidget *qvtkWidget3D;
-    QLabel *gifInit3D;
-    QLabel *gifInitLateral;
-    QLabel *gifInitPlan;
+    QLabel *gif3D;
+    QLabel *gifLateral;
+    QLabel *gifPlan;
     QPushButton *btnOpen;
-    QLabel *gifLoading3D;
-    QLabel *gifLoadingLateral;
-    QLabel *gifLoadingPlan;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -141,33 +138,33 @@ public:
         qvtkWidget3D->setObjectName(QStringLiteral("qvtkWidget3D"));
         qvtkWidget3D->setGeometry(QRect(220, 10, 631, 571));
         qvtkWidget3D->setStyleSheet(QStringLiteral(""));
-        gifInit3D = new QLabel(centralWidget);
-        gifInit3D->setObjectName(QStringLiteral("gifInit3D"));
-        gifInit3D->setGeometry(QRect(220, 10, 631, 571));
-        gifInit3D->setLayoutDirection(Qt::LeftToRight);
-        gifInit3D->setStyleSheet(QLatin1String("border-style: outset;\n"
+        gif3D = new QLabel(centralWidget);
+        gif3D->setObjectName(QStringLiteral("gif3D"));
+        gif3D->setGeometry(QRect(220, 10, 631, 571));
+        gif3D->setLayoutDirection(Qt::LeftToRight);
+        gif3D->setStyleSheet(QLatin1String("border-style: outset;\n"
 "border-width: 2px;\n"
 "border-radius: 10px;\n"
 "border-color: grey;\n"
 "font: bold 14px;\n"
 "min-width: 10em;\n"
 "padding: 6px;"));
-        gifInitLateral = new QLabel(centralWidget);
-        gifInitLateral->setObjectName(QStringLiteral("gifInitLateral"));
-        gifInitLateral->setGeometry(QRect(860, 10, 281, 281));
-        gifInitLateral->setLayoutDirection(Qt::LeftToRight);
-        gifInitLateral->setStyleSheet(QLatin1String("border-style: outset;\n"
+        gifLateral = new QLabel(centralWidget);
+        gifLateral->setObjectName(QStringLiteral("gifLateral"));
+        gifLateral->setGeometry(QRect(860, 10, 281, 281));
+        gifLateral->setLayoutDirection(Qt::LeftToRight);
+        gifLateral->setStyleSheet(QLatin1String("border-style: outset;\n"
 "border-width: 2px;\n"
 "border-radius: 10px;\n"
 "border-color: grey;\n"
 "font: bold 14px;\n"
 "min-width: 10em;\n"
 "padding: 6px;"));
-        gifInitPlan = new QLabel(centralWidget);
-        gifInitPlan->setObjectName(QStringLiteral("gifInitPlan"));
-        gifInitPlan->setGeometry(QRect(860, 300, 281, 281));
-        gifInitPlan->setLayoutDirection(Qt::LeftToRight);
-        gifInitPlan->setStyleSheet(QLatin1String("border-style: outset;\n"
+        gifPlan = new QLabel(centralWidget);
+        gifPlan->setObjectName(QStringLiteral("gifPlan"));
+        gifPlan->setGeometry(QRect(860, 300, 281, 281));
+        gifPlan->setLayoutDirection(Qt::LeftToRight);
+        gifPlan->setStyleSheet(QLatin1String("border-style: outset;\n"
 "border-width: 2px;\n"
 "border-radius: 10px;\n"
 "border-color: grey;\n"
@@ -199,39 +196,6 @@ public:
 "\n"
 "\n"
 ""));
-        gifLoading3D = new QLabel(centralWidget);
-        gifLoading3D->setObjectName(QStringLiteral("gifLoading3D"));
-        gifLoading3D->setGeometry(QRect(220, 10, 631, 571));
-        gifLoading3D->setLayoutDirection(Qt::LeftToRight);
-        gifLoading3D->setStyleSheet(QLatin1String("border-style: outset;\n"
-"border-width: 2px;\n"
-"border-radius: 10px;\n"
-"border-color: grey;\n"
-"font: bold 14px;\n"
-"min-width: 10em;\n"
-"padding: 6px;"));
-        gifLoadingLateral = new QLabel(centralWidget);
-        gifLoadingLateral->setObjectName(QStringLiteral("gifLoadingLateral"));
-        gifLoadingLateral->setGeometry(QRect(860, 10, 281, 281));
-        gifLoadingLateral->setLayoutDirection(Qt::LeftToRight);
-        gifLoadingLateral->setStyleSheet(QLatin1String("border-style: outset;\n"
-"border-width: 2px;\n"
-"border-radius: 10px;\n"
-"border-color: grey;\n"
-"font: bold 14px;\n"
-"min-width: 10em;\n"
-"padding: 6px;"));
-        gifLoadingPlan = new QLabel(centralWidget);
-        gifLoadingPlan->setObjectName(QStringLiteral("gifLoadingPlan"));
-        gifLoadingPlan->setGeometry(QRect(860, 300, 281, 281));
-        gifLoadingPlan->setLayoutDirection(Qt::LeftToRight);
-        gifLoadingPlan->setStyleSheet(QLatin1String("border-style: outset;\n"
-"border-width: 2px;\n"
-"border-radius: 10px;\n"
-"border-color: grey;\n"
-"font: bold 14px;\n"
-"min-width: 10em;\n"
-"padding: 6px;"));
         MainWindow->setCentralWidget(centralWidget);
 
         retranslateUi(MainWindow);
@@ -247,13 +211,10 @@ public:
         btnBrowse->setText(QApplication::translate("MainWindow", "Browse", 0));
         lbCaptureName->setText(QString());
         pushButton_2->setText(QApplication::translate("MainWindow", "Measure Area", 0));
-        gifInit3D->setText(QApplication::translate("MainWindow", "Loading", 0));
-        gifInitLateral->setText(QApplication::translate("MainWindow", "Loading", 0));
-        gifInitPlan->setText(QApplication::translate("MainWindow", "Loading", 0));
+        gif3D->setText(QApplication::translate("MainWindow", "Loading", 0));
+        gifLateral->setText(QApplication::translate("MainWindow", "Loading", 0));
+        gifPlan->setText(QApplication::translate("MainWindow", "Loading", 0));
         btnOpen->setText(QApplication::translate("MainWindow", "Open", 0));
-        gifLoading3D->setText(QApplication::translate("MainWindow", "Loading", 0));
-        gifLoadingLateral->setText(QApplication::translate("MainWindow", "Loading", 0));
-        gifLoadingPlan->setText(QApplication::translate("MainWindow", "Loading", 0));
     } // retranslateUi
 
 };

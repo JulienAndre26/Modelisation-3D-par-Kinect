@@ -15,29 +15,19 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->qvtkWidgetLateral->setVisible(false);
 	ui->qvtkWidgetPlan->setVisible(false);
 
-	ui->gifLoading3D->setVisible(false);
-	ui->gifLoadingLateral->setVisible(false);
-	ui->gifLoadingPlan->setVisible(false);
-
-	ui->gifInit3D->setAlignment(Qt::AlignCenter);
-	ui->gifInitLateral->setAlignment(Qt::AlignCenter);
-	ui->gifInitPlan->setAlignment(Qt::AlignCenter);
-
-	ui->gifLoading3D->setAlignment(Qt::AlignCenter);
-	ui->gifLoadingLateral->setAlignment(Qt::AlignCenter);
-	ui->gifLoadingPlan->setAlignment(Qt::AlignCenter);
+	ui->gif3D->setAlignment(Qt::AlignCenter);
+	ui->gifLateral->setAlignment(Qt::AlignCenter);
+	ui->gifPlan->setAlignment(Qt::AlignCenter);
 
 	movieInit = new QMovie("box_init.gif");
-	ui->gifInit3D->setMovie(movieInit);
-	ui->gifInitLateral->setMovie(movieInit);
-	ui->gifInitPlan->setMovie(movieInit);
-	movieInit->start();
+	movieLoad = new QMovie("box_loading.gif");
+	movieMerge = new QMovie("box_merge.gif");
 
-	movieLoading = new QMovie("box_loading.gif");
-	ui->gifLoading3D->setMovie(movieLoading);
-	ui->gifLoadingLateral->setMovie(movieLoading);
-	ui->gifLoadingPlan->setMovie(movieLoading);
-	movieLoading->start();
+	// Set initial gif
+	ui->gif3D->setMovie(movieInit);
+	ui->gifLateral->setMovie(movieInit);
+	ui->gifPlan->setMovie(movieInit);
+	movieInit->start();
 
 	renderLock = vtkMutexLock::New();
 }
@@ -62,6 +52,7 @@ void MainWindow::on_btnBrowse_clicked()
 		ui->listWidget->addItems(listContent.keys());
 
 		ui->btnMerge->setEnabled(true);
+		ui->btnOpen->setEnabled(false);
 	}    
 }
 
@@ -83,24 +74,44 @@ QStringList MainWindow::detectPlyFiles(QDir dirToImport)
 
 void MainWindow::on_btnMerge_clicked()
 {
-    if (list.size() < 2)
-    {
-        QMessageBox::warning(this, "Empty list", "Please select .import file with at least 2 models");
-    }
-    else
-    {
-		ui->progressBar->setVisible(true);
-        for (int i = 0; i < list.size()-1; i++)
-        {
-            ui->lbCurrentMerge->setText("Current merge : " + list.at(i) + " with " + list.at(i+1));
-            ui->progressBar->setValue(((float)i/(list.size()-1)*100));
-            QThread::sleep(1);
-            QCoreApplication::processEvents();
-        }
+	onMerge();
+}
 
-        ui->progressBar->setValue(100);
-        ui->lbCurrentMerge->setText("Finished");
-    }
+void MainWindow::onMerge()
+{
+	if (list.size() < 2)
+	{
+		QMessageBox::warning(this, "Empty list", "Please select .import file with at least 2 models");
+	}
+	else
+	{
+		ui->progressBar->setVisible(true);
+		ui->progressBar->update();
+
+		setAllViewDisplay(false, MOVIE_MERGE);
+
+		ThreadMerge * t_merge = new ThreadMerge(this);
+		QObject::connect(t_merge, SIGNAL(finished()), t_merge, SLOT(onEnd()));
+		t_merge->start();
+	}
+}
+
+void MainWindow::processMerge()
+{
+	for (int i = 0; i < list.size() - 1; i++)
+	{
+		ui->lbCurrentMerge->setText("Current merge : " + list.at(i) + " with " + list.at(i + 1));
+		ui->progressBar->setValue(((float)i / (list.size() - 1) * 100));
+		QThread::sleep(5);
+	}
+}
+
+void MainWindow::onMergeEnd()
+{
+	ui->progressBar->setValue(100);
+	ui->lbCurrentMerge->setText("Finished");
+
+	setAllViewDisplay(false, MOVIE_INIT);
 }
 
 void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
@@ -172,19 +183,17 @@ void MainWindow::loadWidgets(QString path)
 	filePath[path.size()] = '\0';
 	strcpy(filePath, path.toLocal8Bit().data());
 
-	setViewDisplay(VIEW_3D, false);
-	setViewDisplay(VIEW_LATERAL, false);
-	setViewDisplay(VIEW_PLAN, false);
-	
-	Thread * t_3D = new Thread(this, VIEW_3D);
+	setAllViewDisplay(false, MOVIE_LOAD);
+
+	ThreadOpen * t_3D = new ThreadOpen(this, VIEW_3D);
 	QObject::connect(t_3D, SIGNAL(finished()), t_3D, SLOT(onEnd()));
 	t_3D->start();
 
-	Thread * t_Lat = new Thread(this, VIEW_LATERAL);
+	ThreadOpen * t_Lat = new ThreadOpen(this, VIEW_LATERAL);
 	QObject::connect(t_Lat, SIGNAL(finished()), t_Lat, SLOT(onEnd()));
 	t_Lat->start();
 
-	Thread * t_Plan = new Thread(this, VIEW_PLAN);
+	ThreadOpen * t_Plan = new ThreadOpen(this, VIEW_PLAN);
 	QObject::connect(t_Plan, SIGNAL(finished()), t_Plan, SLOT(onEnd()));
 	t_Plan->start();
 }
@@ -455,30 +464,28 @@ void MainWindow::setWidgetBorderRadius(QWidget* widget, int radius) {
 	widget->setMask(region);
 }
 
-void MainWindow::setViewDisplay(int nView, bool bShowWidget)
+void MainWindow::setViewDisplay(int nView, bool bShowWidget, int nStatus)
 {
 	QVTKWidget * qw;
-	QLabel * qlInit;
-	QLabel * qlLoading;
-
+	QLabel * ql;
+	QMovie * qm;
+	
+	// Getting Qt elements to set
 	switch (nView)
 	{
 	case VIEW_3D:
 		qw = this->ui->qvtkWidget3D;
-		qlInit= this->ui->gifInit3D;
-		qlLoading = this->ui->gifLoading3D;
+		ql= this->ui->gif3D;
 		break;
 
 	case VIEW_LATERAL:
 		qw = this->ui->qvtkWidgetLateral;
-		qlInit = this->ui->gifInitLateral;
-		qlLoading = this->ui->gifLoadingLateral;
+		ql = this->ui->gifLateral;
 		break;
 
 	case VIEW_PLAN:
 		qw = this->ui->qvtkWidgetPlan;
-		qlInit = this->ui->gifInitPlan;
-		qlLoading = this->ui->gifLoadingPlan;
+		ql = this->ui->gifPlan;
 		break;
 
 	default:
@@ -486,14 +493,43 @@ void MainWindow::setViewDisplay(int nView, bool bShowWidget)
 		return;
 	}
 
-	movieInit->stop();
-	qlInit->setVisible(false);
-	qlLoading->setVisible(!bShowWidget);
+	// Stopping previous movie
+	ql->movie()->stop();
+
+	// Set the new movie
+	if (nStatus != NULL)
+	{
+		switch (nStatus) {
+		case MOVIE_INIT:
+			qm = movieInit;
+			break;
+		case MOVIE_LOAD:
+			qm = movieLoad;
+			break;
+		case MOVIE_MERGE:
+			qm = movieMerge;
+			break;
+		default:
+			qm = nullptr;
+		}
+
+		ql->setMovie(qm);
+		qm->start();
+	}
+
+	ql->setVisible(!bShowWidget);
 	qw->setVisible(bShowWidget);
 
 	if (bShowWidget)
 		setWidgetBorderRadius(qw, 6);
 
+}
+
+void MainWindow::setAllViewDisplay(bool bShowWidget, int nStatus)
+{
+	setViewDisplay(VIEW_3D, bShowWidget, nStatus);
+	setViewDisplay(VIEW_LATERAL, bShowWidget, nStatus);
+	setViewDisplay(VIEW_PLAN, bShowWidget, nStatus);
 }
 
 void MainWindow::processView(int nView)

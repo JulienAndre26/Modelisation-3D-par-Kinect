@@ -34,9 +34,13 @@ VTK_MODULE_INIT(vtkInteractionStyle)
 #include <pcl/ModelCoefficients.h>
 #include <pcl/filters/project_inliers.h>
 
-#define VIEW_3D			0
-#define VIEW_LATERAL	1
-#define VIEW_PLAN		2
+#define VIEW_3D			1
+#define VIEW_LATERAL	2
+#define VIEW_PLAN		3
+
+#define MOVIE_INIT		1
+#define MOVIE_LOAD		2
+#define MOVIE_MERGE		3
 
 namespace Ui {
 class MainWindow;
@@ -51,9 +55,16 @@ public:
     ~MainWindow();
 
 	void loadWidgets(QString path);
-	void setViewDisplay(int nView, bool bShowWidget);
+
+	void setViewDisplay(int nView, bool bShowWidget, int nStatus);
+	void setAllViewDisplay(bool bShowWidget, int nStatus);
 	
 	void processView(int nView);
+	void processMerge();
+
+	void onMerge();
+	void onMergeEnd();
+
 
 	void showPLY();
 	void showPlane(bool bPlanView);
@@ -80,7 +91,8 @@ private:
 	void setWidgetBorderRadius(QWidget* widget, int radius);
 	
 	QMovie * movieInit;
-	QMovie * movieLoading;
+	QMovie * movieLoad;
+	QMovie * movieMerge;
 
 	bool withColor = false;
 	QString selectedFile;
@@ -88,19 +100,19 @@ private:
 	QHash<QString, QString> listContent;
 };
 
-class Thread : public QThread
+class ThreadOpen : public QThread
 {
 	Q_OBJECT
 
 public:
-	Thread(MainWindow * mw, int n) { this->mw = mw;  this->nView = n; }
+	ThreadOpen(MainWindow * mw, int n) { this->mw = mw;  this->nView = n; }
 
 public slots :
 	void onEnd()
 	{
-		mw->setViewDisplay(nView, true);
+		mw->setViewDisplay(nView, true, NULL);
 		cout << "Thread " << (nView+1) << " finished" << endl;
-}
+	}
 
 private:
 	MainWindow * mw;
@@ -110,7 +122,32 @@ private:
 	{
 		cout << "Thread " << (nView+1) << " launched..." << endl;
 		mw->processView(nView);
-	};
+	}
+};
+
+class ThreadMerge : public QThread
+{
+	Q_OBJECT
+
+public:
+	ThreadMerge(MainWindow * mw) { this->mw = mw; }
+
+public slots :
+	void onEnd()
+	{
+		cout << "Merge Thread finished" << endl;
+		this->mw->onMergeEnd();
+	}
+
+private:
+	MainWindow * mw;
+
+	void run()
+	{
+		cout << "Merge Thread launched..." << endl;
+		mw->processMerge();
+		//mw->onMergeEnd();
+	}
 };
 
 #endif // MAINWINDOW_H
