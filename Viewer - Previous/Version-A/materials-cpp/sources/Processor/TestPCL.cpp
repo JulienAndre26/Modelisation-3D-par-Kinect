@@ -4,14 +4,14 @@
 #pragma warning( disable : 4996 )
 #include <iostream>
 #include <string>
-#include "ProcessorPCL.h"
+#include "Processor.h"
 
 using namespace std;
 
 int main(int argc, char** argv) {
 	
 	string path;
-	ProcessorPCL * processor = new ProcessorPCL();
+	IProcessor * processor = new Processor();
 	processor->merge(path);
 	return EXIT_SUCCESS;
 }

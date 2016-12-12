@@ -1,10 +1,11 @@
 #pragma once
 #include "IProcessor.h"
+#include "ICore.h"
 
-class ProcessorPCL : public IProcessor {
+class Processor : public IProcessor {
 private :
 	int someField;
-
+	ICore * core;
 
 public:
 	// inherited methods ?

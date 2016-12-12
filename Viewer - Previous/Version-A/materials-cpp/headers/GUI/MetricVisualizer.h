@@ -2,6 +2,7 @@
 
 
 #include "custom_typedef.h"
+#include "Processor.h"
 
 struct callback_args {
 	// structure used to pass arguments to the callback function
@@ -44,7 +45,7 @@ void pp_callback(const pcl::visualization::PointPickingEvent& event, void* args)
 		PointT point2 = data->clicked_points_3d->points.at(1);
 
 		// compute distance
-		dist = ProcessorPCL::computeMetrics(point1.x, point2.x, point1.y, point2.y, point1.z, point2.z).returnedDouble;
+		dist = Processor::computeMetrics(point1.x, point2.x, point1.y, point2.y, point1.z, point2.z).returnedDouble;
 		// set value
 		sprintf(data->distance, "%f", dist);
 		// debug it

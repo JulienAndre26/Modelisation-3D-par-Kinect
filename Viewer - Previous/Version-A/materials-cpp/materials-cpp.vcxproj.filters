@@ -61,16 +61,16 @@
     <Filter Include="Header Files\Utils">
       <UniqueIdentifier>{0e3f07f2-9973-47ad-a6e6-8a00d78945b1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Processor\Core">
+      <UniqueIdentifier>{64263329-bad0-47b6-aa9b-fd14613c5b23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Processor\Core">
+      <UniqueIdentifier>{e5f45dcd-c324-4edb-afc0-996ad36025aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="sources\GUI\window.cpp">
       <Filter>Source Files\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="sources\Processor\ProcessorPCL.cpp">
-      <Filter>Source Files\Processor</Filter>
     </ClCompile>
     <ClCompile Include="sources\Processor\TestPCL.cpp">
       <Filter>Source Files\Processor</Filter>
@@ -84,28 +84,43 @@
     <ClCompile Include="IOPLY.cpp">
       <Filter>Source Files\IO</Filter>
     </ClCompile>
+    <ClCompile Include="sources\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PCLCore.cpp">
+      <Filter>Source Files\Processor\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\Processor\Processor.cpp">
+      <Filter>Source Files\Processor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\Processor\IProcessor.h">
       <Filter>Header Files\Processor</Filter>
     </ClInclude>
-    <ClInclude Include="headers\Processor\ProcessorPCL.h">
-      <Filter>Header Files\Processor</Filter>
-    </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_some_test.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="IIO.h">
+    <ClInclude Include="headers\io\IIO.h">
       <Filter>Header Files\IO</Filter>
     </ClInclude>
-    <ClInclude Include="IOPLY.h">
+    <ClInclude Include="headers\io\IOPLY.h">
       <Filter>Header Files\IO</Filter>
     </ClInclude>
-    <ClInclude Include="custom_typedef.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="MetricVisualizer.h">
+    <ClInclude Include="headers\GUI\MetricVisualizer.h">
       <Filter>Header Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\custom_typedef.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ICore.h">
+      <Filter>Header Files\Processor\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="PCLCore.h">
+      <Filter>Header Files\Processor\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Processor\Processor.h">
+      <Filter>Header Files\Processor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
