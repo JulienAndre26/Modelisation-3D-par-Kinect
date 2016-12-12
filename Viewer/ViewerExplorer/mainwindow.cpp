@@ -1,37 +1,35 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-// ------ This need to be placed before each VTK include
-#include <vtkAutoInit.h> 
-VTK_MODULE_INIT(vtkRenderingOpenGL2)
-VTK_MODULE_INIT(vtkInteractionStyle)
-
-#include <vtkSmartPointer.h>
-#include <QVTKWidget.h>
-#include <vtkRenderWindow.h>
-// ---------------
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
 	setAcceptDrops(true);
 	ui->progressBar->setVisible(false);
-
-	ui->label3D->setAlignment(Qt::AlignCenter);
-	ui->labelLateral->setAlignment(Qt::AlignCenter);
-	ui->labelPlan->setAlignment(Qt::AlignCenter);
 
 	ui->qvtkWidget3D->setVisible(false);
 	ui->qvtkWidgetLateral->setVisible(false);
 	ui->qvtkWidgetPlan->setVisible(false);
 
-	QMovie *movie = new QMovie("ripple.gif");
-	ui->label3D->setMovie(movie);
-	ui->labelLateral->setMovie(movie);
-	ui->labelPlan->setMovie(movie);
-	movie->start();
+	ui->gif3D->setAlignment(Qt::AlignCenter);
+	ui->gifLateral->setAlignment(Qt::AlignCenter);
+	ui->gifPlan->setAlignment(Qt::AlignCenter);
+
+	movieInit = new QMovie("box_init.gif");
+	movieLoad = new QMovie("box_loading.gif");
+	movieMerge = new QMovie("box_merge.gif");
+
+	// Set initial gif
+	ui->gif3D->setMovie(movieInit);
+	ui->gifLateral->setMovie(movieInit);
+	ui->gifPlan->setMovie(movieInit);
+	movieInit->start();
+
+	renderLock = vtkMutexLock::New();
 }
 
 MainWindow::~MainWindow()
@@ -52,6 +50,13 @@ void MainWindow::on_btnBrowse_clicked()
 		list = detectPlyFiles(importFileInfo.absoluteDir());
 		ui->listWidget->clear();
 		ui->listWidget->addItems(listContent.keys());
+
+		ui->btnMerge->setEnabled(true);
+		ui->btnOpen->setEnabled(false);
+		ui->progressBar->setVisible(false);
+		ui->lbCurrentMerge->setText("");
+
+		ui->btnMerge->setEnabled(list.size() > 1);
 	}    
 }
 
@@ -73,24 +78,64 @@ QStringList MainWindow::detectPlyFiles(QDir dirToImport)
 
 void MainWindow::on_btnMerge_clicked()
 {
-    if (list.size() < 2)
-    {
-        QMessageBox::warning(this, "Empty list", "Please select .import file with at least 2 models");
-    }
-    else
-    {
-		ui->progressBar->setVisible(true);
-        for (int i = 0; i < list.size()-1; i++)
-        {
-            ui->lbCurrentMerge->setText("Current merge : " + list.at(i) + " with " + list.at(i+1));
-            ui->progressBar->setValue(((float)i/(list.size()-1)*100));
-            QThread::sleep(1);
-            QCoreApplication::processEvents();
-        }
+	onMerge();
+}
 
-        ui->progressBar->setValue(100);
-        ui->lbCurrentMerge->setText("Finished");
-    }
+void MainWindow::onMerge()
+{
+	if (list.size() < 2)
+	{
+		QMessageBox::warning(this, "Empty list", "Please select .import file with at least 2 models");
+	}
+	else
+	{
+		ui->progressBar->setVisible(true);
+		ui->progressBar->setValue(0);
+
+		ui->progressBar->setMaximum(0);
+		ui->progressBar->setMinimum(0);
+
+		setAllViewDisplay(false, MOVIE_MERGE);
+
+		ThreadMerge * t_merge = new ThreadMerge(this);
+		QObject::connect(t_merge, SIGNAL(finished()), t_merge, SLOT(onEnd()));
+		t_merge->start();
+	}
+}
+
+void MainWindow::processMerge()
+{
+	QString sTotal = QString::number(list.size() - 1);
+	for (int i = 0; i < list.size() - 1; i++)
+	{
+		QString sCurrent = QString::number(i + 1);
+		ui->lbCurrentMerge->setText("Merging... (" + sCurrent + "/" + (sTotal) + ")");
+		
+		//ui->progressBar->setValue(((float)n / (list.size() - 1) * 100));
+		
+		QThread::sleep(5);
+	}
+}
+
+void MainWindow::onMergeEnd()
+{
+	ui->progressBar->setMaximum(100);
+	ui->progressBar->setValue(100);
+	ui->lbCurrentMerge->setText("Finished");
+
+	setAllViewDisplay(false, MOVIE_INIT);
+}
+
+void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
+{
+	ui->btnOpen->setEnabled(true);
+	selectedFile = listContent.find(item->data(Qt::DisplayRole).toString()).value();
+	cout << selectedFile.toLocal8Bit().data() << endl;
+}
+
+void MainWindow::on_btnOpen_clicked()
+{
+	loadWidgets(selectedFile);
 }
 
 bool MainWindow::readImportFile(QString import)
@@ -129,7 +174,7 @@ bool MainWindow::readImportFile(QString import)
 				withColor = true;
 			}
 
-			}
+		}
     }
 
 	return true;
@@ -140,41 +185,31 @@ void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
 {
     QString path = listContent.find(item->data(Qt::DisplayRole).toString()).value();
 	cout << path.toLocal8Bit().data() << endl;
-	filePath = new char[path.size()+1];
+	
+	loadWidgets(path);
+}
+
+void MainWindow::loadWidgets(QString path)
+{
+	filePath = new char[path.size() + 1];
 	filePath[path.size()] = '\0';
 	strcpy(filePath, path.toLocal8Bit().data());
 
-	// 3D
-	ui->label3D->setVisible(false);
-	ui->qvtkWidget3D->setVisible(true);
-	ui->label3D->update();
-	ui->qvtkWidget3D->update();
-	showPLY();
+	setAllViewDisplay(false, MOVIE_LOAD);
+	ui->progressBar->setVisible(false);
+	ui->lbCurrentMerge->setText("");
 
-	ui->labelLateral->setVisible(false);
-	ui->qvtkWidgetLateral->setVisible(true);
-	ui->labelLateral->update();
-	ui->qvtkWidgetLateral->update();
-	showPlane(false);
+	ThreadOpen * t_3D = new ThreadOpen(this, VIEW_3D);
+	QObject::connect(t_3D, SIGNAL(finished()), t_3D, SLOT(onEnd()));
+	t_3D->start();
 
-	ui->labelPlan->setVisible(false);
-	ui->qvtkWidgetPlan->setVisible(true);
-	ui->labelPlan->update();
-	ui->qvtkWidgetPlan->update();
-	showPlane(true);
+	ThreadOpen * t_Lat = new ThreadOpen(this, VIEW_LATERAL);
+	QObject::connect(t_Lat, SIGNAL(finished()), t_Lat, SLOT(onEnd()));
+	t_Lat->start();
 
-
-	/*showPlane(true);
-	ui->qvtkWidgetPlan->update();
-*/
-
-	/*std::thread *t_3D_view = new std::thread([this] { this->showPLY(); });
-	std::thread *t_2D_lateral_view = new std::thread([this] { this->showPlane(false); });
-	std::thread *t_2D_plan_view = new std::thread([this] { this->showPlane(true); });
-
-	t_3D_view->join();
-	t_2D_lateral_view->join();
-	t_2D_plan_view->join();*/
+	ThreadOpen * t_Plan = new ThreadOpen(this, VIEW_PLAN);
+	QObject::connect(t_Plan, SIGNAL(finished()), t_Plan, SLOT(onEnd()));
+	t_Plan->start();
 }
 
 void MainWindow::showPlane(bool bPlanView)
@@ -221,12 +256,10 @@ void MainWindow::showPLY() {
 		pv->addPointCloud<pcl::PointXYZ>(src, src_rgb, "v1_source", v);
 	}
 
-	pv->setWindowName("3D View");
-	pv->setPosition(0, 0);
-	pv->setShowFPS(true);
-
+	renderLock->Lock();
 	vtkSmartPointer<vtkRenderWindow> renderWindow = pv->getRenderWindow();
 	ui->qvtkWidget3D->SetRenderWindow(renderWindow);
+	renderLock->Unlock();
 }
 
 
@@ -275,28 +308,29 @@ void MainWindow::showPlaneColor(bool bPlanView)
 	// Visualizer
 	pcl::visualization::PCLVisualizer * pv = new pcl::visualization::PCLVisualizer("Not the QVTKWidget", false);
 	int v(20);
-	pv->setWindowName(bPlanView ? "2D Plan View" : "2D Lateral View");
-	int xy_pos = (bPlanView ? 300 : 150);
-	pv->setPosition(xy_pos, xy_pos);
-	pv->setShowFPS(true);
 	pv->createViewPort(0.0, 0.0, 1.0, 1.0, v);
-
-	// point cloud
 	pv->addPointCloud<pcl::PointXYZRGB>(src_projected, src_rgb, "v1_source", v);
 
 	//pv->addPointCloud<pcl::PointXYZ>(src_projected, src_rgb, "v1_source", v);
 	vtkSmartPointer<vtkRenderWindow> renderWindow = pv->getRenderWindow();
 
+	renderLock->Lock();
 	// Set camera position if plan view
 	if (bPlanView)
 	{
-		pv->setCameraPosition(0, 5, 0, 1, 0, 0, 0);
 		ui->qvtkWidgetPlan->SetRenderWindow(renderWindow);
+		vtkSmartPointer<vtkCamera> tmpCam = ui->qvtkWidgetPlan->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->GetActiveCamera();
+		tmpCam->SetPosition(0, 5, 0);
+		tmpCam->SetViewUp(1, 0, 0);
+		ui->qvtkWidgetPlan->update();
 	}
 	else {
-		pv->setCameraPosition(0, 0, 5, 0, 1, 0, 0);
 		ui->qvtkWidgetLateral->SetRenderWindow(renderWindow);
+		vtkSmartPointer<vtkCamera> tmpCam = ui->qvtkWidgetLateral->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->GetActiveCamera();
+		tmpCam->SetPosition(0, 0, 5);
+		ui->qvtkWidgetLateral->update();
 	}
+	renderLock->Unlock();
 }
 
 /*
@@ -306,7 +340,6 @@ void MainWindow::showPlaneNoColor(bool bPlanView)
 {
 	// Point cloud in 2D
 	pcl::PointCloud<pcl::PointXYZ>::Ptr src_projected(new pcl::PointCloud<pcl::PointXYZ>);
-
 
 	// --------- Copied from ShowPLY()
 
@@ -342,8 +375,7 @@ void MainWindow::showPlaneNoColor(bool bPlanView)
 	}
 
 	coefficients->values[3] = 0;
-
-
+	
 	// Create the filtering object
 	pcl::ProjectInliers<pcl::PointXYZ> proj;
 	proj.setModelType(pcl::SACMODEL_PLANE);
@@ -352,12 +384,8 @@ void MainWindow::showPlaneNoColor(bool bPlanView)
 	proj.filter(*src_projected);
 
 	// Visualizer
-	pcl::visualization::PCLVisualizer::Ptr pv(new pcl::visualization::PCLVisualizer);
+	pcl::visualization::PCLVisualizer * pv = new pcl::visualization::PCLVisualizer("Not the QVTKWidget", false);
 	int v(20);
-	pv->setWindowName(bPlanView ? "2D Plan View" : "2D Lateral View");
-	int xy_pos = (bPlanView ? 300 : 150);
-	pv->setPosition(xy_pos, xy_pos);
-	pv->setShowFPS(true);
 	pv->createViewPort(0.0, 0.0, 1.0, 1.0, v);
 	pv->addPointCloud<pcl::PointXYZ>(src_projected, src_rgb, "v1_source", v);
 
@@ -365,18 +393,23 @@ void MainWindow::showPlaneNoColor(bool bPlanView)
 	//pv->addPointCloud<pcl::PointXYZ>(src_projected, src_rgb, "v1_source", v);
 	vtkSmartPointer<vtkRenderWindow> renderWindow = pv->getRenderWindow();
 
+	renderLock->Lock();
 	// Set camera position if plan view
 	if (bPlanView)
 	{
-		pv->setCameraPosition(0, 5, 0, 1, 0, 0, 0);
 		ui->qvtkWidgetPlan->SetRenderWindow(renderWindow);
+		vtkSmartPointer<vtkCamera> tmpCam = ui->qvtkWidgetPlan->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->GetActiveCamera();
+		tmpCam->SetPosition(0, 5, 0);
+		tmpCam->SetViewUp(1, 0, 0);
+		ui->qvtkWidgetPlan->update();
 	}
 	else {
-		pv->setCameraPosition(0, 0, 5, 0, 1, 0, 0);
 		ui->qvtkWidgetLateral->SetRenderWindow(renderWindow);
+		vtkSmartPointer<vtkCamera> tmpCam = ui->qvtkWidgetLateral->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->GetActiveCamera();
+		tmpCam->SetPosition(0, 0, 5);
+		ui->qvtkWidgetLateral->update();
 	}
-	// Show
-	//pv->spin();
+	renderLock->Unlock();
 }
 
 void MainWindow::dragEnterEvent(QDragEnterEvent *e)
@@ -409,3 +442,126 @@ void MainWindow::dropEvent(QDropEvent *e)
 		ui->listWidget->addItems(listContent.keys());
 	}
 }
+
+void MainWindow::setWidgetBorderRadius(QWidget* widget, int radius) {
+
+	// cache widget with and height
+	int width = widget->width();
+	int height = widget->height();
+
+	// Initialize a rectangular masked region
+	QRegion region(0, 0, width, height, QRegion::Rectangle);
+
+	// now clip off the sharp edges
+
+	// top left
+	QRegion round(0, 0, 2 * radius, 2 * radius, QRegion::Ellipse);
+	QRegion corner(0, 0, radius, radius, QRegion::Rectangle);
+	region = region.subtracted(corner.subtracted(round));
+
+	// top right
+	round = QRegion(width - 2 * radius, 0, 2 * radius, 2 * radius, QRegion::Ellipse);
+	corner = QRegion(width - radius, 0, radius, radius, QRegion::Rectangle);
+	region = region.subtracted(corner.subtracted(round));
+
+	// bottom right
+	round = QRegion(width - 2 * radius, height - 2 * radius, 2 * radius, 2 * radius, QRegion::Ellipse);
+	corner = QRegion(width - radius, height - radius, radius, radius, QRegion::Rectangle);
+	region = region.subtracted(corner.subtracted(round));
+
+	// bottom left
+	round = QRegion(0, height - 2 * radius, 2 * radius, 2 * radius, QRegion::Ellipse);
+	corner = QRegion(0, height - radius, radius, radius, QRegion::Rectangle);
+	region = region.subtracted(corner.subtracted(round));
+
+	// Set mask
+	widget->setMask(region);
+}
+
+void MainWindow::setViewDisplay(int nView, bool bShowWidget, int nStatus)
+{
+	QVTKWidget * qw;
+	QLabel * ql;
+	QMovie * qm;
+	
+	// Getting Qt elements to set
+	switch (nView)
+	{
+	case VIEW_3D:
+		qw = this->ui->qvtkWidget3D;
+		ql= this->ui->gif3D;
+		break;
+
+	case VIEW_LATERAL:
+		qw = this->ui->qvtkWidgetLateral;
+		ql = this->ui->gifLateral;
+		break;
+
+	case VIEW_PLAN:
+		qw = this->ui->qvtkWidgetPlan;
+		ql = this->ui->gifPlan;
+		break;
+
+	default:
+		cout << "MainWindow::setViewDisplay : Invalid view number " + nView << endl;
+		return;
+	}
+
+	// Stopping previous movie
+	ql->movie()->stop();
+
+	// Set the new movie
+	if (nStatus != NULL)
+	{
+		switch (nStatus) {
+		case MOVIE_INIT:
+			qm = movieInit;
+			break;
+		case MOVIE_LOAD:
+			qm = movieLoad;
+			break;
+		case MOVIE_MERGE:
+			qm = movieMerge;
+			break;
+		default:
+			qm = nullptr;
+		}
+
+		ql->setMovie(qm);
+		qm->start();
+	}
+
+	ql->setVisible(!bShowWidget);
+	qw->setVisible(bShowWidget);
+
+	if (bShowWidget)
+		setWidgetBorderRadius(qw, 6);
+
+}
+
+void MainWindow::setAllViewDisplay(bool bShowWidget, int nStatus)
+{
+	setViewDisplay(VIEW_3D, bShowWidget, nStatus);
+	setViewDisplay(VIEW_LATERAL, bShowWidget, nStatus);
+	setViewDisplay(VIEW_PLAN, bShowWidget, nStatus);
+}
+
+void MainWindow::processView(int nView)
+{
+	switch (nView)
+	{
+	case VIEW_3D:
+		showPLY();
+		break;
+	case VIEW_LATERAL:
+		showPlane(false);
+		break;
+	case VIEW_PLAN:
+		showPlane(true); 
+		break;
+	default:
+		cout << "MainWindow::processView : Invalid view number " + nView << endl;
+	}
+}
+
+

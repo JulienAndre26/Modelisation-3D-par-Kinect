@@ -23,7 +23,7 @@
 #include <iostream>
 
 #include <thread>
-std::thread * t;
+std::thread * auto_save_thread;
 
 #define MIN_DEPTH_DISTANCE_MM 350   // Must be greater than 0
 #define MAX_DEPTH_DISTANCE_MM 8000
@@ -206,6 +206,7 @@ LRESULT CALLBACK CKinectFusionExplorer::DlgProc(
             // Bind application window handle
             m_hWnd = hWnd;
 
+			// Initialize UI controls statements at launch
             InitializeUIControls();
 
             // Init Direct2D
@@ -214,10 +215,14 @@ LRESULT CALLBACK CKinectFusionExplorer::DlgProc(
             int width = m_params.m_cDepthWidth;
             int height = m_params.m_cDepthHeight;
 
+			HRESULT hr;
+
             // Create and initialize a new Direct2D image renderer (take a look at ImageRenderer.h)
             // We'll use this to draw the data we receive from the Kinect to the screen
-            m_pDrawDepth = new ImageRenderer();
-            HRESULT hr = m_pDrawDepth->Initialize(
+            
+			// Initialize depth image renderer
+			m_pDrawDepth = new ImageRenderer();
+			hr = m_pDrawDepth->Initialize(
                 GetDlgItem(m_hWnd, IDC_DEPTH_VIEW),
                 m_pD2DFactory,
                 width,
@@ -226,10 +231,11 @@ LRESULT CALLBACK CKinectFusionExplorer::DlgProc(
 
             if (FAILED(hr))
             {
-                SetStatusMessage(L"Failed to initialize the Direct2D draw device.");
+                SetStatusMessage(L"Failed to initialize the Direct2D draw device for depth renderer.");
                 m_bInitializeError = true;
             }
 
+			// Initialize reconstruction image renderer (which is displayed)
             m_pDrawReconstruction = new ImageRenderer();
             hr = m_pDrawReconstruction->Initialize(
                 GetDlgItem(m_hWnd, IDC_RECONSTRUCTION_VIEW),
@@ -244,6 +250,7 @@ LRESULT CALLBACK CKinectFusionExplorer::DlgProc(
                 m_bInitializeError = true;
             }
 
+			// Initialize residual image renderer
             m_pDrawTrackingResiduals = new ImageRenderer();
             hr = m_pDrawTrackingResiduals->Initialize(
                 GetDlgItem(m_hWnd, IDC_TRACKING_RESIDUALS_VIEW),
@@ -258,6 +265,7 @@ LRESULT CALLBACK CKinectFusionExplorer::DlgProc(
                 m_bInitializeError = true;
             }
 
+			// Checking initialize errors
             if (FAILED(m_processor.SetWindow(m_hWnd, WM_FRAMEREADY, WM_UPDATESENSORSTATUS)) ||
                 FAILED(m_processor.SetParams(m_params)) ||
                 FAILED(m_processor.StartProcessing()))
@@ -274,8 +282,8 @@ LRESULT CALLBACK CKinectFusionExplorer::DlgProc(
         DestroyWindow(hWnd);
         break;
 
+		// Quit the main message pump
     case WM_DESTROY:
-        // Quit the main message pump
         m_processor.StopProcessing();
         PostQuitMessage(0);
         break;
@@ -331,76 +339,44 @@ void CKinectFusionExplorer::HandleCompletedFrame()
 
     if (!m_bSavingMesh) // don't render while a mesh is being saved
     {
+		
         if (m_processor.IsVolumeInitialized())
         {
-            m_pDrawDepth->Draw(pFrame->m_pDepthRGBX, pFrame->m_cbImageSize);
+            // Update reconstruction image
 			m_pDrawReconstruction->Draw(pFrame->m_pReconstructionRGBX, pFrame->m_cbImageSize);
-			m_pDrawTrackingResiduals->Draw(pFrame->m_pTrackingDataRGBX, pFrame->m_cbImageSize);
+			//m_pDrawTrackingResiduals->Draw(pFrame->m_pTrackingDataRGBX, pFrame->m_cbImageSize);
+			//m_pDrawDepth->Draw(pFrame->m_pDepthRGBX, pFrame->m_cbImageSize);
         }
 
+		// Update status message
         SetStatusMessage(pFrame->m_statusMessage);
+
+		// Update FPS
         SetFramesPerSecond(pFrame->m_fFramesPerSecond);
     }
 
-    if (pFrame->m_bIntegrationResumed)
-    {
-        m_params.m_bPauseIntegration = false;
-        CheckDlgButton(m_hWnd, IDC_CHECK_PAUSE_INTEGRATION, BST_UNCHECKED);
-        m_processor.SetParams(m_params);
-    }
+	if (pFrame->m_bIntegrationResumed)
+	{
+		m_params.m_bPauseIntegration = false;
+		m_processor.SetParams(m_params);
+	}
     else if (m_processor.IsCameraPoseFinderAvailable() && !m_params.m_bPauseIntegration)
     {
         m_params.m_bPauseIntegration = true;
-        CheckDlgButton(m_hWnd, IDC_CHECK_PAUSE_INTEGRATION, BST_CHECKED);
         m_processor.SetParams(m_params);
     }
 
-    if (!m_bUIUpdated && m_processor.IsVolumeInitialized())
-    {
-        const int Mebi = 1024 * 1024;
+	// UI is now updated
+    m_bUIUpdated = true;
 
-        // We now create both a color and depth volume, doubling the required memory, so we restrict
-        // which resolution settings the user can choose when the graphics card is limited in memory.
-        if (pFrame->m_deviceMemory <= 1 * Mebi)  // 1GB
-        {
-            // Disable 640 voxel resolution in all axes - cards with only 1GB cannot handle this
-            HWND hButton = GetDlgItem(m_hWnd, IDC_VOXELS_X_640);
-            EnableWindow(hButton, FALSE);
-            hButton = GetDlgItem(m_hWnd, IDC_VOXELS_Y_640);
-            EnableWindow(hButton, FALSE);
-            hButton = GetDlgItem(m_hWnd, IDC_VOXELS_Z_640);
-            EnableWindow(hButton, FALSE);
-
-            if (Is64BitApp() == FALSE)
-            {
-                // Also disable 512 voxel resolution in one arbitrary axis on 32bit machines
-                hButton = GetDlgItem(m_hWnd, IDC_VOXELS_Y_512);
-                EnableWindow(hButton, FALSE);
-            }
-        }
-        else if (pFrame->m_deviceMemory <= 2 * Mebi)  // 2GB
-        {
-            if (Is64BitApp() == FALSE)
-            {
-                // Disable 640 voxel resolution in one arbitrary axis on 32bit machines
-                HWND hButton = GetDlgItem(m_hWnd, IDC_VOXELS_Y_640);
-                EnableWindow(hButton, FALSE);
-            }
-            // True 64 bit apps seem to be more able to cope with large volume sizes.
-        }
-
-        m_bUIUpdated = true;
-    }
 
     m_bColorCaptured = pFrame->m_bColorCaptured;
 
     m_processor.UnlockFrame();
 
-	SetEnableCaptureUI(TRUE); // ADD - Antoine
+	// We allow the capture
+	SetEnableCaptureUI(TRUE);
 }
-
-
-///////////////////////////////////////////////////////////////////////////////////////////
 
 /// <summary>
 /// Initialize the UI
@@ -420,6 +396,7 @@ void CKinectFusionExplorer::InitializeUIControls()
     m_pSensorChooserUI->UpdateSensorStatus(NuiSensorChooserStatusInitializing);
 
     // Set slider ranges
+	// Weight
     SendDlgItemMessage(
         m_hWnd,
         IDC_INTEGRATION_WEIGHT_SLIDER,
@@ -434,6 +411,7 @@ void CKinectFusionExplorer::InitializeUIControls()
         TRUE,
         (UINT)m_params.m_cMaxIntegrationWeight);
 
+	// Tilt
 	SendDlgItemMessage(
 		m_hWnd,
 		IDC_SLIDER_TILT,
@@ -441,24 +419,13 @@ void CKinectFusionExplorer::InitializeUIControls()
 		TRUE,
 		(UINT) 0);
 
-    // Set intermediate slider tics at meter intervals
-    for (int i=1; i<(MAX_DEPTH_DISTANCE_MM/1000); i++)
-    {
-        SendDlgItemMessage(m_hWnd, IDC_SLIDER_DEPTH_MAX, TBM_SETTIC, 0, i*1000);
-        SendDlgItemMessage(m_hWnd, IDC_SLIDER_DEPTH_MIN, TBM_SETTIC, 0, i*1000);
-    }
-
-    // Update slider text
+    // Update slider text according to its value
     WCHAR str[MAX_PATH];
-    swprintf_s(str, ARRAYSIZE(str), L"%4.2fm", m_params.m_fMinDepthThreshold);
-    SetDlgItemText(m_hWnd, IDC_MIN_DIST_TEXT, str);
-    swprintf_s(str, ARRAYSIZE(str), L"%4.2fm", m_params.m_fMaxDepthThreshold);
-    SetDlgItemText(m_hWnd, IDC_MAX_DIST_TEXT, str);
-
     swprintf_s(str, ARRAYSIZE(str), L"%d", m_params.m_cMaxIntegrationWeight);
     SetDlgItemText(m_hWnd, IDC_INTEGRATION_WEIGHT_TEXT, str);
 
 	// Set Quality Radio Buttons
+	// MEDIUM
 	if ((int)m_params.m_reconstructionParams.voxelsPerMeter == 128
 		&& (int)m_params.m_reconstructionParams.voxelCountX == 640
 		&& (int)m_params.m_reconstructionParams.voxelCountY == 512)
@@ -467,6 +434,7 @@ void CKinectFusionExplorer::InitializeUIControls()
 		CheckDlgButton(m_hWnd, IDC_CAPTURE_TYPE_MEDIUM, BST_CHECKED);
 		CheckDlgButton(m_hWnd, IDC_CAPTURE_TYPE_HIGH, BST_UNCHECKED);
 	}
+	// HIGH
 	else if ((int)m_params.m_reconstructionParams.voxelsPerMeter == 256
 		&& (int)m_params.m_reconstructionParams.voxelCountX == 1280
 		&& (int)m_params.m_reconstructionParams.voxelCountY == 1024)
@@ -475,7 +443,8 @@ void CKinectFusionExplorer::InitializeUIControls()
 		CheckDlgButton(m_hWnd, IDC_CAPTURE_TYPE_MEDIUM, BST_UNCHECKED);
 		CheckDlgButton(m_hWnd, IDC_CAPTURE_TYPE_HIGH, BST_CHECKED);
 	}
-	else 
+	// LOW
+	else  
 	{
 		CheckDlgButton(m_hWnd, IDC_CAPTURE_TYPE_LOW, BST_CHECKED);
 		CheckDlgButton(m_hWnd, IDC_CAPTURE_TYPE_MEDIUM, BST_UNCHECKED);
@@ -483,24 +452,26 @@ void CKinectFusionExplorer::InitializeUIControls()
 	}
 
 	// Set Color Radio Buttons
+	// COLOR
 	if (m_params.m_bCaptureColor)
 	{
 		CheckDlgButton(m_hWnd, IDC_CAPTURE_COLOR_YES, BST_CHECKED);
 		CheckDlgButton(m_hWnd, IDC_CAPTURE_COLOR_NO, BST_UNCHECKED);
 	}
+	// NO COLOR
 	else
 	{
 		CheckDlgButton(m_hWnd, IDC_CAPTURE_COLOR_YES, BST_UNCHECKED);
 		CheckDlgButton(m_hWnd, IDC_CAPTURE_COLOR_NO, BST_CHECKED);
 	}
 
-	// Set Tilt Radio Buttons + Tilt Position
-	CheckDlgButton(m_hWnd, IDC_SENSOR_TILT_MIDDLE, BST_CHECKED);
+	// Set Tilt Radio Buttons + Tilt Position (middle)
 	CheckDlgButton(m_hWnd, IDC_SENSOR_TILT_TOP, BST_UNCHECKED);
+	CheckDlgButton(m_hWnd, IDC_SENSOR_TILT_MIDDLE, BST_CHECKED);
 	CheckDlgButton(m_hWnd, IDC_SENSOR_TILT_BOTTOM, BST_UNCHECKED);
-
 	m_processor.TiltSensor(0);
 	
+	// File format
     if (Stl == m_saveMeshFormat)
     {
         CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_STL_RADIO, BST_CHECKED);
@@ -523,6 +494,7 @@ void CKinectFusionExplorer::InitializeUIControls()
 		SetEnableColorUI(TRUE);
     }
 
+	// Init auto save progressbar
 	SendMessage(GetDlgItem(m_hWnd, IDC_AUTO_PROGRESS), PBM_SETBARCOLOR, 0, RGB(255,255,0));
 
 }
@@ -590,6 +562,7 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
 	if (IDC_BUTTON_RESET == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
 	{
 		m_processor.ResetReconstruction();
+		SetStatusMessage(L"Reconstruction has been reset.");
 	}
 
 	// If END CAPTURE clicked
@@ -598,7 +571,7 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
 		if (!m_bDirNameSet) // NOT CAPTURING
 		{
 			// IMPORT
-			AskImportDir();
+			AskImportFile();
 		}
 		else	// CAPTURING
 		{
@@ -625,7 +598,7 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
         m_params.m_bPauseIntegration = !m_params.m_bPauseIntegration;
     }    
 
-
+	// Set the file format
 	if (IDC_MESH_FORMAT_STL_RADIO == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
     {
         m_saveMeshFormat = Stl;
@@ -642,6 +615,7 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
 		SetEnableColorUI(TRUE);
     }
 
+	// Launch/Stop auto save mode
 	if (IDC_BUTTON_AUTO_MODE == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
 	{
 		if (!m_bIsAutoMode)
@@ -650,6 +624,7 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
 			StopAutoCaptureThread();
 	}
 
+	// Increase auto save delay
 	if (IDC_BUTTON_AUTO_PLUS == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
 	{
 		m_nDelay++;
@@ -657,6 +632,7 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
 		SetDlgItemText(m_hWnd, IDC_BUTTON_AUTO_MODE, wsAuto.c_str());
 	}
 
+	// Decrease auto save delay
 	if (IDC_BUTTON_AUTO_MINUS == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
 	{
 		m_nDelay -= (m_nDelay > 1)?1:0;
@@ -664,9 +640,14 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
 		SetDlgItemText(m_hWnd, IDC_BUTTON_AUTO_MODE, wsAuto.c_str());
 	}
 
+	// Save settings
     m_processor.SetParams(m_params);
 }
 
+/// <summary>
+/// Enables or disables color UI radio buttons.
+/// </summary>
+/// <param name="bEnable">status choice</param>
 void CKinectFusionExplorer::SetEnableColorUI(bool bEnable)
 {
 	HWND hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_COLOR_YES);
@@ -680,6 +661,7 @@ void CKinectFusionExplorer::SetEnableColorUI(bool bEnable)
 /// </summary>
 void CKinectFusionExplorer::UpdateHSliders()
 {
+	// Get weight new value
     int maxWeight = (int)SendDlgItemMessage(m_hWnd, IDC_INTEGRATION_WEIGHT_SLIDER, TBM_GETPOS, 0,0);
     m_params.m_cMaxIntegrationWeight = maxWeight % (MAX_INTEGRATION_WEIGHT+1);
 
@@ -692,7 +674,7 @@ void CKinectFusionExplorer::UpdateHSliders()
 }
 
 /// <summary>
-/// Set the status bar message
+/// Set the status bar message (bottom of the frame).
 /// </summary>
 /// <param name="szMessage">message to display</param>
 void CKinectFusionExplorer::SetStatusMessage(const WCHAR * szMessage)
@@ -738,14 +720,17 @@ void CKinectFusionExplorer::SetFramesPerSecond(float fFramesPerSecond)
             swprintf_s(str, ARRAYSIZE(str), L"%5.2f FPS", fFramesPerSecond);
         }
 
+		// Update text
         SendDlgItemMessageW(m_hWnd, IDC_FRAMES_PER_SECOND, WM_SETTEXT, 0, (LPARAM)str);
     }
 }
 
-
-// ADD - Antoine -----------------------------------------------------------------------------
+/// <summary>
+/// Display folder selection dialog.
+/// </summary>
 int CKinectFusionExplorer::AskDirName() {
 
+	// Dialog
 	CComPtr<IFileSaveDialog> pSaveDlg;
 
 	HRESULT hr = S_OK;
@@ -784,6 +769,7 @@ int CKinectFusionExplorer::AskDirName() {
 						{ L"All files", L"*.*" }
 					};
 
+					// Apply filters
 					hr = pSaveDlg->SetFileTypes(
 						ARRAYSIZE(allPossibleFileTypes),
 						allPossibleFileTypes);
@@ -800,20 +786,23 @@ int CKinectFusionExplorer::AskDirName() {
 
 					if (SUCCEEDED(hr))
 					{
+						// Retrieve folder path
 						LPOLESTR pwsz = nullptr;
 						hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pwsz);
 
+						// Save data
 						m_lDirPath = pwsz;
-
 						std::wstring pName(pwsz);
 
 						// Check directory name validity
 						if (pName.size() <= 0)
 							return -1;
 
+						// Create the folder 
 						CreateDirectory(m_lDirPath, NULL);
-
-						std::wstring pMsg = L"Project name is set to ";
+						
+						// Display status message
+						std::wstring pMsg = L"Capture name is set to ";
 						std::wstring sPwszMsg = pMsg + pName;
 
 						USES_CONVERSION;
@@ -832,7 +821,9 @@ int CKinectFusionExplorer::AskDirName() {
 	return hr;
 }
 
-// ADD - Antoine
+/// <summary>
+/// Saves the current mesh into the created project's folder.
+/// </summary>
 int	CKinectFusionExplorer::SaveMesh()
 {
 	SetStatusMessage(L"Creating and saving mesh of reconstruction, please wait...");
@@ -844,6 +835,8 @@ int	CKinectFusionExplorer::SaveMesh()
 	m_processor.SetParams(m_params);
 
 	INuiFusionColorMesh *mesh = nullptr;
+	
+	// Prepare mesh
 	HRESULT hr = m_processor.CalculateMesh(&mesh);
 
 	if (SUCCEEDED(hr))
@@ -866,14 +859,23 @@ int	CKinectFusionExplorer::SaveMesh()
 
 		std::wstring szMeshCount = std::to_wstring(m_nMeshCount);
 
+		// Get basename of folder's project path
+		std::wstring szBasename(m_lDirPath);
+		const size_t last_slash_idx = szBasename.find_last_of(L"\\/");
+		if (std::wstring::npos != last_slash_idx)
+		{
+			szBasename.erase(0, last_slash_idx + 1);
+		}
+		
 		// Concat
 		std::wstring szDirName(m_lDirPath);
-		std::wstring szCurrentMeshName = szDirName + L"\\plan" + szMeshCount + szFormat;
+		std::wstring szCurrentMeshName = szDirName + L"\\" + szBasename + szMeshCount + szFormat;
 
 		// Convert wstring to LPOLESTR
 		USES_CONVERSION;
 		currentMeshName = W2OLE((LPWSTR)szCurrentMeshName.c_str());
 
+		// Save into file according to format wished
 		if (Stl == m_saveMeshFormat)
 		{
 			hr = WriteBinarySTLMeshFile(mesh, currentMeshName);
@@ -887,6 +889,7 @@ int	CKinectFusionExplorer::SaveMesh()
 			hr = WriteAsciiPlyMeshFile(mesh, currentMeshName, true, m_bColorCaptured);
 		}
 
+		// Update status message
 		if (SUCCEEDED(hr))
 		{
 			SetStatusMessage(currentMeshName);
@@ -917,6 +920,9 @@ int	CKinectFusionExplorer::SaveMesh()
 	return S_OK;
 }
 
+/// <summary>
+/// Updates the project's name in UI.
+/// </summary>
 void CKinectFusionExplorer::UpdateCaptureNameUI()
 {
 	std::wstring szDirName(m_lDirPath);
@@ -928,7 +934,7 @@ void CKinectFusionExplorer::UpdateCaptureNameUI()
 	else 
 	{	// DIR NAME SET
 
-		// Get basename
+		// Get basename of folder's project path
 		const size_t last_slash_idx = szDirName.find_last_of(L"\\/");
 		if (std::wstring::npos != last_slash_idx)
 		{
@@ -938,29 +944,19 @@ void CKinectFusionExplorer::UpdateCaptureNameUI()
 	
 	SetDlgItemText(m_hWnd, IDC_CAPTURE_NAME, W2OLE((LPWSTR)szDirName.c_str()));
 }
-	
+
+/// <summary>
+/// Updates the file saved count in UI.
+/// </summary>
 void CKinectFusionExplorer::UpdateMeshCountUI()
 {
 	std::wstring meshCount = std::to_wstring(m_nMeshCount);
 	SetDlgItemText(m_hWnd, IDC_MESH_COUNT, W2OLE((LPWSTR)meshCount.c_str()));
 }
 
-
-int CKinectFusionExplorer::AskTreatment()
-{
-	CString message;
-	message.Format(L"%d files have been saved in %s. Do you want to merge the objects into a unique file ?", m_nMeshCount, m_lDirPath);
-	return MessageBoxW(NULL,
-		message,
-		_T("End of Capture"),
-		MB_YESNOCANCEL | MB_ICONQUESTION);
-}
-
-void CKinectFusionExplorer::ProcessTreatment()
-{
-	SetStatusMessage(L"LAUNCHING TREATMENT");
-}
-
+/// <summary>
+/// Asks the user if he wants to open the created project in the viewer through a yes-no dialog.
+/// </summary>
 int CKinectFusionExplorer::AskViewer()
 {
 	CString message;
@@ -971,11 +967,18 @@ int CKinectFusionExplorer::AskViewer()
 		MB_YESNOCANCEL | MB_ICONQUESTION);
 }
 
+/// <summary>
+/// Opens the viewer's program.
+/// </summary>
 void CKinectFusionExplorer::OpenViewer()
 {
+	// TODO when viewer finished
 	SetStatusMessage(L"LAUNCHING VIEWER");
 }
 
+/// <summary>
+/// Enables the UI capture buttons.
+/// </summary>
 void CKinectFusionExplorer::SetEnableCaptureUI(int nEnable)
 {
 	HWND hElem = GetDlgItem(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE);
@@ -986,10 +989,11 @@ void CKinectFusionExplorer::SetEnableCaptureUI(int nEnable)
 	EnableWindow(hElem, nEnable);
 }
 
-// ADD - Antoine
-void CKinectFusionExplorer::SetEnableConfUI(int nEnable) {
-	//int opposit = (nEnable == FALSE) ? TRUE : FALSE;
-
+/// <summary>
+/// Enables the UI capture configuration.
+/// </summary>
+void CKinectFusionExplorer::SetEnableConfUI(int nEnable) 
+{
 	HWND hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_COLOR_YES);
 	EnableWindow(hElem, nEnable);
 	hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_COLOR_NO);
@@ -1006,25 +1010,18 @@ void CKinectFusionExplorer::SetEnableConfUI(int nEnable) {
 	EnableWindow(hElem, nEnable);
 	hElem = GetDlgItem(m_hWnd, IDC_MESH_FORMAT_STL_RADIO);
 	EnableWindow(hElem, nEnable);
-
-	/*hElem = GetDlgItem(m_hWnd, IDC_BUTTON_END_IMPORT_CAPTURE);
-	EnableWindow(hElem, opposit);*/
 }
 
+/// <summary>
+/// Creates the project import file according to capture settings.
+/// </summary>
 void CKinectFusionExplorer::CreateConfFile()
 {
 	// QUALITY
-	//std::wstring wsQuality;
 	std::wstring wsVPM = std::to_wstring(m_params.m_reconstructionParams.voxelsPerMeter);
 	std::wstring wsX = std::to_wstring(m_params.m_reconstructionParams.voxelCountX);
 	std::wstring wsY = std::to_wstring(m_params.m_reconstructionParams.voxelCountY);
 	std::wstring wsZ = std::to_wstring(m_params.m_reconstructionParams.voxelCountZ);
-	//if (m_params.m_reconstructionParams.voxelsPerMeter == 64)
-	//	wsQuality = L"LOW";
-	//else if (m_params.m_reconstructionParams.voxelsPerMeter == 128)
-	//	wsQuality = L"MEDIUM";
-	//else
-	//	wsQuality = L"HIGH";
 
 	// FORMAT
 	std::wstring wsFormat;
@@ -1053,7 +1050,7 @@ void CKinectFusionExplorer::CreateConfFile()
 	std::wstring wsConfPath = wsPath + L"\\" + wsName + L".import";
 	std::wofstream confFile(wsConfPath, std::ios::out | std::ios::trunc);  //déclaration du flux et ouverture du fichier
 
-	// If success
+	// If success -> write
 	if (confFile)
 	{
 		confFile << L"[PATH] " + wsPath + L"\n";
@@ -1066,12 +1063,17 @@ void CKinectFusionExplorer::CreateConfFile()
 		confFile << L"[Z] " + wsZ;
 
 		confFile.close();
+
+		SetStatusMessage(L"Settings saved successfully.");
 	}
 }
 
-int CKinectFusionExplorer::AskImportDir()
+/// <summary>
+/// Asks the user to select the import file of a project through a dialog.
+/// </summary>
+int CKinectFusionExplorer::AskImportFile()
 {
-	// CoCreate the File Open Dialog object.
+	// Create the dialog object
 	IFileDialog *pfd = NULL;
 	HRESULT hr = CoCreateInstance(CLSID_FileOpenDialog,
 		NULL,
@@ -1079,8 +1081,7 @@ int CKinectFusionExplorer::AskImportDir()
 		IID_PPV_ARGS(&pfd));
 	if (SUCCEEDED(hr))
 	{
-		// Always use known folders instead of hard-coding physical file paths.
-		// In this case we are using Public Music KnownFolder.
+		// Set the current folder dialog location with a known location
 		IKnownFolderManager *pkfm = NULL;
 		hr = CoCreateInstance(CLSID_KnownFolderManager,
 			NULL,
@@ -1088,26 +1089,20 @@ int CKinectFusionExplorer::AskImportDir()
 			IID_PPV_ARGS(&pkfm));
 		if (SUCCEEDED(hr))
 		{
-			// Get the known folder.
+			// Get the known folder
 			IKnownFolder *pKnownFolder = NULL;
 			hr = pkfm->GetFolder(FOLDERID_Desktop, &pKnownFolder);
 			if (SUCCEEDED(hr))
 			{
-				// File Dialog APIs need an IShellItem that represents the location.
+				// File Dialog APIs need an IShellItem that represents the location
 				IShellItem *psi = NULL;
 				hr = pKnownFolder->GetShellItem(0, IID_PPV_ARGS(&psi));
 				if (SUCCEEDED(hr))
 				{
-					// Add the place to the bottom of default list in Common File Dialog.
+					// Add the place to the bottom of default list in Common File Dialog
 					hr = pfd->AddPlace(psi, FDAP_BOTTOM);
 					if (SUCCEEDED(hr))
 					{
-						/*DWORD dwOptions;
-						if (SUCCEEDED(pfd->GetOptions(&dwOptions)))
-						{
-							pfd->SetOptions(dwOptions | FOS_PICKFOLDERS);
-						}*/
-
 						// Set the file type filters
 						COMDLG_FILTERSPEC allPossibleFileTypes[] = {
 							/*{ L"Stl mesh files", L"*.stl" },
@@ -1116,10 +1111,12 @@ int CKinectFusionExplorer::AskImportDir()
 							{ L"Capture Import Files", L"*.import" }
 						};
 
+						// Apply filters
 						hr = pfd->SetFileTypes(
 							ARRAYSIZE(allPossibleFileTypes),
 							allPossibleFileTypes);
 						
+						// Set dialog title
 						pfd->SetTitle(L"Import Capture");
 						
 						// Show the File Dialog.
@@ -1130,6 +1127,7 @@ int CKinectFusionExplorer::AskImportDir()
 							CComPtr<IShellItem> pItem;
 							hr = pfd->GetResult(&pItem);
 
+							// Set settings and load information from file
 							if (SUCCEEDED(hr))
 							{
 								LPOLESTR pwsz = nullptr;
@@ -1141,10 +1139,6 @@ int CKinectFusionExplorer::AskImportDir()
 								
 								if (std::wstring::npos != last_slash_idx)
 									wsCapturePath.erase(last_slash_idx, wsCapturePath.length());
-								
-								/*m_lConfPath = pwsz;
-*/
-								//MessageBoxW(NULL, W2OLE((LPWSTR)wsCapturePath.c_str()), _T("Capture Folder"), MB_OK);
 
 								m_lDirPath = (LPOLESTR) new wchar_t[wsCapturePath.length() + 1];
 								std::wcscpy(m_lDirPath, wsCapturePath.c_str());
@@ -1165,15 +1159,20 @@ int CKinectFusionExplorer::AskImportDir()
 	return hr;
 }
 
+/// <summary>
+/// Loads settings from an imported project and sets the UI.
+/// </summary>
 void CKinectFusionExplorer::LoadProject()
 {
 	
 	// Retrieve conf.txt values
 	if (!RetrieveProjectConf())
+	{
+		SetStatusMessage(L"Failed to import capture.");
 		return;
-
+	}
+	// Update UI
 	InitializeUIControls();
-
 	UpdateCaptureNameUI();
 	UpdateMeshCountUI();
 
@@ -1185,8 +1184,13 @@ void CKinectFusionExplorer::LoadProject()
 
 	// Disable Conf in UI
 	SetEnableConfUI(FALSE);
+
+	SetStatusMessage(L"Capture imported successfully.");
 }
 
+/// <summary>
+/// Loads settings from an imported project. Needs a UTF8 converter since the file content is not in ASCII-8bits.
+/// </summary>
 bool CKinectFusionExplorer::RetrieveProjectConf()
 {
 	// DIRECTORY
@@ -1218,7 +1222,6 @@ bool CKinectFusionExplorer::RetrieveProjectConf()
 	typedef std::codecvt_utf8<wchar_t> converter_type;
 	const converter_type* converter = new converter_type;
 	const std::locale utf8_locale = std::locale(empty_locale, converter);
-	
 	confFile.imbue(utf8_locale);
 	
 	std::wstring wsLine;
@@ -1372,6 +1375,9 @@ bool CKinectFusionExplorer::RetrieveProjectConf()
 	return res;
 }
 
+/// <summary>
+/// When a new capture/project is required.
+/// </summary>
 void CKinectFusionExplorer::OnNewCapture()
 {
 	// Ask Mesh Name
@@ -1399,8 +1405,12 @@ void CKinectFusionExplorer::OnNewCapture()
 	}
 }
 
+/// <summary>
+/// When a capture needs to be stoped.
+/// </summary>
 void CKinectFusionExplorer::OnEndCapture()
 {
+	// Stop auto mode is previously launched
 	if (m_bIsAutoMode)
 		StopAutoCaptureThread();
 
@@ -1412,34 +1422,6 @@ void CKinectFusionExplorer::OnEndCapture()
 	SetDlgItemText(m_hWnd, IDC_BUTTON_END_IMPORT_CAPTURE, L"Import Capture");
 
 	EnableWindow(GetDlgItem(m_hWnd, IDC_BUTTON_AUTO_MODE), FALSE);
-
-	// Switch number of meshes
-	//CString message;
-	//int res = -1;
-
-	//switch (m_nMeshCount)
-	//{
-	//case 0:
-	//	// Nothing
-	//	break;
-	//case 1:
-	//	// SCENE OK
-	//	res = AskViewer();
-	//	if (res == IDYES)
-	//		OpenViewer();
-	//	break;
-	//default:
-	//	// MULTIPLE 3D OBJECTS
-	//	res = AskTreatment();
-	//	if (res == IDYES)
-	//	{
-	//		ProcessTreatment();
-	//		res = AskViewer();
-
-	//		if (res == IDYES)
-	//			OpenViewer();
-	//	}
-	//}
 
 	// Disable Conf Radio Buttons
 	SetEnableConfUI(TRUE);
@@ -1455,6 +1437,9 @@ void CKinectFusionExplorer::OnEndCapture()
 	UpdateMeshCountUI();
 }
 
+/// <summary>
+/// When a capture's plan needs to be saved.
+/// </summary>
 void CKinectFusionExplorer::OnContinueScene()
 {
 	// Increase counter
@@ -1467,6 +1452,9 @@ void CKinectFusionExplorer::OnContinueScene()
 	UpdateMeshCountUI();
 }
 
+/// <summary>
+/// When the auto save mode is required.
+/// </summary>
 void CKinectFusionExplorer::LaunchAutoCaptureThread()
 {
 	m_bIsAutoMode = true;
@@ -1477,13 +1465,16 @@ void CKinectFusionExplorer::LaunchAutoCaptureThread()
 	ShowWindow(GetDlgItem(m_hWnd, IDC_AUTO_PROGRESS), TRUE);
 
 
-	t = new std::thread( [this] { this->AutoCaptureThread();} );
+	auto_save_thread = new std::thread( [this] { this->AutoCaptureThread();} );
 }
 
+/// <summary>
+/// When the auto save mode needs to be stopped.
+/// </summary>
 void CKinectFusionExplorer::StopAutoCaptureThread()
 {
 	m_bIsAutoMode = false;
-	t->detach();
+	auto_save_thread->detach();
 
 	EnableWindow(GetDlgItem(m_hWnd, IDC_BUTTON_AUTO_MINUS), TRUE);
 	EnableWindow(GetDlgItem(m_hWnd, IDC_BUTTON_AUTO_PLUS), TRUE);
@@ -1493,31 +1484,40 @@ void CKinectFusionExplorer::StopAutoCaptureThread()
 	SetDlgItemText(m_hWnd, IDC_BUTTON_AUTO_MODE, msg.c_str());
 }
 
+/// <summary>
+/// Auto save mode process.
+/// </summary>
 void CKinectFusionExplorer::AutoCaptureThread()
 {
 	int delay = m_nDelay;
 	int current = 0;
 
+	// Retrieve progress bar object
 	HWND hElem = GetDlgItem(m_hWnd, IDC_AUTO_PROGRESS);
 
+	// While the auto save mode is not stopped
 	while (true)
 	{
+		// Init progress bar according to delay
 		SendMessage(hElem, PBM_SETRANGE, 0, MAKELPARAM(0, delay));
 		SendMessage(hElem, PBM_SETSTEP, (WPARAM)1, 0);
 
+		// For each second of the delay
 		for (int i = 0; i < delay; i++) {
-			Sleep((DWORD)1000);
+			Sleep((DWORD)1000); // sleep is bad (1s + procedure time)
 			current = delay - (i+1);
 
+			// Stop the function when auto mode is disabled
 			if (!m_bIsAutoMode)
 				return;
 
+			// Update text and progress bar
 			std::wstring count = L"Stop Auto\nSave (" + std::to_wstring(current) + L"s)";
 			SetDlgItemText(m_hWnd, IDC_BUTTON_AUTO_MODE, count.c_str());
-
 			SendMessage(hElem, PBM_STEPIT, 0, 0);
 		}
 
+		// At the end : save + update ui + reset 
 		m_nMeshCount++;
 		SaveMesh();
 		UpdateMeshCountUI();

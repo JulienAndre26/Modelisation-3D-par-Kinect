@@ -378,8 +378,8 @@ DWORD KinectFusionProcessor::MainLoop()
                         // Set an introductory message on success
                         if (SUCCEEDED(m_hrRecreateVolume))
                         {
-                            SetStatusMessage(
-                                L"Click ‘Near Mode’ to change sensor range, and ‘Reset Reconstruction’ to clear!");
+ /*                           SetStatusMessage(
+                                L"Click ‘Near Mode’ to change sensor range, and ‘Reset Reconstruction’ to clear!");*/
                         }
                     }
                     else if (bRecreateVolume)
@@ -392,7 +392,7 @@ DWORD KinectFusionProcessor::MainLoop()
 
                         if (SUCCEEDED(hr))
                         {
-                            SetStatusMessage(L"Reconstruction has been reset.");
+                            //SetStatusMessage(L"Reconstruction has been reset.");
                         }
                         else
                         {
@@ -1002,7 +1002,7 @@ HRESULT KinectFusionProcessor::RecreateVolume()
         m_worldToBGRTransform.M42 = 0.5f;
         m_worldToBGRTransform.M44 = 1.0f;
 
-        SetStatusMessage(L"Reconstruction has been reset.");
+        //SetStatusMessage(L"Reconstruction has been reset.");
     }
 
     return hr;
@@ -1469,7 +1469,7 @@ HRESULT KinectFusionProcessor::GetKinectFrames(bool &colorSynchronized)
 
         if (SUCCEEDED(hr))
         {
-            SetStatusMessage(L"Reconstruction has been reset.");
+            //SetStatusMessage(L"Reconstruction has been reset.");
         }
         else
         {
@@ -2248,9 +2248,9 @@ HRESULT KinectFusionProcessor::FindCameraPoseAlignPointClouds()
         // Stop the residual image being displayed as we have stored our own
         m_bCalculateDeltaFrame = false;
 
-        WCHAR str[MAX_PATH];
+        /*WCHAR str[MAX_PATH];
         swprintf_s(str, ARRAYSIZE(str), L"Camera Pose Finder SUCCESS! Residual energy=%f, %d frames stored, minimum distance=%f, best match index=%d", bestNeighborAlignmentEnergy, cPoses, minDistance, bestNeighborIndex);
-        SetStatusMessage(str);
+        SetStatusMessage(str);*/
     }
     else
     {        
@@ -2268,9 +2268,9 @@ HRESULT KinectFusionProcessor::FindCameraPoseAlignPointClouds()
         hr = E_NUI_FUSION_TRACKING_ERROR;
 
         // Tracking Failed will be set again on the next iteration in ProcessDepth
-        WCHAR str[MAX_PATH];
+       /* WCHAR str[MAX_PATH];
         swprintf_s(str, ARRAYSIZE(str), L"Camera Pose Finder FAILED! Residual energy=%f, %d frames stored, minimum distance=%f, best match index=%d", smallestEnergy, cPoses, minDistance, smallestEnergyNeighborIndex);
-        SetStatusMessage(str);
+        SetStatusMessage(str);*/
     }
 
 FinishFrame:
@@ -2428,9 +2428,9 @@ HRESULT KinectFusionProcessor::FindCameraPoseAlignDepthFloatToReconstruction()
         // Force the residual image to be displayed
         m_bCalculateDeltaFrame = true;
 
-        WCHAR str[MAX_PATH];
+        /*WCHAR str[MAX_PATH];
         swprintf_s(str, ARRAYSIZE(str), L"Camera Pose Finder SUCCESS! Residual energy=%f, %d frames stored, minimum distance=%f, best match index=%d", bestNeighborAlignmentEnergy, cPoses, minDistance, bestNeighborIndex);
-        SetStatusMessage(str);
+        SetStatusMessage(str);*/
     }
     else
     {        
@@ -2446,9 +2446,9 @@ HRESULT KinectFusionProcessor::FindCameraPoseAlignDepthFloatToReconstruction()
         hr = E_NUI_FUSION_TRACKING_ERROR;
 
         // Tracking Failed will be set again on the next iteration in ProcessDepth
-        WCHAR str[MAX_PATH];
+        /*WCHAR str[MAX_PATH];
         swprintf_s(str, ARRAYSIZE(str), L"Camera Pose Finder FAILED! Residual energy=%f, %d frames stored, minimum distance=%f, best match index=%d", smallestEnergy, cPoses, minDistance, smallestEnergyNeighborIndex);
-        SetStatusMessage(str);
+        SetStatusMessage(str);*/
     }
 
 FinishFrame:
@@ -2629,17 +2629,17 @@ HRESULT KinectFusionProcessor::UpdateCameraPoseFinder()
         &addedPose, 
         &poseHistoryTrimmed);
 
-    if (TRUE == addedPose)
+    /*if (TRUE == addedPose)
     {
         WCHAR str[MAX_PATH];
         swprintf_s(str, ARRAYSIZE(str), L"Camera Pose Finder Added Frame! %d frames stored, minimum distance>=%f\n", m_pCameraPoseFinder->GetStoredPoseCount(), m_paramsCurrent.m_fCameraPoseFinderDistanceThresholdAccept);
         SetStatusMessage(str);
-    }
+    }*/
 
-    if (TRUE == poseHistoryTrimmed)
-    {
-        SetStatusMessage(L"Kinect Fusion Camera Pose Finder pose history is full, overwritten oldest pose to store current pose.");
-    }
+    //if (TRUE == poseHistoryTrimmed)
+    //{
+    //    SetStatusMessage(L"Kinect Fusion Camera Pose Finder pose history is full, overwritten oldest pose to store current pose.");
+    //}
 
     if (FAILED(hr))
     {
