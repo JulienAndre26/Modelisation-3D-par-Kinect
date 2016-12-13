@@ -1048,6 +1048,18 @@ void CKinectFusionExplorer::CreateConfFile()
 		wsName.erase(0, last_slash_idx + 1);
 
 	std::wstring wsConfPath = wsPath + L"\\" + wsName + L".import";
+
+	std::wifstream f(wsConfPath.c_str());
+	bool bExists = f.good();
+	f.close();
+
+	// Remove conf file if already exists
+	if (bExists) {
+		LPOLESTR m_lFile = (LPOLESTR) new wchar_t[wsConfPath.length() + 1];
+		std::wcscpy(m_lFile, wsConfPath.c_str());
+		DeleteFile(m_lFile);
+	} 
+
 	std::wofstream confFile(wsConfPath, std::ios::out | std::ios::trunc);  //déclaration du flux et ouverture du fichier
 
 	// If success -> write
@@ -1178,7 +1190,7 @@ void CKinectFusionExplorer::LoadProject()
 
 	// Set button texts
 	SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"Save Scene");
-	SetDlgItemText(m_hWnd, IDC_BUTTON_END_IMPORT_CAPTURE, L"End Capture");
+	SetDlgItemText(m_hWnd, IDC_BUTTON_END_IMPORT_CAPTURE, L"Close Capture");
 
 	EnableWindow(GetDlgItem(m_hWnd, IDC_BUTTON_AUTO_MODE), TRUE);
 
@@ -1393,7 +1405,7 @@ void CKinectFusionExplorer::OnNewCapture()
 
 		// Set button texts
 		SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"Save Scene");
-		SetDlgItemText(m_hWnd, IDC_BUTTON_END_IMPORT_CAPTURE, L"End Capture");
+		SetDlgItemText(m_hWnd, IDC_BUTTON_END_IMPORT_CAPTURE, L"Close Capture");
 
 		EnableWindow(GetDlgItem(m_hWnd, IDC_BUTTON_AUTO_MODE), TRUE);
 
@@ -1447,6 +1459,9 @@ void CKinectFusionExplorer::OnContinueScene()
 
 	// Save last file
 	SaveMesh();
+
+	// Update conf file
+	CreateConfFile();
 
 	// Update Label
 	UpdateMeshCountUI();
