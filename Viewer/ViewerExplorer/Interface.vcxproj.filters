@@ -83,9 +83,6 @@
     <ClCompile Include="mainwindow.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
-    <ClCompile Include="sources\GUI\window.cpp">
-      <Filter>Source Files\GUI</Filter>
-    </ClCompile>
     <ClCompile Include="sources\io\IOPLY.cpp">
       <Filter>Source Files\IO</Filter>
     </ClCompile>
@@ -98,12 +95,21 @@
     <ClCompile Include="sources\Processor\core\PCLCore.cpp">
       <Filter>Source Files\Processor\Core</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_custom_qthreads.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_custom_qthreads.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
     <CustomBuild Include="mainwindow.h">
+      <Filter>Header Files\GUI</Filter>
+    </CustomBuild>
+    <CustomBuild Include="custom_qthreads.h">
       <Filter>Header Files\GUI</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -113,12 +119,6 @@
     </ClInclude>
     <ClInclude Include="headers\custom_typedef.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\GUI\MetricVisualizer.h">
-      <Filter>Header Files\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="headers\GUI\window.h">
-      <Filter>Header Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="headers\Processor\IProcessor.h">
       <Filter>Header Files\Processor</Filter>
@@ -137,6 +137,9 @@
     </ClInclude>
     <ClInclude Include="headers\io\IOPLY.h">
       <Filter>Header Files\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\GUI\metric_visualizer.h">
+      <Filter>Header Files\GUI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

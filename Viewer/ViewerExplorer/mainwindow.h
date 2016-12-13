@@ -15,14 +15,14 @@ VTK_MODULE_INIT(vtkInteractionStyle)
 
 #include <QMainWindow>
 #include <QFileDialog>
-#include <QThread>
+//#include <QThread>
 #include <QHash>
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QTextStream>
 #include <pcl/io/ply_io.h>
 #include <pcl/visualization/pcl_visualizer.h>
-#include <thread>
+//#include <thread>
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QMimeData>
@@ -65,7 +65,6 @@ public:
 	void onMerge();
 	void onMergeEnd();
 
-
 	void showPLY();
 	void showPlane(bool bPlanView);
 
@@ -74,6 +73,7 @@ public:
 	
 	char *filePath;
 	vtkMutexLock *renderLock;
+
 	bool modelLoading = false;
 
 private slots:
@@ -101,55 +101,6 @@ private:
 	QString selectedFile;
     QStringList list;
 	QHash<QString, QString> listContent;
-};
-
-class ThreadOpen : public QThread
-{
-	Q_OBJECT
-
-public:
-	ThreadOpen(MainWindow * mw, int n) { this->mw = mw;  this->nView = n; }
-
-public slots :
-	void onEnd()
-	{
-		mw->setViewDisplay(nView, true, NULL);
-		cout << "Thread " << nView << " finished" << endl;
-	}
-
-private:
-	MainWindow * mw;
-	int nView;
-
-	void run()
-	{
-		cout << "Thread " << nView << " launched..." << endl;
-		mw->processView(nView);
-	}
-};
-
-class ThreadMerge : public QThread
-{
-	Q_OBJECT
-
-public:
-	ThreadMerge(MainWindow * mw) { this->mw = mw; }
-
-public slots :
-	void onEnd()
-	{
-		cout << "Merge Thread finished" << endl;
-		this->mw->onMergeEnd();
-	}
-
-private:
-	MainWindow * mw;
-
-	void run()
-	{
-		cout << "Merge Thread launched..." << endl;
-		mw->processMerge();
-	}
 };
 
 #endif // MAINWINDOW_H

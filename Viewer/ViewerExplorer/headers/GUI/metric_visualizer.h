@@ -60,6 +60,7 @@ void pp_callback(const pcl::visualization::PointPickingEvent& event, void* args)
 	// debug 
 	std::cout << current_point.x << " " << current_point.y << " " << current_point.z << std::endl;
 }
+
 class MetricVisualizer : public Visualizer  {
 private:
 	struct callback_args args;
@@ -82,7 +83,7 @@ public:
 		// no color management yet
 		this->addPointCloud(k);
 		this->registerPointPickingCallback(pp_callback, (void*) &args);
-		this->spin();
+		//this->spin();
 	}
 
 	~MetricVisualizer() {};

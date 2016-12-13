@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "custom_qthreads.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -65,6 +66,8 @@ void MainWindow::importFileOpened(QString fileName)
 		ui->btnMerge->setEnabled(list.size() > 1);
 
 		setAllViewDisplay(false, MOVIE_INIT);
+
+		modelLoading = false;
 	}
 }
 

@@ -29,7 +29,7 @@
 #include "IOPLY.h"
 
 
-#include "MetricVisualizer.h"
+#include "metric_visualizer.h"
 
 Status Processor::merge(string path) {
 	Status s;
