@@ -20,8 +20,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->gifPlan->setAlignment(Qt::AlignCenter);
 
 	movieInit = new QMovie("box_init.gif");
-	movieLoad = new QMovie("box_loading.gif");
-	movieMerge = new QMovie("box_merge.gif");
+	movieLoad = new QMovie("hourglass.gif");
+	movieMerge = new QMovie("gears.gif");
 
 	// Set initial gif
 	ui->gif3D->setMovie(movieInit);
@@ -41,12 +41,18 @@ void MainWindow::on_btnBrowse_clicked()
 {
     QString importName = QFileDialog::getOpenFileName(this, tr("Open File"), QDir::homePath(), tr("Import files (*.import)"));
 
-    QFileInfo importFileInfo(importName);
-	if (readImportFile(importName))
+	importFileOpened(importName);
+	    
+}
+
+void MainWindow::importFileOpened(QString fileName)
+{
+	QFileInfo importFileInfo(fileName);
+	if (readImportFile(fileName))
 	{
 		list.clear();
 		listContent.clear();
-		
+
 		list = detectPlyFiles(importFileInfo.absoluteDir());
 		ui->listWidget->clear();
 		ui->listWidget->addItems(listContent.keys());
@@ -57,7 +63,9 @@ void MainWindow::on_btnBrowse_clicked()
 		ui->lbCurrentMerge->setText("");
 
 		ui->btnMerge->setEnabled(list.size() > 1);
-	}    
+
+		setAllViewDisplay(false, MOVIE_INIT);
+	}
 }
 
 QStringList MainWindow::detectPlyFiles(QDir dirToImport)
@@ -95,7 +103,11 @@ void MainWindow::onMerge()
 		ui->progressBar->setMaximum(0);
 		ui->progressBar->setMinimum(0);
 
-		setAllViewDisplay(false, MOVIE_MERGE);
+		if (!modelLoading)
+		{
+			setAllViewDisplay(false, MOVIE_MERGE);
+		}
+		
 
 		ThreadMerge * t_merge = new ThreadMerge(this);
 		QObject::connect(t_merge, SIGNAL(finished()), t_merge, SLOT(onEnd()));
@@ -123,7 +135,11 @@ void MainWindow::onMergeEnd()
 	ui->progressBar->setValue(100);
 	ui->lbCurrentMerge->setText("Finished");
 
-	setAllViewDisplay(false, MOVIE_INIT);
+	if (!modelLoading)
+	{
+		setAllViewDisplay(false, MOVIE_INIT);
+	}
+	
 }
 
 void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
@@ -135,7 +151,7 @@ void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
 
 void MainWindow::on_btnOpen_clicked()
 {
-	loadWidgets(selectedFile);
+	onLoad(selectedFile);
 }
 
 bool MainWindow::readImportFile(QString import)
@@ -186,18 +202,18 @@ void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
     QString path = listContent.find(item->data(Qt::DisplayRole).toString()).value();
 	cout << path.toLocal8Bit().data() << endl;
 	
-	loadWidgets(path);
+	onLoad(path);
 }
 
-void MainWindow::loadWidgets(QString path)
+void MainWindow::onLoad(QString path)
 {
 	filePath = new char[path.size() + 1];
 	filePath[path.size()] = '\0';
 	strcpy(filePath, path.toLocal8Bit().data());
 
 	setAllViewDisplay(false, MOVIE_LOAD);
-	ui->progressBar->setVisible(false);
-	ui->lbCurrentMerge->setText("");
+
+	modelLoading = true;
 
 	ThreadOpen * t_3D = new ThreadOpen(this, VIEW_3D);
 	QObject::connect(t_3D, SIGNAL(finished()), t_3D, SLOT(onEnd()));
@@ -431,16 +447,7 @@ void MainWindow::dropEvent(QDropEvent *e)
 		}
 	}
 
-	QFileInfo importFileInfo(filePath);
-	if (readImportFile(filePath))
-	{
-		list.clear();
-		listContent.clear();
-
-		list = detectPlyFiles(importFileInfo.absoluteDir());
-		ui->listWidget->clear();
-		ui->listWidget->addItems(listContent.keys());
-	}
+	importFileOpened(filePath);
 }
 
 void MainWindow::setWidgetBorderRadius(QWidget* widget, int radius) {
