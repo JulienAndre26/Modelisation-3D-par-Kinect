@@ -79,10 +79,11 @@ public:
 private slots:
     void on_btnBrowse_clicked();
     void on_btnMerge_clicked();
-	void on_btnOpen_clicked();
+	void on_btnShow_clicked();
 	void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
 	void on_listWidget_itemClicked(QListWidgetItem *item);
-
+	void on_btnAdd_clicked();
+	void on_btnDelete_clicked();
 	
 private:
     Ui::MainWindow *ui;
@@ -92,12 +93,14 @@ private:
 	void dragEnterEvent(QDragEnterEvent *e);
 	void setWidgetBorderRadius(QWidget* widget, int radius);
 	void importFileOpened(QString fileName);
+	void updateFileList();
 	
 	QMovie * movieInit;
 	QMovie * movieLoad;
 	QMovie * movieMerge;
 
 	bool withColor = false;
+	QDir captureDirectory;
 	QString selectedFile;
     QStringList list;
 	QHash<QString, QString> listContent;

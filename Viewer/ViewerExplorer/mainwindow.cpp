@@ -9,27 +9,52 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-	setAcceptDrops(true);
-	ui->progressBar->setVisible(false);
+	/* Manual init of UI */
 
+	// Drag'N'Drop
+	setAcceptDrops(true);
+
+	// Visibility
+	ui->progressBar->setVisible(false);
 	ui->qvtkWidget3D->setVisible(false);
 	ui->qvtkWidgetLateral->setVisible(false);
 	ui->qvtkWidgetPlan->setVisible(false);
+	ui->btnAdd->setVisible(false);
+	ui->btnDelete->setVisible(false);
 
+	// Alignements
 	ui->gif3D->setAlignment(Qt::AlignCenter);
 	ui->gifLateral->setAlignment(Qt::AlignCenter);
 	ui->gifPlan->setAlignment(Qt::AlignCenter);
 
-	movieInit = new QMovie("box_init.gif");
-	movieLoad = new QMovie("hourglass.gif");
-	movieMerge = new QMovie("gears.gif");
+	// Icons
+	QPixmap pixAdd("./resources/icons/add.png");
+	QIcon iconAdd(pixAdd);
+	ui->btnAdd->setIcon(iconAdd);
+	ui->btnAdd->setIconSize(pixAdd.rect().size());
 
-	// Set initial gif
+	QPixmap pixDel("./resources/icons/delete.png");
+	QIcon iconDel(pixDel);
+	ui->btnDelete->setIcon(iconDel);
+	ui->btnDelete->setIconSize(pixDel.rect().size());
+
+
+	/*QImage addIcon("./resources/icons/add.png");
+	ui->lbAdd->setPixmap(QPixmap::fromImage(addIcon));
+	QImage deleteIcon("./resources/icons/delete.png");
+	ui->lbDelete->setPixmap(QPixmap::fromImage(deleteIcon));
+*/
+	// Gifs
+	movieInit = new QMovie("./resources/gifs/init.gif");
+	movieLoad = new QMovie("./resources/gifs/load.gif");
+	movieMerge = new QMovie("./resources/gifs/merge.gif");
+
 	ui->gif3D->setMovie(movieInit);
 	ui->gifLateral->setMovie(movieInit);
 	ui->gifPlan->setMovie(movieInit);
 	movieInit->start();
 
+	// Mutex
 	renderLock = vtkMutexLock::New();
 }
 
@@ -51,24 +76,33 @@ void MainWindow::importFileOpened(QString fileName)
 	QFileInfo importFileInfo(fileName);
 	if (readImportFile(fileName))
 	{
-		list.clear();
-		listContent.clear();
-
-		list = detectPlyFiles(importFileInfo.absoluteDir());
-		ui->listWidget->clear();
-		ui->listWidget->addItems(listContent.keys());
-
-		ui->btnMerge->setEnabled(true);
-		ui->btnOpen->setEnabled(false);
-		ui->progressBar->setVisible(false);
-		ui->lbCurrentMerge->setText("");
-
-		ui->btnMerge->setEnabled(list.size() > 1);
-
-		setAllViewDisplay(false, MOVIE_INIT);
-
-		modelLoading = false;
+		captureDirectory = importFileInfo.absoluteDir();
+		updateFileList();
 	}
+}
+
+void MainWindow::updateFileList()
+{
+	list.clear();
+	listContent.clear();
+
+	list = detectPlyFiles(captureDirectory);
+	ui->listWidget->clear();
+	ui->listWidget->addItems(listContent.keys());
+
+	ui->btnAdd->setVisible(true);
+	ui->btnDelete->setVisible(true);
+
+	ui->progressBar->setVisible(false);
+	ui->lbCurrentMerge->setText("");
+
+	ui->btnMerge->setEnabled(list.size() > 1);
+	ui->btnShow->setEnabled(false);
+
+	setAllViewDisplay(false, MOVIE_INIT);
+
+	modelLoading = false;
+	selectedFile = "";
 }
 
 QStringList MainWindow::detectPlyFiles(QDir dirToImport)
@@ -147,12 +181,12 @@ void MainWindow::onMergeEnd()
 
 void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
 {
-	ui->btnOpen->setEnabled(true);
+	ui->btnShow->setEnabled(true);
 	selectedFile = listContent.find(item->data(Qt::DisplayRole).toString()).value();
 	cout << selectedFile.toLocal8Bit().data() << endl;
 }
 
-void MainWindow::on_btnOpen_clicked()
+void MainWindow::on_btnShow_clicked()
 {
 	onLoad(selectedFile);
 }
@@ -571,6 +605,41 @@ void MainWindow::processView(int nView)
 		break;
 	default:
 		cout << "MainWindow::processView : Invalid view number " + nView << endl;
+	}
+}
+
+void MainWindow::on_btnAdd_clicked()
+{
+	QString fileToAdd = QFileDialog::getOpenFileName(this, tr("Add 3D File"), QDir::homePath(), tr("3D files (*.ply)"));
+
+	QFileInfo infoToAdd(fileToAdd);
+	QFileInfo infoDir(captureDirectory.absolutePath());
+
+	cout << "Selected : " << infoToAdd.absoluteFilePath().toLocal8Bit().data() << endl;
+	
+	QString finalPath = infoDir.absoluteFilePath() + "/" + infoToAdd.baseName() + ".ply";
+
+	cout << "Final Path : " << finalPath.toLocal8Bit().data() << endl;
+
+	QFile::copy(fileToAdd, finalPath);
+
+	updateFileList();
+}
+
+void MainWindow::on_btnDelete_clicked()
+{
+	if (!selectedFile.isEmpty())
+	{
+		QFileInfo infoToDel(selectedFile);
+		QMessageBox::StandardButton reply;
+		reply = QMessageBox::warning(this, "Warning", "Are you sure you want to delete " + infoToDel.baseName() + " ?",
+			QMessageBox::Yes | QMessageBox::No);
+		
+		if (reply == QMessageBox::Yes) {
+			QFile::remove(selectedFile);
+			selectedFile = "";
+			updateFileList();
+		}		
 	}
 }
 

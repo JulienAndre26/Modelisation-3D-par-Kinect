@@ -41,7 +41,9 @@ public:
     QLabel *gif3D;
     QLabel *gifLateral;
     QLabel *gifPlan;
-    QPushButton *btnOpen;
+    QPushButton *btnShow;
+    QPushButton *btnAdd;
+    QPushButton *btnDelete;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -121,7 +123,7 @@ public:
 ""));
         lbCaptureName = new QLabel(centralWidget);
         lbCaptureName->setObjectName(QStringLiteral("lbCaptureName"));
-        lbCaptureName->setGeometry(QRect(10, 60, 201, 16));
+        lbCaptureName->setGeometry(QRect(10, 60, 161, 16));
         lbCaptureName->setAlignment(Qt::AlignCenter);
         pushButton_2 = new QPushButton(centralWidget);
         pushButton_2->setObjectName(QStringLiteral("pushButton_2"));
@@ -171,12 +173,12 @@ public:
 "font: bold 14px;\n"
 "min-width: 10em;\n"
 "padding: 6px;"));
-        btnOpen = new QPushButton(centralWidget);
-        btnOpen->setObjectName(QStringLiteral("btnOpen"));
-        btnOpen->setEnabled(false);
-        btnOpen->setGeometry(QRect(10, 240, 91, 31));
-        btnOpen->setMinimumSize(QSize(0, 0));
-        btnOpen->setStyleSheet(QLatin1String("QPushButton#btnOpen {\n"
+        btnShow = new QPushButton(centralWidget);
+        btnShow->setObjectName(QStringLiteral("btnShow"));
+        btnShow->setEnabled(false);
+        btnShow->setGeometry(QRect(10, 240, 91, 31));
+        btnShow->setMinimumSize(QSize(0, 0));
+        btnShow->setStyleSheet(QLatin1String("QPushButton#btnShow {\n"
 "	font: 11pt \"Nirmala UI\";\n"
 "	background-color:#d1e0e0;\n"
 "	border-style: outset;\n"
@@ -186,16 +188,24 @@ public:
 "	padding: 1px;\n"
 "}\n"
 "\n"
-"QPushButton#btnOpen:hover {\n"
+"QPushButton#btnShow:hover {\n"
 "	background-color:#BCC9C9;\n"
 "}\n"
 "\n"
-"QPushButton#btnOpen:pressed {\n"
+"QPushButton#btnShow:pressed {\n"
 "	background-color:#a7b3b3;\n"
 "}\n"
 "\n"
 "\n"
 ""));
+        btnAdd = new QPushButton(centralWidget);
+        btnAdd->setObjectName(QStringLiteral("btnAdd"));
+        btnAdd->setGeometry(QRect(170, 60, 21, 21));
+        btnAdd->setStyleSheet(QStringLiteral("border: none;"));
+        btnDelete = new QPushButton(centralWidget);
+        btnDelete->setObjectName(QStringLiteral("btnDelete"));
+        btnDelete->setGeometry(QRect(190, 60, 21, 21));
+        btnDelete->setStyleSheet(QStringLiteral("border: none;"));
         MainWindow->setCentralWidget(centralWidget);
 
         retranslateUi(MainWindow);
@@ -214,7 +224,15 @@ public:
         gif3D->setText(QApplication::translate("MainWindow", "Loading", 0));
         gifLateral->setText(QApplication::translate("MainWindow", "Loading", 0));
         gifPlan->setText(QApplication::translate("MainWindow", "Loading", 0));
-        btnOpen->setText(QApplication::translate("MainWindow", "Open", 0));
+        btnShow->setText(QApplication::translate("MainWindow", "Show", 0));
+#ifndef QT_NO_TOOLTIP
+        btnAdd->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Add a 3D plan to this capture</span></p><p>It will copy the selected PLY file into the capture's folder.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
+        btnAdd->setText(QString());
+#ifndef QT_NO_TOOLTIP
+        btnDelete->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Removes a 3D plan from this capture</span></p><p>It will remove the selected PLY file from the capture's folder.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
+        btnDelete->setText(QString());
     } // retranslateUi
 
 };

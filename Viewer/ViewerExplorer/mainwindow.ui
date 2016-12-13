@@ -154,7 +154,7 @@ QPushButton#btnBrowse:pressed {
      <rect>
       <x>10</x>
       <y>60</y>
-      <width>201</width>
+      <width>161</width>
       <height>16</height>
      </rect>
     </property>
@@ -292,7 +292,7 @@ padding: 6px;</string>
      <string>Loading</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="btnOpen">
+   <widget class="QPushButton" name="btnShow">
     <property name="enabled">
      <bool>false</bool>
     </property>
@@ -311,7 +311,7 @@ padding: 6px;</string>
      </size>
     </property>
     <property name="styleSheet">
-     <string notr="true">QPushButton#btnOpen {
+     <string notr="true">QPushButton#btnShow {
 	font: 11pt &quot;Nirmala UI&quot;;
 	background-color:#d1e0e0;
 	border-style: outset;
@@ -321,11 +321,11 @@ padding: 6px;</string>
 	padding: 1px;
 }
 
-QPushButton#btnOpen:hover {
+QPushButton#btnShow:hover {
 	background-color:#BCC9C9;
 }
 
-QPushButton#btnOpen:pressed {
+QPushButton#btnShow:pressed {
 	background-color:#a7b3b3;
 }
 
@@ -333,7 +333,45 @@ QPushButton#btnOpen:pressed {
 </string>
     </property>
     <property name="text">
-     <string>Open</string>
+     <string>Show</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnAdd">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>60</y>
+      <width>21</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Add a 3D plan to this capture&lt;/span&gt;&lt;/p&gt;&lt;p&gt;It will copy the selected PLY file into the capture's folder.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border: none;</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnDelete">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>60</y>
+      <width>21</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Removes a 3D plan from this capture&lt;/span&gt;&lt;/p&gt;&lt;p&gt;It will remove the selected PLY file from the capture's folder.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border: none;</string>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>
