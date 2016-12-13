@@ -8,10 +8,10 @@
 
 using namespace std;
 
-int main(int argc, char** argv) {
-	
-	string path;
-	IProcessor * processor = new Processor();
-	processor->merge(path);
-	return EXIT_SUCCESS;
-}
+//int main(int argc, char** argv) {
+//	
+//	string path;
+//	IProcessor * processor = new Processor();
+//	processor->merge(path);
+//	return EXIT_SUCCESS;
+//}
