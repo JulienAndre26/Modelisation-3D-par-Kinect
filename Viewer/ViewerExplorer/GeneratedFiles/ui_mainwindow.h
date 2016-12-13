@@ -201,11 +201,27 @@ public:
         btnAdd = new QPushButton(centralWidget);
         btnAdd->setObjectName(QStringLiteral("btnAdd"));
         btnAdd->setGeometry(QRect(170, 60, 21, 21));
-        btnAdd->setStyleSheet(QStringLiteral("border: none;"));
+        btnAdd->setStyleSheet(QLatin1String("QPushButton#btnAdd {\n"
+"	border: none;\n"
+"}\n"
+"\n"
+"QPushButton#btnAdd:hover {\n"
+"	padding: 1px;\n"
+"}\n"
+"\n"
+""));
         btnDelete = new QPushButton(centralWidget);
         btnDelete->setObjectName(QStringLiteral("btnDelete"));
         btnDelete->setGeometry(QRect(190, 60, 21, 21));
-        btnDelete->setStyleSheet(QStringLiteral("border: none;"));
+        btnDelete->setStyleSheet(QLatin1String("QPushButton#btnDelete {\n"
+"	border: none;\n"
+"}\n"
+"\n"
+"QPushButton#btnDelete:hover {\n"
+"	padding: 1px;\n"
+"}\n"
+"\n"
+""));
         MainWindow->setCentralWidget(centralWidget);
 
         retranslateUi(MainWindow);

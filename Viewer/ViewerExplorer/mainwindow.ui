@@ -349,7 +349,15 @@ QPushButton#btnShow:pressed {
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Add a 3D plan to this capture&lt;/span&gt;&lt;/p&gt;&lt;p&gt;It will copy the selected PLY file into the capture's folder.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
     <property name="styleSheet">
-     <string notr="true">border: none;</string>
+     <string notr="true">QPushButton#btnAdd {
+	border: none;
+}
+
+QPushButton#btnAdd:hover {
+	padding: 1px;
+}
+
+</string>
     </property>
     <property name="text">
      <string/>
@@ -368,7 +376,15 @@ QPushButton#btnShow:pressed {
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Removes a 3D plan from this capture&lt;/span&gt;&lt;/p&gt;&lt;p&gt;It will remove the selected PLY file from the capture's folder.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
     <property name="styleSheet">
-     <string notr="true">border: none;</string>
+     <string notr="true">QPushButton#btnDelete {
+	border: none;
+}
+
+QPushButton#btnDelete:hover {
+	padding: 1px;
+}
+
+</string>
     </property>
     <property name="text">
      <string/>
