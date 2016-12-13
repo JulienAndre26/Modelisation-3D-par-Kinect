@@ -54,7 +54,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-	void loadWidgets(QString path);
+	void onLoad(QString path);
 
 	void setViewDisplay(int nView, bool bShowWidget, int nStatus);
 	void setAllViewDisplay(bool bShowWidget, int nStatus);
@@ -74,6 +74,7 @@ public:
 	
 	char *filePath;
 	vtkMutexLock *renderLock;
+	bool modelLoading = false;
 
 private slots:
     void on_btnBrowse_clicked();
@@ -90,6 +91,7 @@ private:
 	void dropEvent(QDropEvent *e);
 	void dragEnterEvent(QDragEnterEvent *e);
 	void setWidgetBorderRadius(QWidget* widget, int radius);
+	void importFileOpened(QString fileName);
 	
 	QMovie * movieInit;
 	QMovie * movieLoad;
