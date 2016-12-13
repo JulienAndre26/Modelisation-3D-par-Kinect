@@ -900,7 +900,7 @@ int	CKinectFusionExplorer::SaveMesh()
 		}
 		else
 		{
-			SetStatusMessage(L"Error saving Kinect Fusion mesh!");
+			SetStatusMessage(L"Error saving mesh!");
 		}
 
 		// Release the mesh
