@@ -50,6 +50,9 @@ public:
     QLabel *lbP2z;
     QLabel *lbP2y;
     QLabel *lbDistance;
+    QLabel *lbPin1;
+    QLabel *lbPin2;
+    QLabel *lbDistanceIcon;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -252,8 +255,20 @@ public:
         lbP2y->setTextFormat(Qt::RichText);
         lbDistance = new QLabel(centralWidget);
         lbDistance->setObjectName(QStringLiteral("lbDistance"));
-        lbDistance->setGeometry(QRect(20, 560, 171, 16));
+        lbDistance->setGeometry(QRect(50, 560, 141, 20));
         lbDistance->setTextFormat(Qt::RichText);
+        lbPin1 = new QLabel(centralWidget);
+        lbPin1->setObjectName(QStringLiteral("lbPin1"));
+        lbPin1->setGeometry(QRect(40, 450, 41, 31));
+        lbPin1->setAlignment(Qt::AlignCenter);
+        lbPin2 = new QLabel(centralWidget);
+        lbPin2->setObjectName(QStringLiteral("lbPin2"));
+        lbPin2->setGeometry(QRect(140, 450, 41, 31));
+        lbPin2->setAlignment(Qt::AlignCenter);
+        lbDistanceIcon = new QLabel(centralWidget);
+        lbDistanceIcon->setObjectName(QStringLiteral("lbDistanceIcon"));
+        lbDistanceIcon->setGeometry(QRect(10, 550, 41, 31));
+        lbDistanceIcon->setAlignment(Qt::AlignBottom|Qt::AlignHCenter);
         MainWindow->setCentralWidget(centralWidget);
 
         retranslateUi(MainWindow);
@@ -286,7 +301,10 @@ public:
         lbP2x->setText(QApplication::translate("MainWindow", "X2", 0));
         lbP2z->setText(QApplication::translate("MainWindow", "Z3", 0));
         lbP2y->setText(QApplication::translate("MainWindow", "Y2", 0));
-        lbDistance->setText(QApplication::translate("MainWindow", "Distance", 0));
+        lbDistance->setText(QApplication::translate("MainWindow", "Distance: xx.xx m (xx.xx cm)", 0));
+        lbPin1->setText(QString());
+        lbPin2->setText(QString());
+        lbDistanceIcon->setText(QString());
     } // retranslateUi
 
 };

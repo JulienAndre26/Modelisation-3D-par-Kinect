@@ -30,6 +30,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->lbP2y->setVisible(false);
 	ui->lbP2z->setVisible(false);
 	ui->lbDistance->setVisible(false);
+	ui->lbPin1->setVisible(false);
+	ui->lbPin2->setVisible(false);
+	ui->lbDistanceIcon->setVisible(false);
 
 	// Alignements
 	ui->gif3D->setAlignment(Qt::AlignCenter);
@@ -46,6 +49,13 @@ MainWindow::MainWindow(QWidget *parent) :
 	QIcon iconDel(pixDel);
 	ui->btnDelete->setIcon(iconDel);
 	ui->btnDelete->setIconSize(pixDel.rect().size());
+
+	QPixmap pixPin("./resources/icons/pin.png");
+	ui->lbPin1->setPixmap(pixPin);
+	ui->lbPin2->setPixmap(pixPin);
+
+	QPixmap pixDist("./resources/icons/distance.png");
+	ui->lbDistanceIcon->setPixmap(pixDist);
 
 	// Gifs
 	movieInit = new QMovie("./resources/gifs/init.gif");
@@ -518,7 +528,7 @@ void MainWindow::on_btnDelete_clicked()
 
 void MainWindow::updateMetrics(int nPoint, float x, float y, float z)
 {
-	QLabel *qlbX, *qlbY, *qlbZ;
+	QLabel *qlbX, *qlbY, *qlbZ, *qlPin;
 	
 	switch (nPoint)
 	{
@@ -526,17 +536,21 @@ void MainWindow::updateMetrics(int nPoint, float x, float y, float z)
 		qlbX = ui->lbP1x;
 		qlbY = ui->lbP1y;
 		qlbZ = ui->lbP1z;
-
+		qlPin = ui->lbPin1;
+		
 		ui->lbP2x->setVisible(false);
 		ui->lbP2y->setVisible(false);
 		ui->lbP2z->setVisible(false);
+		ui->lbPin2->setVisible(false);
 		ui->lbDistance->setVisible(false);
+		ui->lbDistanceIcon->setVisible(false);
 		break;
 
 	case METRIC_P2:
 		qlbX = ui->lbP2x;
 		qlbY = ui->lbP2y;
 		qlbZ = ui->lbP2z;
+		qlPin = ui->lbPin2;
 		break;
 
 	default:
@@ -551,6 +565,8 @@ void MainWindow::updateMetrics(int nPoint, float x, float y, float z)
 	
 	qlbZ->setText("Z: " + QString::number(z));
 	qlbZ->setVisible(true);
+
+	qlPin->setVisible(true);
 }
 
 void MainWindow::updateMetrics(double distance)
@@ -563,5 +579,5 @@ void MainWindow::updateMetrics(double distance)
 
 	ui->lbDistance->setText("Distance: " + QString(szDistanceM) + " m (" + QString(szDistanceCM) + " cm)");
 	ui->lbDistance->setVisible(true);
-	
+	ui->lbDistanceIcon->setVisible(true);	
 }
