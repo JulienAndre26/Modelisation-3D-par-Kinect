@@ -88,6 +88,7 @@ private slots:
 	
 private:
     Ui::MainWindow *ui;
+
     QStringList detectPlyFiles(QDir dirToImport);
     bool readImportFile(QString import);
 	void dropEvent(QDropEvent *e);
@@ -103,8 +104,10 @@ private:
 	bool hasColor = false;
 	QDir captureDirectory;
 	QString selectedFile;
-    QStringList list;
+	QString loadedFile;
+	QStringList list;
 	QHash<QString, QString> listContent;
+
 };
 
 #endif // MAINWINDOW_H

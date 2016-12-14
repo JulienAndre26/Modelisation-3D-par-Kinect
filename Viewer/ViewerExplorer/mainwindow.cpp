@@ -69,6 +69,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	// Mutex
 	renderLock = vtkMutexLock::New();
+
+	// Variables
+	loadedFile = "";
 }
 
 MainWindow::~MainWindow()
@@ -197,6 +200,11 @@ void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
 	ui->btnShow->setEnabled(true);
 	selectedFile = listContent.find(item->data(Qt::DisplayRole).toString()).value();
 	cout << selectedFile.toLocal8Bit().data() << endl;
+
+	if (QString::compare(selectedFile, loadedFile, Qt::CaseInsensitive) == 0)
+		ui->btnShow->setEnabled(false);
+	else
+		ui->btnShow->setEnabled(true);
 }
 
 void MainWindow::on_btnShow_clicked()
@@ -257,6 +265,11 @@ void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
 
 void MainWindow::onLoad(QString path)
 {
+	if (QString::compare(path, loadedFile, Qt::CaseInsensitive) == 0)
+		return;
+
+	loadedFile = path;
+
 	filePath = new char[path.size() + 1];
 	filePath[path.size()] = '\0';
 	strcpy(filePath, path.toLocal8Bit().data());
