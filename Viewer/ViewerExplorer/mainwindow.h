@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-// ------ This need to be placed before each VTK include
+// This need to be placed before each VTK include
 #include <vtkAutoInit.h> 
 VTK_MODULE_INIT(vtkRenderingOpenGL2)
 VTK_MODULE_INIT(vtkInteractionStyle)
@@ -11,28 +11,26 @@ VTK_MODULE_INIT(vtkInteractionStyle)
 #include <vtkRenderWindow.h>
 #include <vtkMutexLock.h>
 #include <vtkCamera.h>
-// ---------------
+
+#include <iostream>
 
 #include <QMainWindow>
 #include <QFileDialog>
-//#include <QThread>
 #include <QHash>
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QTextStream>
-#include <pcl/io/ply_io.h>
-#include <pcl/visualization/pcl_visualizer.h>
-//#include <thread>
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QMimeData>
 #include <QMovie>
 #include <QtGui>
 
-#include <iostream>
 #include <pcl/point_types.h>
 #include <pcl/ModelCoefficients.h>
 #include <pcl/filters/project_inliers.h>
+#include <pcl/io/ply_io.h>
+#include <pcl/visualization/pcl_visualizer.h>
 
 #define VIEW_3D			1
 #define VIEW_LATERAL	2
@@ -67,9 +65,6 @@ public:
 
 	void showPLY();
 	void showPlane(bool bPlanView);
-
-	void showPlaneNoColor(bool bPlanView);
-	void showPlaneColor(bool bPlanView);
 	
 	char *filePath;
 	vtkMutexLock *renderLock;
@@ -99,7 +94,7 @@ private:
 	QMovie * movieLoad;
 	QMovie * movieMerge;
 
-	bool withColor = false;
+	bool hasColor = false;
 	QDir captureDirectory;
 	QString selectedFile;
     QStringList list;

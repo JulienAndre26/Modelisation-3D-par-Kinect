@@ -1,4 +1,8 @@
 #pragma once
+
+#ifndef PROCESSOR_H
+#define PROCESSOR_H
+
 #include "IProcessor.h"
 #include "ICore.h"
 
@@ -14,3 +18,5 @@ public:
 	static Status computeMetrics(float x1, float y1, float z1, float x2, float y2, float z2);
 
 };
+
+#endif // PROCESSOR_H

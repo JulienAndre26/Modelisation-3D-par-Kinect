@@ -1,5 +1,7 @@
 #pragma once
 
+#ifndef METRICV_H
+#define METRICV_H 
 
 #include "custom_typedef.h"
 #include "Processor.h"
@@ -12,7 +14,7 @@ struct callback_args {
 };
 
 
-void pp_callback(const pcl::visualization::PointPickingEvent& event, void* args)
+void _callback(const pcl::visualization::PointPickingEvent& event, void* args)
 {
 	// retrieve parameter
 	struct callback_args* data = (struct callback_args*)args;
@@ -26,6 +28,8 @@ void pp_callback(const pcl::visualization::PointPickingEvent& event, void* args)
 	// retrieve values
 	event.getPoint(current_point.x, current_point.y, current_point.z);
 
+	cout << "Clicked P: (" << current_point.x << "; " << current_point.y << "; " << current_point.z << ")" << endl;
+	
 	// if two points are already in the list
 	if (data->clicked_points_3d->points.size() == 2) {
 		// empty the list
@@ -45,7 +49,7 @@ void pp_callback(const pcl::visualization::PointPickingEvent& event, void* args)
 		PointT point2 = data->clicked_points_3d->points.at(1);
 
 		// compute distance
-		dist = Processor::computeMetrics(point1.x, point2.x, point1.y, point2.y, point1.z, point2.z).returnedDouble;
+		dist = Processor::computeMetrics(point1.x, point1.y, point1.z, point2.x, point2.y, point2.z).returnedDouble;
 		// set value
 		sprintf(data->distance, "%f", dist);
 		// debug it
@@ -58,34 +62,49 @@ void pp_callback(const pcl::visualization::PointPickingEvent& event, void* args)
 	data->viewerPtr->addPointCloud(data->clicked_points_3d, red, "clicked_points");
 	data->viewerPtr->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 10, "clicked_points");
 	// debug 
-	std::cout << current_point.x << " " << current_point.y << " " << current_point.z << std::endl;
+	//std::cout << current_point.x << " " << current_point.y << " " << current_point.z << std::endl;
 }
 
 class MetricVisualizer : public Visualizer  {
 private:
 	struct callback_args args;
-
 public:
 
-	MetricVisualizer(char * framename, PointCloud::Ptr k) {
-		int v(123);
-		//embededViewer = new Visualizer(framename, false);
+	MetricVisualizer(PointCloudColored::Ptr src, bool bColored) {
+	
+		// Data Structure
 		PointCloud::Ptr clicked_points_3d(new PointCloud);
 		args.clicked_points_3d = clicked_points_3d;
 		args.viewerPtr = Visualizer::Ptr(this);
 		args.distance = new char[128];
 		sprintf(args.distance, "%f", 0);
 
-		this->setWindowName(framename);
-		this->setShowFPS(true);
+		// Event Listener
+		this->registerPointPickingCallback(_callback, (void*)&args);
+		
+		// Prepare Point Cloud
+		int v(123);
 		this->createViewPort(0.0, 0.0, 1.0, 1.0, v);
-		this->setPosition(0, 0);
-		// no color management yet
-		this->addPointCloud(k);
-		this->registerPointPickingCallback(pp_callback, (void*) &args);
-		//this->spin();
+
+		if (!bColored) // Add custom color if the point cloud is not colored
+		{
+			pcl::PointCloud<PointT>::Ptr src_custom(new pcl::PointCloud<PointT>);
+
+			for (int i = 0; i < src->size(); i++)
+				src_custom->push_back(PointT(src->at(i).x, src->at(i).y, src->at(i).z));
+
+			pcl::visualization::PointCloudColorHandlerCustom<PointT> src_rgb(src_custom, 50, 210, 210);
+			this->addPointCloud<PointT>(src_custom, src_rgb, "v1_source", v);
+		} 
+		else // Already colored
+		{
+			pcl::visualization::PointCloudColorHandlerRGBField<pcl::PointXYZRGB> src_rgb(src);
+			this->addPointCloud<PointColorT>(src, src_rgb, "v1_source", v);
+		}
 	}
 
 	~MetricVisualizer() {};
 
 };
+
+#endif

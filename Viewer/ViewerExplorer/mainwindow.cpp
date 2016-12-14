@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 
 #include "custom_qthreads.h"
+#include "metric_visualizer.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -38,12 +39,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->btnDelete->setIcon(iconDel);
 	ui->btnDelete->setIconSize(pixDel.rect().size());
 
-
-	/*QImage addIcon("./resources/icons/add.png");
-	ui->lbAdd->setPixmap(QPixmap::fromImage(addIcon));
-	QImage deleteIcon("./resources/icons/delete.png");
-	ui->lbDelete->setPixmap(QPixmap::fromImage(deleteIcon));
-*/
 	// Gifs
 	movieInit = new QMovie("./resources/gifs/init.gif");
 	movieLoad = new QMovie("./resources/gifs/load.gif");
@@ -213,7 +208,7 @@ bool MainWindow::readImportFile(QString import)
 		}
 		else
 		{
-			withColor = false;
+			hasColor = false;
 			stream.seek(0);
 			QString path = stream.readLine().split("\\").last();
 			ui->lbCaptureName->setText(path);
@@ -224,7 +219,7 @@ bool MainWindow::readImportFile(QString import)
 			int cmp = QString::compare("true", color, Qt::CaseInsensitive);
 			if (cmp == 0)
 			{
-				withColor = true;
+				hasColor = true;
 			}
 
 		}
@@ -267,69 +262,10 @@ void MainWindow::onLoad(QString path)
 
 void MainWindow::showPlane(bool bPlanView)
 {
-	if (withColor)
-		this->showPlaneColor(bPlanView);
-	else
-		this->showPlaneNoColor(bPlanView);
-}
-
-/*
-* Show the 3D Model selected (filePath) - Handling Colors
-*/
-void MainWindow::showPLY() {
-	int v(20);
-	pcl::visualization::PCLVisualizer * pv;
-
-	if (withColor)
-	{
-		pcl::PointCloud<pcl::PointXYZRGB>::Ptr src(new pcl::PointCloud<pcl::PointXYZRGB>);
-		pcl::io::loadPLYFile<pcl::PointXYZRGB>(filePath, *src);
-		// color
-		pcl::visualization::PointCloudColorHandlerRGBField<pcl::PointXYZRGB> src_rgb(src);
-
-		// point cloud
-		pv = new pcl::visualization::PCLVisualizer("Not the QVTKWidget", false);
-		pv->createViewPort(0.0, 0.0, 1.0, 1.0, v);
-		pv->addPointCloud<pcl::PointXYZRGB>(src, src_rgb, "v1_source", v);
-	}
-	else
-	{
-		pcl::PointCloud<pcl::PointXYZRGB>::Ptr src_raw(new pcl::PointCloud<pcl::PointXYZRGB>);
-		pcl::PointCloud<pcl::PointXYZ>::Ptr src(new pcl::PointCloud<pcl::PointXYZ>);
-		pcl::io::loadPLYFile<pcl::PointXYZRGB>(filePath, *src_raw);
-
-		for (int i = 0; i < src_raw->size(); i++)
-			src->push_back(pcl::PointXYZ(src_raw->at(i).x, src_raw->at(i).y, src_raw->at(i).z));
-		// color
-		pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> src_rgb(src, 50, 210, 210);
-
-		// point cloud
-		pv = new pcl::visualization::PCLVisualizer("Not the QVTKWidget", false);
-		pv->createViewPort(0.0, 0.0, 1.0, 1.0, v);
-		pv->addPointCloud<pcl::PointXYZ>(src, src_rgb, "v1_source", v);
-	}
-
-	renderLock->Lock();
-	vtkSmartPointer<vtkRenderWindow> renderWindow = pv->getRenderWindow();
-	ui->qvtkWidget3D->SetRenderWindow(renderWindow);
-	renderLock->Unlock();
-}
-
-
-void MainWindow::showPlaneColor(bool bPlanView)
-{
 	// Point cloud in 2D
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr src_projected(new pcl::PointCloud<pcl::PointXYZRGB>);
-
-
-	// --------- Copied from ShowPLY()
-
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr src(new pcl::PointCloud<pcl::PointXYZRGB>);
 	pcl::io::loadPLYFile<pcl::PointXYZRGB>(filePath, *src);
-	// color
-	pcl::visualization::PointCloudColorHandlerRGBField<pcl::PointXYZRGB> src_rgb(src);
-
-	// --------------------------------
 
 	// Create a set of planar coefficients with X=0,Y|Z=1|0
 	pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients());
@@ -347,9 +283,7 @@ void MainWindow::showPlaneColor(bool bPlanView)
 		coefficients->values[0] = coefficients->values[2] = 0;	// X,Z = 0
 		coefficients->values[1] = 1.0;							// Y = 1
 	}
-
 	coefficients->values[3] = 0;
-
 
 	// Create the filtering object
 	pcl::ProjectInliers<pcl::PointXYZRGB> proj;
@@ -359,12 +293,7 @@ void MainWindow::showPlaneColor(bool bPlanView)
 	proj.filter(*src_projected);
 
 	// Visualizer
-	pcl::visualization::PCLVisualizer * pv = new pcl::visualization::PCLVisualizer("Not the QVTKWidget", false);
-	int v(20);
-	pv->createViewPort(0.0, 0.0, 1.0, 1.0, v);
-	pv->addPointCloud<pcl::PointXYZRGB>(src_projected, src_rgb, "v1_source", v);
-
-	//pv->addPointCloud<pcl::PointXYZ>(src_projected, src_rgb, "v1_source", v);
+	MetricVisualizer * pv = new MetricVisualizer(src_projected, hasColor);
 	vtkSmartPointer<vtkRenderWindow> renderWindow = pv->getRenderWindow();
 
 	renderLock->Lock();
@@ -387,81 +316,17 @@ void MainWindow::showPlaneColor(bool bPlanView)
 }
 
 /*
- * Show the 3D Model selected (filePath) in 2D
- */
-void MainWindow::showPlaneNoColor(bool bPlanView)
-{
-	// Point cloud in 2D
-	pcl::PointCloud<pcl::PointXYZ>::Ptr src_projected(new pcl::PointCloud<pcl::PointXYZ>);
+* Show the 3D Model selected (filePath) - Handling Colors
+*/
+void MainWindow::showPLY() {
 
-	// --------- Copied from ShowPLY()
-
-	pcl::PointCloud<pcl::PointXYZRGB>::Ptr src_raw(new pcl::PointCloud<pcl::PointXYZRGB>);
-	pcl::PointCloud<pcl::PointXYZ>::Ptr src(new pcl::PointCloud<pcl::PointXYZ>);
-
-	pcl::io::loadPLYFile<pcl::PointXYZRGB>(filePath, *src_raw);
-
-	for (int i = 0; i < src_raw->size(); i++)
-		src->push_back(pcl::PointXYZ(src_raw->at(i).x, src_raw->at(i).y, src_raw->at(i).z));
-
-	// Color
-	pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> src_rgb(src, 50, 210, 210);
-
-	// --------------------------------
-
-
-	// Create a set of planar coefficients with X=0,Y|Z=1|0
-	pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients());
-	coefficients->values.resize(4);
-
-	if (!bPlanView)
-	{
-		// LATERAL (from frontside)
-		coefficients->values[0] = coefficients->values[1] = 0;	// X,Y = 0
-		coefficients->values[2] = 1.0;							// Z = 1
-	}
-	else
-	{
-		// PLAN (from upside)
-		coefficients->values[0] = coefficients->values[2] = 0;	// X,Z = 0
-		coefficients->values[1] = 1.0;							// Y = 1
-	}
-
-	coefficients->values[3] = 0;
-	
-	// Create the filtering object
-	pcl::ProjectInliers<pcl::PointXYZ> proj;
-	proj.setModelType(pcl::SACMODEL_PLANE);
-	proj.setInputCloud(src);
-	proj.setModelCoefficients(coefficients);
-	proj.filter(*src_projected);
-
-	// Visualizer
-	pcl::visualization::PCLVisualizer * pv = new pcl::visualization::PCLVisualizer("Not the QVTKWidget", false);
-	int v(20);
-	pv->createViewPort(0.0, 0.0, 1.0, 1.0, v);
-	pv->addPointCloud<pcl::PointXYZ>(src_projected, src_rgb, "v1_source", v);
-
-
-	//pv->addPointCloud<pcl::PointXYZ>(src_projected, src_rgb, "v1_source", v);
-	vtkSmartPointer<vtkRenderWindow> renderWindow = pv->getRenderWindow();
+	pcl::PointCloud<pcl::PointXYZRGB>::Ptr src(new pcl::PointCloud<pcl::PointXYZRGB>);
+	pcl::io::loadPLYFile<pcl::PointXYZRGB>(filePath, *src);
+	MetricVisualizer * pv = new MetricVisualizer(src, hasColor);
 
 	renderLock->Lock();
-	// Set camera position if plan view
-	if (bPlanView)
-	{
-		ui->qvtkWidgetPlan->SetRenderWindow(renderWindow);
-		vtkSmartPointer<vtkCamera> tmpCam = ui->qvtkWidgetPlan->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->GetActiveCamera();
-		tmpCam->SetPosition(0, 5, 0);
-		tmpCam->SetViewUp(1, 0, 0);
-		ui->qvtkWidgetPlan->update();
-	}
-	else {
-		ui->qvtkWidgetLateral->SetRenderWindow(renderWindow);
-		vtkSmartPointer<vtkCamera> tmpCam = ui->qvtkWidgetLateral->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->GetActiveCamera();
-		tmpCam->SetPosition(0, 0, 5);
-		ui->qvtkWidgetLateral->update();
-	}
+	vtkSmartPointer<vtkRenderWindow> renderWindow = pv->getRenderWindow();
+	ui->qvtkWidget3D->SetRenderWindow(renderWindow);
 	renderLock->Unlock();
 }
 
