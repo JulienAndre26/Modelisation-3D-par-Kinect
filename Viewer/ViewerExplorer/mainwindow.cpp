@@ -4,6 +4,7 @@
 #include "custom_qthreads.h"
 #include "metric_visualizer.h"
 
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -22,6 +23,13 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->qvtkWidgetPlan->setVisible(false);
 	ui->btnAdd->setVisible(false);
 	ui->btnDelete->setVisible(false);
+	ui->lbP1x->setVisible(false);
+	ui->lbP1y->setVisible(false);
+	ui->lbP1z->setVisible(false);
+	ui->lbP2x->setVisible(false);
+	ui->lbP2y->setVisible(false);
+	ui->lbP2z->setVisible(false);
+	ui->lbDistance->setVisible(false);
 
 	// Alignements
 	ui->gif3D->setAlignment(Qt::AlignCenter);
@@ -211,7 +219,7 @@ bool MainWindow::readImportFile(QString import)
 			hasColor = false;
 			stream.seek(0);
 			QString path = stream.readLine().split("\\").last();
-			ui->lbCaptureName->setText(path);
+			ui->lbCaptureName->setText("<b>" + path + "<\\b>");
 			stream.readLine();
 			stream.readLine();
 			QString color = stream.readLine().split(" ").last();
@@ -293,7 +301,7 @@ void MainWindow::showPlane(bool bPlanView)
 	proj.filter(*src_projected);
 
 	// Visualizer
-	MetricVisualizer * pv = new MetricVisualizer(src_projected, hasColor);
+	MetricVisualizer * pv = new MetricVisualizer(src_projected, hasColor, this);
 	vtkSmartPointer<vtkRenderWindow> renderWindow = pv->getRenderWindow();
 
 	renderLock->Lock();
@@ -322,7 +330,7 @@ void MainWindow::showPLY() {
 
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr src(new pcl::PointCloud<pcl::PointXYZRGB>);
 	pcl::io::loadPLYFile<pcl::PointXYZRGB>(filePath, *src);
-	MetricVisualizer * pv = new MetricVisualizer(src, hasColor);
+	MetricVisualizer * pv = new MetricVisualizer(src, hasColor, this);
 
 	renderLock->Lock();
 	vtkSmartPointer<vtkRenderWindow> renderWindow = pv->getRenderWindow();
@@ -508,4 +516,52 @@ void MainWindow::on_btnDelete_clicked()
 	}
 }
 
+void MainWindow::updateMetrics(int nPoint, float x, float y, float z)
+{
+	QLabel *qlbX, *qlbY, *qlbZ;
+	
+	switch (nPoint)
+	{
+	case METRIC_P1:
+		qlbX = ui->lbP1x;
+		qlbY = ui->lbP1y;
+		qlbZ = ui->lbP1z;
 
+		ui->lbP2x->setVisible(false);
+		ui->lbP2y->setVisible(false);
+		ui->lbP2z->setVisible(false);
+		ui->lbDistance->setVisible(false);
+		break;
+
+	case METRIC_P2:
+		qlbX = ui->lbP2x;
+		qlbY = ui->lbP2y;
+		qlbZ = ui->lbP2z;
+		break;
+
+	default:
+		return;
+	}
+
+	qlbX->setText("X: " + QString::number(x));
+	qlbX->setVisible(true);
+
+	qlbY->setText("Y: " + QString::number(y));
+	qlbY->setVisible(true);
+	
+	qlbZ->setText("Z: " + QString::number(z));
+	qlbZ->setVisible(true);
+}
+
+void MainWindow::updateMetrics(double distance)
+{
+	char szDistanceM[8];
+	char szDistanceCM[8];
+
+	sprintf(szDistanceM, "%.2f", distance);
+	sprintf(szDistanceCM, "%.2f", distance*100);
+
+	ui->lbDistance->setText("Distance: " + QString(szDistanceM) + " m (" + QString(szDistanceCM) + " cm)");
+	ui->lbDistance->setVisible(true);
+	
+}

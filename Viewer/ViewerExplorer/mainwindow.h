@@ -40,6 +40,9 @@ VTK_MODULE_INIT(vtkInteractionStyle)
 #define MOVIE_LOAD		2
 #define MOVIE_MERGE		3
 
+#define METRIC_P1		1
+#define METRIC_P2		2
+
 namespace Ui {
 class MainWindow;
 }
@@ -65,7 +68,10 @@ public:
 
 	void showPLY();
 	void showPlane(bool bPlanView);
-	
+
+	void updateMetrics(int nPoint, float x, float y, float z);
+	void updateMetrics(double distance);
+		
 	char *filePath;
 	vtkMutexLock *renderLock;
 

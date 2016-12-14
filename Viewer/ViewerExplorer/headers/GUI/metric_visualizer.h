@@ -5,6 +5,9 @@
 
 #include "custom_typedef.h"
 #include "Processor.h"
+#include "mainwindow.h"
+
+MainWindow * GUI; // La joie du C++ crado
 
 struct callback_args {
 	// structure used to pass arguments to the callback function
@@ -28,7 +31,7 @@ void _callback(const pcl::visualization::PointPickingEvent& event, void* args)
 	// retrieve values
 	event.getPoint(current_point.x, current_point.y, current_point.z);
 
-	cout << "Clicked P: (" << current_point.x << "; " << current_point.y << "; " << current_point.z << ")" << endl;
+	//cout << "Clicked P: (" << current_point.x << "; " << current_point.y << "; " << current_point.z << ")" << endl;
 	
 	// if two points are already in the list
 	if (data->clicked_points_3d->points.size() == 2) {
@@ -53,7 +56,15 @@ void _callback(const pcl::visualization::PointPickingEvent& event, void* args)
 		// set value
 		sprintf(data->distance, "%f", dist);
 		// debug it
-		std::cout << "DISTANCE : " << data->distance << std::endl;
+		//std::cout << "DISTANCE : " << data->distance << std::endl;
+
+		GUI->updateMetrics(METRIC_P2, point2.x, point2.y, point2.z);
+		GUI->updateMetrics(dist);
+	}
+	else
+	{
+		PointT point1 = data->clicked_points_3d->points.at(0);
+		GUI->updateMetrics(METRIC_P1, point1.x, point1.y, point1.z);
 	}
 
 	// Draw clicked points in red:
@@ -70,8 +81,9 @@ private:
 	struct callback_args args;
 public:
 
-	MetricVisualizer(PointCloudColored::Ptr src, bool bColored) {
-	
+	MetricVisualizer(PointCloudColored::Ptr src, bool bColored, MainWindow * mw) {
+		GUI = mw; // Dégoutant
+
 		// Data Structure
 		PointCloud::Ptr clicked_points_3d(new PointCloud);
 		args.clicked_points_3d = clicked_points_3d;

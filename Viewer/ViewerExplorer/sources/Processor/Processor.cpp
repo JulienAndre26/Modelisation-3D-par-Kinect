@@ -50,8 +50,7 @@ Status Processor::computeMetrics(float x1, float y1, float z1, float x2, float y
 	cout << endl;
 	cout << "P1: (" << x1 << "; " << y1 << "; " << z1 << ")" << endl;
 	cout << "P2: (" << x2 << "; " << y2 << "; " << z2 << ")" << endl;
-	
-	cout << "D: " << s.returnedDouble << endl;
+	cout << "DISTANCE: " << s.returnedDouble << endl;
 	cout << endl;
 
 	return s;

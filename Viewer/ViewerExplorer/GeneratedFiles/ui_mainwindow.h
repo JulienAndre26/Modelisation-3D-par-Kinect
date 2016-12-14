@@ -34,7 +34,6 @@ public:
     QPushButton *btnMerge;
     QPushButton *btnBrowse;
     QLabel *lbCaptureName;
-    QPushButton *pushButton_2;
     QVTKWidget *qvtkWidgetLateral;
     QVTKWidget *qvtkWidgetPlan;
     QVTKWidget *qvtkWidget3D;
@@ -44,6 +43,13 @@ public:
     QPushButton *btnShow;
     QPushButton *btnAdd;
     QPushButton *btnDelete;
+    QLabel *lbP1x;
+    QLabel *lbP1y;
+    QLabel *lbP1z;
+    QLabel *lbP2x;
+    QLabel *lbP2z;
+    QLabel *lbP2y;
+    QLabel *lbDistance;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -124,10 +130,8 @@ public:
         lbCaptureName = new QLabel(centralWidget);
         lbCaptureName->setObjectName(QStringLiteral("lbCaptureName"));
         lbCaptureName->setGeometry(QRect(10, 60, 161, 16));
+        lbCaptureName->setTextFormat(Qt::RichText);
         lbCaptureName->setAlignment(Qt::AlignCenter);
-        pushButton_2 = new QPushButton(centralWidget);
-        pushButton_2->setObjectName(QStringLiteral("pushButton_2"));
-        pushButton_2->setGeometry(QRect(10, 360, 201, 221));
         qvtkWidgetLateral = new QVTKWidget(centralWidget);
         qvtkWidgetLateral->setObjectName(QStringLiteral("qvtkWidgetLateral"));
         qvtkWidgetLateral->setGeometry(QRect(860, 10, 281, 281));
@@ -222,6 +226,34 @@ public:
 "}\n"
 "\n"
 ""));
+        lbP1x = new QLabel(centralWidget);
+        lbP1x->setObjectName(QStringLiteral("lbP1x"));
+        lbP1x->setGeometry(QRect(20, 490, 81, 16));
+        lbP1x->setTextFormat(Qt::RichText);
+        lbP1y = new QLabel(centralWidget);
+        lbP1y->setObjectName(QStringLiteral("lbP1y"));
+        lbP1y->setGeometry(QRect(20, 510, 81, 16));
+        lbP1y->setTextFormat(Qt::RichText);
+        lbP1z = new QLabel(centralWidget);
+        lbP1z->setObjectName(QStringLiteral("lbP1z"));
+        lbP1z->setGeometry(QRect(20, 530, 81, 16));
+        lbP1z->setTextFormat(Qt::RichText);
+        lbP2x = new QLabel(centralWidget);
+        lbP2x->setObjectName(QStringLiteral("lbP2x"));
+        lbP2x->setGeometry(QRect(120, 490, 81, 16));
+        lbP2x->setTextFormat(Qt::RichText);
+        lbP2z = new QLabel(centralWidget);
+        lbP2z->setObjectName(QStringLiteral("lbP2z"));
+        lbP2z->setGeometry(QRect(120, 530, 81, 16));
+        lbP2z->setTextFormat(Qt::RichText);
+        lbP2y = new QLabel(centralWidget);
+        lbP2y->setObjectName(QStringLiteral("lbP2y"));
+        lbP2y->setGeometry(QRect(120, 510, 81, 16));
+        lbP2y->setTextFormat(Qt::RichText);
+        lbDistance = new QLabel(centralWidget);
+        lbDistance->setObjectName(QStringLiteral("lbDistance"));
+        lbDistance->setGeometry(QRect(20, 560, 171, 16));
+        lbDistance->setTextFormat(Qt::RichText);
         MainWindow->setCentralWidget(centralWidget);
 
         retranslateUi(MainWindow);
@@ -236,7 +268,6 @@ public:
         btnMerge->setText(QApplication::translate("MainWindow", "Merge", 0));
         btnBrowse->setText(QApplication::translate("MainWindow", "Browse", 0));
         lbCaptureName->setText(QString());
-        pushButton_2->setText(QApplication::translate("MainWindow", "Measure Area", 0));
         gif3D->setText(QApplication::translate("MainWindow", "Loading", 0));
         gifLateral->setText(QApplication::translate("MainWindow", "Loading", 0));
         gifPlan->setText(QApplication::translate("MainWindow", "Loading", 0));
@@ -249,6 +280,13 @@ public:
         btnDelete->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Removes a 3D plan from this capture</span></p><p>It will remove the selected PLY file from the capture's folder.</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
         btnDelete->setText(QString());
+        lbP1x->setText(QApplication::translate("MainWindow", "X1", 0));
+        lbP1y->setText(QApplication::translate("MainWindow", "Y1", 0));
+        lbP1z->setText(QApplication::translate("MainWindow", "Z1", 0));
+        lbP2x->setText(QApplication::translate("MainWindow", "X2", 0));
+        lbP2z->setText(QApplication::translate("MainWindow", "Z3", 0));
+        lbP2y->setText(QApplication::translate("MainWindow", "Y2", 0));
+        lbDistance->setText(QApplication::translate("MainWindow", "Distance", 0));
     } // retranslateUi
 
 };
