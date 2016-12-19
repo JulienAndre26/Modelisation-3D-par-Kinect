@@ -19,6 +19,9 @@
     <ClCompile Include="Timer.cpp">
       <Filter>Kinect Fusion\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="KinectFusionExternals.cpp">
+      <Filter>Kinect Fusion\KinectFusionExplorer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KinectFusionParams.h">
@@ -50,6 +53,9 @@
     </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Kinect Fusion\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="KinectFusionExternals.h">
+      <Filter>Kinect Fusion\KinectFusionExplorer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

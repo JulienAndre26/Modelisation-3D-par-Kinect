@@ -74,7 +74,9 @@ CKinectFusionExplorer::CKinectFusionExplorer() :
 	m_lDirPath(nullptr),
 	m_bIsAutoMode(false),
 	m_nDelay(5)
-{}
+{
+	this->external = new KinectFusionExternals();
+}
 
 /// <summary>
 /// Destructor
@@ -1017,12 +1019,21 @@ void CKinectFusionExplorer::SetEnableConfUI(int nEnable)
 /// </summary>
 void CKinectFusionExplorer::CreateConfFile()
 {
+	CONF_EXT * sConf = (CONF_EXT *) malloc(sizeof(CONF_EXT));
+
 	// QUALITY
 	std::wstring wsVPM = std::to_wstring(m_params.m_reconstructionParams.voxelsPerMeter);
+	sConf->wsVPM = &wsVPM;
+	
 	std::wstring wsX = std::to_wstring(m_params.m_reconstructionParams.voxelCountX);
+	sConf->wsX = &wsX;
+	
 	std::wstring wsY = std::to_wstring(m_params.m_reconstructionParams.voxelCountY);
+	sConf->wsY = &wsY;
+	
 	std::wstring wsZ = std::to_wstring(m_params.m_reconstructionParams.voxelCountZ);
-
+	sConf->wsZ = &wsZ;
+	
 	// FORMAT
 	std::wstring wsFormat;
 	if (m_saveMeshFormat == Ply)
@@ -1031,15 +1042,19 @@ void CKinectFusionExplorer::CreateConfFile()
 		wsFormat = L"obj";
 	else
 		wsFormat = L"stl";
+	sConf->wsFormat = &wsFormat;
 
 	// COLOR
 	std::wstring wsColor = (m_params.m_bCaptureColor) ? L"true" : L"false";
+	sConf->wsColor = &wsColor;
 	
 	// FILE COUNT
 	std::wstring wsCount = std::to_wstring(m_nMeshCount);
+	sConf->wsCount = &wsCount;
 
 	// DIRECTORY
 	std::wstring wsPath(m_lDirPath);
+	sConf->wsPath = &wsPath;
 	
 	// Conf file
 	std::wstring wsName(m_lDirPath);
@@ -1049,35 +1064,10 @@ void CKinectFusionExplorer::CreateConfFile()
 
 	std::wstring wsConfPath = wsPath + L"\\" + wsName + L".import";
 
-	std::wifstream f(wsConfPath.c_str());
-	bool bExists = f.good();
-	f.close();
-
-	// Remove conf file if already exists
-	if (bExists) {
-		LPOLESTR m_lFile = (LPOLESTR) new wchar_t[wsConfPath.length() + 1];
-		std::wcscpy(m_lFile, wsConfPath.c_str());
-		DeleteFile(m_lFile);
-	} 
-
-	std::wofstream confFile(wsConfPath, std::ios::out | std::ios::trunc);  //déclaration du flux et ouverture du fichier
-
-	// If success -> write
-	if (confFile)
-	{
-		confFile << L"[PATH] " + wsPath + L"\n";
-		confFile << L"[COUNT] " + wsCount + L"\n";
-		confFile << L"[FORMAT] " + wsFormat + L"\n";
-		confFile << L"[COLOR] " + wsColor + L"\n";
-		confFile << L"[VPM] " + wsVPM + L"\n";
-		confFile << L"[X] " + wsX + L"\n";
-		confFile << L"[Y] " + wsY + L"\n";
-		confFile << L"[Z] " + wsZ;
-
-		confFile.close();
-
+	if (external->createConfFile(wsConfPath, sConf))
 		SetStatusMessage(L"Settings saved successfully.");
-	}
+	else
+		SetStatusMessage(L"Error during setting save.");
 }
 
 /// <summary>

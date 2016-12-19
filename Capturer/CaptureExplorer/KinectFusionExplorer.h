@@ -10,6 +10,7 @@
 #include <NuiSensorChooserUI.h>
 #include "KinectFusionParams.h"
 #include "KinectFusionProcessor.h"
+#include "KinectFusionExternals.h"
 
 
 /// <summary>
@@ -20,6 +21,8 @@ class CKinectFusionExplorer
     static const DWORD          cStatusTimeoutInMilliseconds = 5000;
 
 public:
+	KinectFusionExternals * external;
+
     /// <summary>
     /// Constructor
     /// </summary>
