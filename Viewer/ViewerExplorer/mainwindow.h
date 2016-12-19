@@ -1,5 +1,4 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
 
 // This need to be placed before each VTK include
 #include <vtkAutoInit.h> 
@@ -109,5 +108,3 @@ private:
 	QHash<QString, QString> listContent;
 
 };
-
-#endif // MAINWINDOW_H

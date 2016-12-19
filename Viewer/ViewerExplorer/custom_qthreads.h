@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef CQTHREAD_H
-#define CQTHREAD_H
-
 #include <QThread.h>
 #include <iostream>
 
@@ -56,5 +53,3 @@ private:
 		mw->processMerge();
 	}
 };
-
-#endif

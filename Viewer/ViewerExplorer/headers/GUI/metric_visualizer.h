@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef METRICV_H
-#define METRICV_H 
-
 #include "custom_typedef.h"
 #include "Processor.h"
 #include "mainwindow.h"
@@ -118,5 +115,3 @@ public:
 	~MetricVisualizer() {};
 
 };
-
-#endif

@@ -21,8 +21,6 @@ class CKinectFusionExplorer
     static const DWORD          cStatusTimeoutInMilliseconds = 5000;
 
 public:
-	KinectFusionExternals *external;
-
     /// <summary>
     /// Constructor
     /// </summary>

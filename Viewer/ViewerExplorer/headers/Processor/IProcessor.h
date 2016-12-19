@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef IPROCESSOR
-#define IPROCESSOR
-
 #include <string>
 
 using namespace std;
@@ -30,4 +27,3 @@ public:
 	//virtual Status reduceSize(string pathToLoad, string pathToSave) = 0;
 
 };
-#endif

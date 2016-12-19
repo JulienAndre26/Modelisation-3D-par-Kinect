@@ -1,8 +1,4 @@
-
 #pragma once
-
-#ifndef IOPCL_H
-#define IOPCL_H
 
 #include "IIO.h"
 
@@ -26,5 +22,3 @@ public:
 	static int save(char* filename, PointCloud::Ptr objectToSave, PointCloudNormals::Ptr normalsObject);
 	static int save(char* filename, PointCloudFPFH::Ptr objectToSave);
 };
-
-#endif

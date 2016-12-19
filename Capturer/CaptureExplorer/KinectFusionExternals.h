@@ -37,8 +37,8 @@ class KinectFusionExternals
 public:
 	KinectFusionExternals() {};
 	~KinectFusionExternals() {};
-	bool createConfFile(std::wstring wsPath, CREATE_CONF_EXT * sConf);
-	bool fileExists(std::wstring wsPath);
-	bool readConfFile(std::wstring wsPath, READ_CONF_EXT * sConf);
+	static bool createConfFile(std::wstring wsPath, CREATE_CONF_EXT * sConf);
+	static bool fileExists(std::wstring wsPath);
+	static bool readConfFile(std::wstring wsPath, READ_CONF_EXT * sConf);
 };
 

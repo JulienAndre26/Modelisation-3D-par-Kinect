@@ -75,7 +75,6 @@ CKinectFusionExplorer::CKinectFusionExplorer() :
 	m_bIsAutoMode(false),
 	m_nDelay(5)
 {
-	this->external = new KinectFusionExternals();
 }
 
 /// <summary>
@@ -1070,7 +1069,7 @@ void CKinectFusionExplorer::CreateConfFile()
 
 	std::wstring wsConfPath = wsPath + L"\\" + wsName + L".import";
 
-	if (external->createConfFile(wsConfPath, sConf))
+	if (KinectFusionExternals::createConfFile(wsConfPath, sConf))
 		SetStatusMessage(L"Settings saved successfully.");
 	else
 		SetStatusMessage(L"Error during setting save.");
@@ -1211,7 +1210,7 @@ bool CKinectFusionExplorer::RetrieveProjectConf()
 	// Conf file
 	std::wstring wsConfPath = wsPath + L"\\" + wsName + L".import";
 	
-	if (!(external->fileExists(wsConfPath)))
+	if (!(KinectFusionExternals::fileExists(wsConfPath)))
 	{
 		CString message;
 		message.Format(L"Can't import capture because configuration file is missing.");
@@ -1225,7 +1224,7 @@ bool CKinectFusionExplorer::RetrieveProjectConf()
 	READ_CONF_EXT * sConf = (READ_CONF_EXT *)malloc(sizeof(READ_CONF_EXT));
 
 	// If error occured
-	if (!(external->readConfFile(wsConfPath, sConf)))
+	if (!(KinectFusionExternals::readConfFile(wsConfPath, sConf)))
 	{
 		CString cMsg;
 		cMsg.Format(L"Invalid configuration file.");

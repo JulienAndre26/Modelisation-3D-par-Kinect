@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef IIO_H
-#define IIO_H
-
 /*
 * Abstract class to 
 */
@@ -12,5 +9,3 @@ public:
 	int load(char * filename, void* objectToLoad);
 	int save(char * filename, void* objectToSave);
 };
-
-#endif IIO_H
