@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="add">resources/icons/add.png</file>
+        <file alias="delete">resources/icons/delete.png</file>
+        <file alias="distance">resources/icons/distance.png</file>
+        <file alias="pin">resources/icons/pin.png</file>
+    </qresource>
+    <qresource prefix="/gifs">
+        <file alias="init">resources/gifs/init.gif</file>
+        <file alias="load">resources/gifs/load.gif</file>
+        <file alias="merge">resources/gifs/merge.gif</file>
+    </qresource>
+</RCC>

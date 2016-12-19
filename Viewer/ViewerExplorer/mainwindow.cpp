@@ -40,27 +40,27 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->gifPlan->setAlignment(Qt::AlignCenter);
 
 	// Icons
-	QPixmap pixAdd("./resources/icons/add.png");
+	QPixmap pixAdd(":/icons/add");
 	QIcon iconAdd(pixAdd);
 	ui->btnAdd->setIcon(iconAdd);
 	ui->btnAdd->setIconSize(pixAdd.rect().size());
 
-	QPixmap pixDel("./resources/icons/delete.png");
+	QPixmap pixDel(":/icons/delete");
 	QIcon iconDel(pixDel);
 	ui->btnDelete->setIcon(iconDel);
 	ui->btnDelete->setIconSize(pixDel.rect().size());
 
-	QPixmap pixPin("./resources/icons/pin.png");
+	QPixmap pixPin(":/icons/pin");
 	ui->lbPin1->setPixmap(pixPin);
 	ui->lbPin2->setPixmap(pixPin);
 
-	QPixmap pixDist("./resources/icons/distance.png");
+	QPixmap pixDist(":/icons/distance");
 	ui->lbDistanceIcon->setPixmap(pixDist);
 
 	// Gifs
-	movieInit = new QMovie("./resources/gifs/init.gif");
-	movieLoad = new QMovie("./resources/gifs/load.gif");
-	movieMerge = new QMovie("./resources/gifs/merge.gif");
+	movieInit = new QMovie(":/gifs/init");
+	movieLoad = new QMovie(":/gifs/load");
+	movieMerge = new QMovie(":/gifs/merge");
 
 	ui->gif3D->setMovie(movieInit);
 	ui->gifLateral->setMovie(movieInit);

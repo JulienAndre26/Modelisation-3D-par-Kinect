@@ -69,6 +69,17 @@
     <Filter Include="Source Files\Processor\Core">
       <UniqueIdentifier>{b8f3e534-5ed2-483f-8cae-caf89269b4ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Resource Files\Gifs">
+      <UniqueIdentifier>{5844990a-5580-43c9-8380-16494f4d6f5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Icons">
+      <UniqueIdentifier>{def7d5c9-e6b2-4764-9c63-ec580de5c12f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -101,6 +112,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_custom_qthreads.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_resources.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -111,6 +125,9 @@
     </CustomBuild>
     <CustomBuild Include="custom_qthreads.h">
       <Filter>Header Files\GUI</Filter>
+    </CustomBuild>
+    <CustomBuild Include="resources.qrc">
+      <Filter>Resource Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -141,5 +158,28 @@
     <ClInclude Include="headers\GUI\metric_visualizer.h">
       <Filter>Header Files\GUI</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\gifs\init.gif">
+      <Filter>Resource Files\Gifs</Filter>
+    </Image>
+    <Image Include="resources\gifs\load.gif">
+      <Filter>Resource Files\Gifs</Filter>
+    </Image>
+    <Image Include="resources\gifs\merge.gif">
+      <Filter>Resource Files\Gifs</Filter>
+    </Image>
+    <Image Include="resources\icons\add.png">
+      <Filter>Resource Files\Icons</Filter>
+    </Image>
+    <Image Include="resources\icons\delete.png">
+      <Filter>Resource Files\Icons</Filter>
+    </Image>
+    <Image Include="resources\icons\distance.png">
+      <Filter>Resource Files\Icons</Filter>
+    </Image>
+    <Image Include="resources\icons\pin.png">
+      <Filter>Resource Files\Icons</Filter>
+    </Image>
   </ItemGroup>
 </Project>
