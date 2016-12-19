@@ -652,6 +652,12 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
 /// <param name="bEnable">status choice</param>
 void CKinectFusionExplorer::SetEnableColorUI(bool bEnable)
 {
+	if (!bEnable) {
+		m_params.m_bCaptureColor = false;
+		CheckDlgButton(m_hWnd, IDC_CAPTURE_COLOR_NO, BST_CHECKED);
+		CheckDlgButton(m_hWnd, IDC_CAPTURE_COLOR_YES, BST_UNCHECKED);
+	}
+
 	HWND hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_COLOR_YES);
 	EnableWindow(hElem, bEnable);
 	hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_COLOR_NO);
@@ -1019,7 +1025,7 @@ void CKinectFusionExplorer::SetEnableConfUI(int nEnable)
 /// </summary>
 void CKinectFusionExplorer::CreateConfFile()
 {
-	CONF_EXT * sConf = (CONF_EXT *) malloc(sizeof(CONF_EXT));
+	CREATE_CONF_EXT * sConf = (CREATE_CONF_EXT *) malloc(sizeof(CREATE_CONF_EXT));
 
 	// QUALITY
 	std::wstring wsVPM = std::to_wstring(m_params.m_reconstructionParams.voxelsPerMeter);
@@ -1165,8 +1171,7 @@ int CKinectFusionExplorer::AskImportFile()
 /// Loads settings from an imported project and sets the UI.
 /// </summary>
 void CKinectFusionExplorer::LoadProject()
-{
-	
+{	
 	// Retrieve conf.txt values
 	if (!RetrieveProjectConf())
 	{
@@ -1205,10 +1210,8 @@ bool CKinectFusionExplorer::RetrieveProjectConf()
 
 	// Conf file
 	std::wstring wsConfPath = wsPath + L"\\" + wsName + L".import";
-
-	std::wifstream confFile(wsConfPath);
 	
-	if (!confFile.is_open())
+	if (!(external->fileExists(wsConfPath)))
 	{
 		CString message;
 		message.Format(L"Can't import capture because configuration file is missing.");
@@ -1218,163 +1221,35 @@ bool CKinectFusionExplorer::RetrieveProjectConf()
 			MB_OK | MB_ICONWARNING);
 		return false;
 	}
-
-	// Prepare converter UTF8
-	const std::locale empty_locale = std::locale::empty();
-	typedef std::codecvt_utf8<wchar_t> converter_type;
-	const converter_type* converter = new converter_type;
-	const std::locale utf8_locale = std::locale(empty_locale, converter);
-	confFile.imbue(utf8_locale);
 	
-	std::wstring wsLine;
-	size_t nSpaceIndex;
-	bool res = true;
-
-	// PATH
-	if (std::getline(confFile, wsLine) && res)
-	{
-		nSpaceIndex = wsLine.find_first_of(L" ");
-		wsLine = wsLine.substr(nSpaceIndex + 1, wsLine.length());
-		//MessageBoxW(NULL, lDirPath, _T("Path Value"), MB_OK);
-	}
-	else
-		res = false;
-
-	// COUNT
-	int nMeshCount = -1;
-	if (std::getline(confFile, wsLine) && res)
-	{
-		nSpaceIndex = wsLine.find_first_of(L" ");
-		wsLine = wsLine.substr(nSpaceIndex + 1, wsLine.length());
-
-		nMeshCount = stoi(wsLine);
-
-		//MessageBoxW(NULL, W2OLE((LPWSTR)wsLine.c_str()), _T("Count Value"), MB_OK);
-	}
-	else
-		res = false;
-
-	// FORMAT
-	KinectFusionMeshTypes nFormat;
-	if (std::getline(confFile, wsLine) && res)
-	{
-		nSpaceIndex = wsLine.find_first_of(L" ");
-		wsLine = wsLine.substr(nSpaceIndex + 1, wsLine.length());
-
-		if (wsLine.compare(L"ply") == 0)
-			nFormat = Ply;
-		else if (wsLine.compare(L"obj") == 0)
-			nFormat = Obj;
-		else if (wsLine.compare(L"stl") == 0)
-			nFormat = Stl;
-		else
-			res = false;
-		
-		//MessageBoxW(NULL, W2OLE((LPWSTR)wsLine.c_str()), _T("Format Value"), MB_OK);
-	}
-	else
-		res = false;
-
-	// COLOR
-	bool bColor = false;
-	if (std::getline(confFile, wsLine) && res)
-	{
-		nSpaceIndex = wsLine.find_first_of(L" ");
-		wsLine = wsLine.substr(nSpaceIndex + 1, wsLine.length());
-
-		if (wsLine.compare(L"true") == 0)
-			bColor = true;
-		else if (wsLine.compare(L"false") == 0)
-			bColor = false;
-		else
-			res = false;
-
-		//MessageBoxW(NULL, W2OLE((LPWSTR)wsLine.c_str()), _T("Color Value"), MB_OK);
-	}
-	else
-		res = false;
-
-	// QUALITY
-	int nVPM = -1;
-	int nX = -1;
-	int nY = -1;
-	int nZ = -1;
-
-	// VPM
-	if (std::getline(confFile, wsLine) && res)
-	{
-		nSpaceIndex = wsLine.find_first_of(L" ");
-		wsLine = wsLine.substr(nSpaceIndex + 1, wsLine.length());
-		
-		nVPM = std::stoi(wsLine);
-	}
-	else
-		res = false;
-
-	// X
-	if (std::getline(confFile, wsLine) && res)
-	{
-		nSpaceIndex = wsLine.find_first_of(L" ");
-		wsLine = wsLine.substr(nSpaceIndex + 1, wsLine.length());
-
-		nX = std::stoi(wsLine);
-	}
-	else
-		res = false;
-
-	// Y
-	if (std::getline(confFile, wsLine) && res)
-	{
-		nSpaceIndex = wsLine.find_first_of(L" ");
-		wsLine = wsLine.substr(nSpaceIndex + 1, wsLine.length());
-
-		nY = std::stoi(wsLine);
-	}
-	else
-		res = false;
-
-	// Z
-	if (std::getline(confFile, wsLine) && res)
-	{
-		nSpaceIndex = wsLine.find_first_of(L" ");
-		wsLine = wsLine.substr(nSpaceIndex + 1, wsLine.length());
-
-		nZ = std::stoi(wsLine);
-	}
-	else
-		res = false;
+	READ_CONF_EXT * sConf = (READ_CONF_EXT *)malloc(sizeof(READ_CONF_EXT));
 
 	// If error occured
-	if (!res)
+	if (!(external->readConfFile(wsConfPath, sConf)))
 	{
 		CString cMsg;
 		cMsg.Format(L"Invalid configuration file.");
 		MessageBoxW(NULL, cMsg, _T("Import Error"), MB_OK | MB_ICONWARNING);
+		return false;
 	}
 	else {
 		// VALIDATE
-		//*m_lDirPath = *lDirPath;				// Path
-		
-		m_nMeshCount = nMeshCount;			// Count
-		
-		m_saveMeshFormat = nFormat;			// Format
-
-		m_params.m_bCaptureColor = bColor;	// Color
+		m_nMeshCount = sConf->nMeshCount;			// Count
+		m_saveMeshFormat = (KinectFusionMeshTypes) sConf->nFormat;			// Format
+		m_params.m_bCaptureColor = sConf->bColor;	// Color
 
 		// Dimensions
-		m_params.m_reconstructionParams.voxelsPerMeter = nVPM;
-		m_params.m_reconstructionParams.voxelCountX = nX;
-		m_params.m_reconstructionParams.voxelCountY = nY;
-		m_params.m_reconstructionParams.voxelCountZ = nZ;
+		m_params.m_reconstructionParams.voxelsPerMeter = sConf->nVPM;
+		m_params.m_reconstructionParams.voxelCountX = sConf->nX;
+		m_params.m_reconstructionParams.voxelCountY = sConf->nY;
+		m_params.m_reconstructionParams.voxelCountZ = sConf->nZ;
 
 		// Set params
 		m_bDirNameSet = true;
 		m_processor.SetParams(m_params);
 	}
 			
-	confFile.close();
-
-	return res;
+	return true;
 }
 
 /// <summary>
