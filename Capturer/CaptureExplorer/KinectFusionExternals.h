@@ -42,8 +42,6 @@ public:
 		if (sConf == nullptr)
 			return false;
 
-		bool bRes = true;
-
 		// Remove conf file if already exists
 		if (fileExists(wsConfPath)) {
 			LPOLESTR m_lFile = (LPOLESTR) new wchar_t[wsConfPath.length() + 1];
@@ -66,12 +64,10 @@ public:
 			confFile << L"[Z] " + *(sConf->wsZ);
 
 			confFile.close();
+			return true;
 		}
-		else {
-			bRes = false;
-		}
-
-		return bRes;
+		
+		return false;
 	}
 
 	static bool fileExists(std::wstring wsPath) {
@@ -84,8 +80,8 @@ public:
 	static bool readConfFile(std::wstring wsConfPath, READ_CONF_EXT * sConf) {
 		std::wifstream confFile(wsConfPath);
 
-		if (!confFile.is_open())
-			return NULL;
+		if (!confFile.is_open() || sConf == nullptr)
+			return false;
 
 		// Prepare converter UTF8
 		const std::locale empty_locale = std::locale::empty();

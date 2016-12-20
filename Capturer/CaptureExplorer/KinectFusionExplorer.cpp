@@ -1073,6 +1073,8 @@ void CKinectFusionExplorer::CreateConfFile()
 		SetStatusMessage(L"Settings saved successfully.");
 	else
 		SetStatusMessage(L"Error during setting save.");
+
+	free(sConf);
 }
 
 /// <summary>
@@ -1229,6 +1231,7 @@ bool CKinectFusionExplorer::RetrieveProjectConf()
 		CString cMsg;
 		cMsg.Format(L"Invalid configuration file.");
 		MessageBoxW(NULL, cMsg, _T("Import Error"), MB_OK | MB_ICONWARNING);
+		free(sConf);
 		return false;
 	}
 	else {
@@ -1246,8 +1249,9 @@ bool CKinectFusionExplorer::RetrieveProjectConf()
 		// Set params
 		m_bDirNameSet = true;
 		m_processor.SetParams(m_params);
+		free(sConf);
 	}
-			
+
 	return true;
 }
 
