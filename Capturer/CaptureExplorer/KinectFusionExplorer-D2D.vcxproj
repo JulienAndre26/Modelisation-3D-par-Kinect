@@ -208,7 +208,6 @@
   <ItemGroup>
     <ClCompile Include="ImageRenderer.cpp" />
     <ClCompile Include="KinectFusionExplorer.cpp" />
-    <ClCompile Include="KinectFusionExternals.cpp" />
     <ClCompile Include="KinectFusionHelper.cpp" />
     <ClCompile Include="KinectFusionProcessor.cpp" />
     <ClCompile Include="KinectFusionProcessorFrame.cpp" />
