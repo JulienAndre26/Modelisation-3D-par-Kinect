@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef PCLCORE_H
-#define PCLCORE_H
-
 #include "ICore.h"
 #include "custom_typedef.h"
 #include "IOPLY.h"
@@ -17,5 +14,3 @@ public:
 	void* other(void* arg);
 
 };
-
-#endif

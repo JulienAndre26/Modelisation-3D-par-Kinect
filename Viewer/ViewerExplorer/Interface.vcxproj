@@ -99,7 +99,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(PCL_ROOT)\3rdParty\VTK\include\vtk-7.0;$(PCL_ROOT)\include\pcl-1.8;$(PCL_ROOT)\3rdParty\Boost\include\boost-1_61;$(PCL_ROOT)\3rdParty\Eigen\eigen3;$(PCL_ROOT)\3rdParty\FLANN\include;$(PCL_ROOT)\3rdParty\Qhull\include;.;debug;$(QTDIR)\mkspecs\win32-msvc2015;.\GeneratedFiles;headers\GUI;headers\io;headers\Processor;headers\Processor\core;headers\;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtUiTools;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtQuickWidgets;$(QTDIR)\include\QtCore;$(QTDIR)\include\Qt3DCore;$(QTDIR)\include\Qt3DRender;$(QTDIR)\include\Qt3DInput;$(QTDIR)\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(PCL_ROOT)\3rdParty\VTK\include\vtk-7.0;$(PCL_ROOT)\include\pcl-1.8;$(PCL_ROOT)\3rdParty\Boost\include\boost-1_61;$(PCL_ROOT)\3rdParty\Eigen\eigen3;$(PCL_ROOT)\3rdParty\FLANN\include;$(PCL_ROOT)\3rdParty\Qhull\include;.;debug;$(QTDIR)\mkspecs\win32-msvc2015;.\GeneratedFiles;.\headers\GUI;.\headers\io;.\headers\Processor;.\headers\Processor\core;.\headers\;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtUiTools;$(QTDIR)\include\QtWidgets;$(QTDIR)\include\QtQuickWidgets;$(QTDIR)\include\QtCore;$(QTDIR)\include\Qt3DCore;$(QTDIR)\include\Qt3DRender;$(QTDIR)\include\Qt3DInput;$(QTDIR)\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zc:strictStrings -Zc:throwingNew -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>debug\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
+
 #include "../ViewerExplorer/headers/Processor/Processor.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -10,11 +11,11 @@ namespace TestViewer
 	{
 	public:
 		
-		TEST_METHOD(TestMethod1)
+		TEST_METHOD(TestComputeMetricsOK)
 		{
-			Assert::AreEqual(1, Processor::computeMetrics(1, 1, 1, 1, 1, 1).returnedDouble, 1);
-			
-			// TODO: Your test code here
+			double expected = 0.0;
+			//double actual = Processor::computeMetrics(1.0, 1.0, 1.0, 1.0, 1.0, 1.0).returnedDouble;
+			//Assert::AreEqual(expected, actual);
 		}
 
 	};

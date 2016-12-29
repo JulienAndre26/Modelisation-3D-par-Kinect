@@ -1,8 +1,8 @@
-// stdafx.cpp : source file that includes just the standard includes
-// TestViewer.pch will be the pre-compiled header
-// stdafx.obj will contain the pre-compiled type information
+// stdafx.cpp : fichier source incluant simplement les fichiers Include standard
+// TestViewer.pch représente l'en-tête précompilé
+// stdafx.obj contient les informations de type précompilées
 
 #include "stdafx.h"
 
-// TODO: reference any additional headers you need in STDAFX.H
-// and not in this file
+// TODO: faites référence aux en-têtes supplémentaires nécessaires dans STDAFX.H
+// absents de ce fichier
