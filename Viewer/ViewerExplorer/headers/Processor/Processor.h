@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ICore.h"
+#include "./core/ICore.h"
 #include "IProcessor.h"
 
 class Processor : public IProcessor {

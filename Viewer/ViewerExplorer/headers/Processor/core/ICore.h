@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef ICORE_H
-#define ICORE_H
-
 class ICore {
 
 public:
@@ -10,5 +7,3 @@ public:
 	virtual void* compress	(void* arg) = 0;
 	virtual void* other		(void* arg) = 0;
 };
-
-#endif
