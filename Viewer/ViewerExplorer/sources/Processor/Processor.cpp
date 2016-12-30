@@ -6,7 +6,7 @@
 //#include <pcl/common/common_headers.h>
 //#include <pcl/features/normal_3d.h>
 //#include <pcl/features/fpfh.h>
-#include <pcl/features/boundary.h>
+//#include <pcl/features/boundary.h>
 //#include <pcl/filters/voxel_grid.h>
 //#include <pcl/filters/filter.h>
 //#include <pcl/io/ply_io.h>

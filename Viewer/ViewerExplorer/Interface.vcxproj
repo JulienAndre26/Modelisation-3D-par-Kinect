@@ -15,6 +15,7 @@
     <RootNamespace>Interface</RootNamespace>
     <Keyword>Qt4VSv1.0</Keyword>
     <ProjectName>Viewer</ProjectName>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
