@@ -776,6 +776,8 @@ void method_nico(PointCloud::Ptr source, PointCloud::Ptr target, PointCloud::Ptr
 
 
 
+#include <pcl/registration/ndt.h>
+#include <pcl/filters/approximate_voxel_grid.h>
 void* PCLCore::merge(void* arg1, void* arg2) {
 
 		// TODO : Thread management
@@ -784,20 +786,123 @@ void* PCLCore::merge(void* arg1, void* arg2) {
 		char* f2 = TOTO2();
 
 		// ----- Loading ply files -----
-		PointCloud::Ptr src_raw(new PointCloud);
-		PointCloud::Ptr tgt_raw(new PointCloud);
+		//PointCloud::Ptr src_raw(new PointCloud);
+		//PointCloud::Ptr tgt_raw(new PointCloud);
 
 		// ----- Sampling clouds -----
-		PointCloud::Ptr src(new PointCloud);
-		PointCloud::Ptr tgt(new PointCloud);
+		//PointCloud::Ptr src(new PointCloud);
+		//PointCloud::Ptr tgt(new PointCloud);
 
-		if (boost::filesystem::exists("organized1.ply")) IOPLY::load(strdup("organized1.ply"), src);
-		else { IOPLY::load(f1, src_raw); reduce_size(src_raw, src); IOPLY::save(strdup("organized1.ply"), src); }
-		if (boost::filesystem::exists("organized2.ply")) IOPLY::load(strdup("organized2.ply"), tgt);
-		else { IOPLY::load(f2, tgt_raw); reduce_size(tgt_raw, tgt); IOPLY::save(strdup("organized2.ply"), tgt); }
+		//if (boost::filesystem::exists("organized1.ply")) IOPLY::load(strdup("organized1.ply"), src);
+		//else { IOPLY::load(f1, src_raw); reduce_size(src_raw, src); IOPLY::save(strdup("organized1.ply"), src); }
+		//if (boost::filesystem::exists("organized2.ply")) IOPLY::load(strdup("organized2.ply"), tgt);
+		//else { IOPLY::load(f2, tgt_raw); reduce_size(tgt_raw, tgt); IOPLY::save(strdup("organized2.ply"), tgt); }
 
-		PointCloud::Ptr res(new PointCloud);
-		method_nico(src, tgt, res);
+		//PointCloud::Ptr res(new PointCloud);
+		//----------------------------------------------------------
+		//----------------------------------------------------------
+		//----------------------------------------------------------
+		// Loading first scan of room.
+
+		pcl::PointCloud<pcl::PointXYZ>::Ptr target_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+		if (pcl::io::loadPLYFile<pcl::PointXYZ>(f1, *target_cloud) == -1)
+		{
+			PCL_ERROR("Couldn't read file room_scan1.pcd \n");
+			return (void*)(-1);
+		}
+		std::cout << "Loaded " << target_cloud->size() << " data points from room_scan1.pcd" << std::endl;
+
+		// Loading second scan of room from new perspective.
+		pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+		if (pcl::io::loadPLYFile<pcl::PointXYZ>(f2, *input_cloud) == -1)
+		{
+			PCL_ERROR("Couldn't read file room_scan2.pcd \n");
+			return (void*)(-1);
+		}
+		std::cout << "Loaded " << input_cloud->size() << " data points from room_scan2.pcd" << std::endl;
+
+		// Filtering input scan to roughly 10% of original size to increase speed of registration.
+		pcl::PointCloud<pcl::PointXYZ>::Ptr filtered_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+		pcl::ApproximateVoxelGrid<pcl::PointXYZ> approximate_voxel_filter;
+		approximate_voxel_filter.setLeafSize(0.2, 0.2, 0.2);
+		approximate_voxel_filter.setInputCloud(input_cloud);
+		approximate_voxel_filter.filter(*filtered_cloud);
+		std::cout << "Filtered cloud contains " << filtered_cloud->size()
+			<< " data points from room_scan2.pcd" << std::endl;
+
+		// Initializing Normal Distributions Transform (NDT).
+		pcl::NormalDistributionsTransform<pcl::PointXYZ, pcl::PointXYZ> ndt;
+
+		// Setting scale dependent NDT parameters
+		// Setting minimum transformation difference for termination condition.
+		ndt.setTransformationEpsilon(0.01);
+		// Setting maximum step size for More-Thuente line search.
+		ndt.setStepSize(0.1);
+		//Setting Resolution of NDT grid structure (VoxelGridCovariance).
+		ndt.setResolution(1.0);
+
+		// Setting max number of registration iterations.
+		ndt.setMaximumIterations(100);
+
+		// Setting point cloud to be aligned.
+		ndt.setInputSource(filtered_cloud);
+		// Setting point cloud to be aligned to.
+		ndt.setInputTarget(target_cloud);
+
+		// Set initial alignment estimate found using robot odometry.
+		Eigen::AngleAxisf init_rotation(0.6931, Eigen::Vector3f::UnitZ());
+		Eigen::Translation3f init_translation(1.79387, 0.720047, 0);
+		Eigen::Matrix4f init_guess = (init_translation * init_rotation).matrix();
+
+		// Calculating required rigid transform to align the input cloud to the target cloud.
+		pcl::PointCloud<pcl::PointXYZ>::Ptr output_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+		ndt.align(*output_cloud, init_guess);
+
+		std::cout << "Normal Distributions Transform has converged:" << ndt.hasConverged()
+			<< " score: " << ndt.getFitnessScore() << std::endl;
+
+		// Transforming unfiltered, input cloud using found transform.
+		pcl::transformPointCloud(*input_cloud, *output_cloud, ndt.getFinalTransformation());
+
+		// Saving transformed input cloud.
+		pcl::io::savePLYFileASCII("room_scan2_transformed.ply", *output_cloud);
+
+		// Initializing point cloud visualizer
+		boost::shared_ptr<pcl::visualization::PCLVisualizer>
+			viewer_final(new pcl::visualization::PCLVisualizer("3D Viewer"));
+		viewer_final->setBackgroundColor(0, 0, 0);
+
+		// Coloring and visualizing target cloud (red).
+		pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ>
+			target_color(target_cloud, 255, 0, 0);
+		viewer_final->addPointCloud<pcl::PointXYZ>(target_cloud, target_color, "target cloud");
+		viewer_final->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE,
+			1, "target cloud");
+
+		// Coloring and visualizing transformed input cloud (green).
+		pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ>
+			output_color(output_cloud, 0, 255, 0);
+		viewer_final->addPointCloud<pcl::PointXYZ>(output_cloud, output_color, "output cloud");
+		viewer_final->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE,
+			1, "output cloud");
+
+		// Starting visualizer
+		viewer_final->addCoordinateSystem(1.0, "global");
+		viewer_final->initCameraParameters();
+
+		// Wait until visualizer window is closed.
+		while (!viewer_final->wasStopped())
+		{
+			viewer_final->spinOnce(100);
+			boost::this_thread::sleep(boost::posix_time::microseconds(100000));
+		}
+
+
+		//----------------------------------------------------------
+		//----------------------------------------------------------
+		//----------------------------------------------------------
+
+		//method_nico(src, tgt, res);
 		//// ----- Keypoints ------
 		//PointCloud::Ptr src_keypoints(new PointCloud);
 		//PointCloud::Ptr tgt_keypoints(new PointCloud);
@@ -869,7 +974,7 @@ void* PCLCore::merge(void* arg1, void* arg2) {
 		//pcl::transformPointCloud(*tgt, *tgt, inverse);
 		//// ----- Show clouds -----
 		//showClouds(src, tgt, res, src_keypoints, src_normals, tgt_keypoints, tgt_normals);
-		return (void*) 0;
+		return (void*) 382;
 	
 }
 
