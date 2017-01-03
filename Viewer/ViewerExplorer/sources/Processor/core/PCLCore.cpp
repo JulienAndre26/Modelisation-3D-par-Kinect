@@ -1,11 +1,11 @@
 #include "PCLCore.h"
 
 char * TOTO1() {
-	return strdup("PourJulien1.ply");
+	return strdup("lit_mur1.ply");
 }
 
 char * TOTO2() {
-	return strdup("PourJulien2.ply");
+	return strdup("lit_mur2.ply");
 }
 
 using pcl::visualization::PointCloudColorHandlerGenericField;
@@ -821,6 +821,7 @@ void* PCLCore::merge(void* arg1, void* arg2) {
 		}
 		std::cout << "Loaded " << input_cloud->size() << " data points from room_scan2.pcd" << std::endl;
 
+
 		// Filtering input scan to roughly 10% of original size to increase speed of registration.
 		pcl::PointCloud<pcl::PointXYZ>::Ptr filtered_cloud(new pcl::PointCloud<pcl::PointXYZ>);
 		pcl::ApproximateVoxelGrid<pcl::PointXYZ> approximate_voxel_filter;
@@ -829,37 +830,115 @@ void* PCLCore::merge(void* arg1, void* arg2) {
 		approximate_voxel_filter.filter(*filtered_cloud);
 		std::cout << "Filtered cloud contains " << filtered_cloud->size()
 			<< " data points from room_scan2.pcd" << std::endl;
+		
+		// for 
 
+		float bestScore = 10000.0;
+		float bestStepSize = -1.0;
+		float bestResolution = -1.0;
+		int bestMaxIter = -1;
+
+		pcl::PointCloud<pcl::PointXYZ>::Ptr output_cloud(new pcl::PointCloud<pcl::PointXYZ>);
 		// Initializing Normal Distributions Transform (NDT).
 		pcl::NormalDistributionsTransform<pcl::PointXYZ, pcl::PointXYZ> ndt;
 
-		// Setting scale dependent NDT parameters
-		// Setting minimum transformation difference for termination condition.
-		ndt.setTransformationEpsilon(0.01);
-		// Setting maximum step size for More-Thuente line search.
-		ndt.setStepSize(0.1);
-		//Setting Resolution of NDT grid structure (VoxelGridCovariance).
-		ndt.setResolution(1.0);
-
-		// Setting max number of registration iterations.
-		ndt.setMaximumIterations(100);
 
 		// Setting point cloud to be aligned.
 		ndt.setInputSource(filtered_cloud);
 		// Setting point cloud to be aligned to.
 		ndt.setInputTarget(target_cloud);
+		
+		float ss = 0.1;
+		//for (float ss = .1; ss < 10.0; ss += 0.5)
+		//{
+			for (float res = 1.0; res < 10.0; res += 0.5) 
+			{
+				for (int iter = 1; iter < 1000; iter += 250)
+				{
+					output_cloud->clear();
 
-		// Set initial alignment estimate found using robot odometry.
-		Eigen::AngleAxisf init_rotation(0.6931, Eigen::Vector3f::UnitZ());
-		Eigen::Translation3f init_translation(1.79387, 0.720047, 0);
-		Eigen::Matrix4f init_guess = (init_translation * init_rotation).matrix();
+					cout << 
+						"Iterations: " << iter << 
+						" - Resolution: " << res << 
+						" - Step Size: " << ss << endl;
 
-		// Calculating required rigid transform to align the input cloud to the target cloud.
-		pcl::PointCloud<pcl::PointXYZ>::Ptr output_cloud(new pcl::PointCloud<pcl::PointXYZ>);
-		ndt.align(*output_cloud, init_guess);
 
-		std::cout << "Normal Distributions Transform has converged:" << ndt.hasConverged()
-			<< " score: " << ndt.getFitnessScore() << std::endl;
+
+					// Setting scale dependent NDT parameters
+					// Setting minimum transformation difference for termination condition.
+					ndt.setTransformationEpsilon(0.01);
+					// Setting maximum step size for More-Thuente line search.
+					ndt.setStepSize(ss);
+					//Setting Resolution of NDT grid structure (VoxelGridCovariance).
+					ndt.setResolution(res);
+
+					// Setting max number of registration iterations.
+					ndt.setMaximumIterations(iter);
+
+					// Set initial alignment estimate found using robot odometry.
+					Eigen::AngleAxisf init_rotation(0.6931, Eigen::Vector3f::UnitZ());
+					Eigen::Translation3f init_translation(1.79387, 0.720047, 0);
+					Eigen::Matrix4f init_guess = (init_translation * init_rotation).matrix();
+
+					// Calculating required rigid transform to align the input cloud to the target cloud.
+					ndt.align(*output_cloud, init_guess);
+
+					float currentScore = ndt.getFitnessScore();
+
+					//std::cout << "Normal Distributions Transform has converged:" << ndt.hasConverged()
+					//	<< " score: " << ndt.getFitnessScore() << std::endl;
+
+					if (currentScore < bestScore)
+					{
+						bestMaxIter = iter;
+						bestResolution = res;
+						bestStepSize = ss;
+						bestScore = currentScore;
+
+						cout << "TROLOLO NEW BETTER SCORE !!" << endl;
+						cout << "SCORE: " << bestScore << " - Iterations: " << bestMaxIter << " - Resolution: " << bestResolution << " - Step Size: " << bestStepSize << endl;
+					}
+				}
+			}
+		//}
+
+		cout << "SCORE: " << bestScore << " - Iterations: " << bestMaxIter << " - Resolution: " << bestResolution << " - Step Size: " << bestStepSize << endl;
+
+
+		// end for
+
+		// Initializing Normal Distributions Transform (NDT).
+		//pcl::NormalDistributionsTransform<pcl::PointXYZ, pcl::PointXYZ> ndt;
+
+		//// Setting scale dependent NDT parameters
+		//// Setting minimum transformation difference for termination condition.
+		//ndt.setTransformationEpsilon(0.01);
+		//// Setting maximum step size for More-Thuente line search.
+		//ndt.setStepSize(0.1);
+		////Setting Resolution of NDT grid structure (VoxelGridCovariance).
+		//ndt.setResolution(3.1);
+
+		//// Setting max number of registration iterations.
+		//ndt.setMaximumIterations(351);
+
+		//// Setting point cloud to be aligned.
+		//ndt.setInputSource(filtered_cloud);
+		//// Setting point cloud to be aligned to.
+		//ndt.setInputTarget(target_cloud);
+
+		//// Set initial alignment estimate found using robot odometry.
+		//Eigen::AngleAxisf init_rotation(0.6931, Eigen::Vector3f::UnitZ());
+		//Eigen::Translation3f init_translation(1.79387, 0.720047, 0);
+		//Eigen::Matrix4f init_guess = (init_translation * init_rotation).matrix();
+
+		//// Calculating required rigid transform to align the input cloud to the target cloud.
+		//pcl::PointCloud<pcl::PointXYZ>::Ptr output_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+		//ndt.align(*output_cloud, init_guess);
+
+		//std::cout << "Normal Distributions Transform has converged:" << ndt.hasConverged()
+		//	<< " score: " << ndt.getFitnessScore() << std::endl;
+
+
 
 		// Transforming unfiltered, input cloud using found transform.
 		pcl::transformPointCloud(*input_cloud, *output_cloud, ndt.getFinalTransformation());
