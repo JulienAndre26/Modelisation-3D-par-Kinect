@@ -220,6 +220,7 @@
     <Image Include="resources\icons\add.png" />
     <Image Include="resources\icons\delete.png" />
     <Image Include="resources\icons\distance.png" />
+    <Image Include="resources\icons\help.png" />
     <Image Include="resources\icons\pin.png" />
   </ItemGroup>
   <ItemGroup>

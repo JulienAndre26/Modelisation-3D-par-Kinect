@@ -57,6 +57,11 @@ MainWindow::MainWindow(QWidget *parent) :
 	QPixmap pixDist(":/icons/distance");
 	ui->lbDistanceIcon->setPixmap(pixDist);
 
+	QPixmap pixHelp(":/icons/help");
+	QIcon iconHelp(pixHelp);
+	ui->btnHelp->setIcon(iconHelp);
+	ui->btnHelp->setIconSize(pixHelp.rect().size());
+
 	// Gifs
 	movieInit = new QMovie(":/gifs/init");
 	movieLoad = new QMovie(":/gifs/load");
@@ -71,7 +76,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	renderLock = vtkMutexLock::New();
 
 	// Variables
-	loadedFile = "";
+	//loadedFile = "";
+	setLoadedFile("");
 }
 
 MainWindow::~MainWindow()
@@ -94,6 +100,7 @@ void MainWindow::importFileOpened(QString fileName)
 	{
 		captureDirectory = importFileInfo.absoluteDir();
 		updateFileList();
+		ui->lbLoadedFile->setText("Please select a file");
 	}
 }
 
@@ -268,7 +275,8 @@ void MainWindow::onLoad(QString path)
 	if (QString::compare(path, loadedFile, Qt::CaseInsensitive) == 0)
 		return;
 
-	loadedFile = path;
+	//loadedFile = path;
+	setLoadedFile(path);
 
 	filePath = new char[path.size() + 1];
 	filePath[path.size()] = '\0';
@@ -593,4 +601,11 @@ void MainWindow::updateMetrics(double distance)
 	ui->lbDistance->setText("Distance: " + QString(szDistanceM) + " m (" + QString(szDistanceCM) + " cm)");
 	ui->lbDistance->setVisible(true);
 	ui->lbDistanceIcon->setVisible(true);	
+}
+
+void MainWindow::setLoadedFile(QString newValue)
+{
+	loadedFile = newValue;
+	QFileInfo qfi(newValue);
+	ui->lbLoadedFile->setText(qfi.baseName());
 }

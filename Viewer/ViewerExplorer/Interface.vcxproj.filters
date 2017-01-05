@@ -181,5 +181,8 @@
     <Image Include="resources\icons\pin.png">
       <Filter>Resource Files\Icons</Filter>
     </Image>
+    <Image Include="resources\icons\help.png">
+      <Filter>Resource Files\Icons</Filter>
+    </Image>
   </ItemGroup>
 </Project>

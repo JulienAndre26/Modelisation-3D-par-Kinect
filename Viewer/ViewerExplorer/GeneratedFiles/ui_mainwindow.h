@@ -53,6 +53,8 @@ public:
     QLabel *lbPin1;
     QLabel *lbPin2;
     QLabel *lbDistanceIcon;
+    QLabel *lbLoadedFile;
+    QPushButton *btnHelp;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -145,11 +147,11 @@ public:
         qvtkWidgetPlan->setStyleSheet(QStringLiteral(""));
         qvtkWidget3D = new QVTKWidget(centralWidget);
         qvtkWidget3D->setObjectName(QStringLiteral("qvtkWidget3D"));
-        qvtkWidget3D->setGeometry(QRect(220, 10, 631, 571));
+        qvtkWidget3D->setGeometry(QRect(220, 30, 631, 551));
         qvtkWidget3D->setStyleSheet(QStringLiteral(""));
         gif3D = new QLabel(centralWidget);
         gif3D->setObjectName(QStringLiteral("gif3D"));
-        gif3D->setGeometry(QRect(220, 10, 631, 571));
+        gif3D->setGeometry(QRect(220, 30, 631, 551));
         gif3D->setLayoutDirection(Qt::LeftToRight);
         gif3D->setStyleSheet(QLatin1String("border-style: outset;\n"
 "border-width: 2px;\n"
@@ -269,6 +271,23 @@ public:
         lbDistanceIcon->setObjectName(QStringLiteral("lbDistanceIcon"));
         lbDistanceIcon->setGeometry(QRect(10, 550, 41, 31));
         lbDistanceIcon->setAlignment(Qt::AlignBottom|Qt::AlignHCenter);
+        lbLoadedFile = new QLabel(centralWidget);
+        lbLoadedFile->setObjectName(QStringLiteral("lbLoadedFile"));
+        lbLoadedFile->setGeometry(QRect(220, 10, 601, 20));
+        lbLoadedFile->setTextFormat(Qt::RichText);
+        lbLoadedFile->setAlignment(Qt::AlignCenter);
+        btnHelp = new QPushButton(centralWidget);
+        btnHelp->setObjectName(QStringLiteral("btnHelp"));
+        btnHelp->setGeometry(QRect(830, 10, 20, 20));
+        btnHelp->setStyleSheet(QLatin1String("QPushButton#btnHelp {\n"
+"	border: none;\n"
+"}\n"
+"\n"
+"QPushButton#btnHelp:hover {\n"
+"	padding: 1px;\n"
+"}\n"
+"\n"
+""));
         MainWindow->setCentralWidget(centralWidget);
 
         retranslateUi(MainWindow);
@@ -305,6 +324,11 @@ public:
         lbPin1->setText(QString());
         lbPin2->setText(QString());
         lbDistanceIcon->setText(QString());
+        lbLoadedFile->setText(QApplication::translate("MainWindow", "Please open a capture and select a file", 0));
+#ifndef QT_NO_TOOLTIP
+        btnHelp->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Handling 3D model</span></p><p>Clic + Move Mouse : Rotates the model</p><p>Shift + Move Mouse : Moves the model in X, Y or Z axis</p><p>Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
+        btnHelp->setText(QString());
     } // retranslateUi
 
 };

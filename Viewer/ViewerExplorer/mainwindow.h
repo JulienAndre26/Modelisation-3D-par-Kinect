@@ -95,6 +95,7 @@ private:
 	void setWidgetBorderRadius(QWidget* widget, int radius);
 	void importFileOpened(QString fileName);
 	void updateFileList();
+	void MainWindow::setLoadedFile(QString newValue);
 	
 	QMovie * movieInit;
 	QMovie * movieLoad;
