@@ -76,8 +76,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	renderLock = vtkMutexLock::New();
 
 	// Variables
-	//loadedFile = "";
 	setLoadedFile("");
+	ui->lbLoadedFile->setText("Please browse a capture and open a file");
 }
 
 MainWindow::~MainWindow()
@@ -89,7 +89,8 @@ void MainWindow::on_btnBrowse_clicked()
 {
     QString importName = QFileDialog::getOpenFileName(this, tr("Open File"), QDir::homePath(), tr("Import files (*.import)"));
 
-	importFileOpened(importName);
+	if (!importName.isEmpty())
+		importFileOpened(importName);
 	    
 }
 
@@ -98,9 +99,12 @@ void MainWindow::importFileOpened(QString fileName)
 	QFileInfo importFileInfo(fileName);
 	if (readImportFile(fileName))
 	{
+		stopOpenThreads();
+		stopMergeThread();
+
 		captureDirectory = importFileInfo.absoluteDir();
 		updateFileList();
-		ui->lbLoadedFile->setText("Please select a file");
+		ui->lbLoadedFile->setText("Please open a file");
 	}
 }
 
@@ -169,9 +173,9 @@ void MainWindow::onMerge()
 		}
 		
 
-		ThreadMerge * t_merge = new ThreadMerge(this);
-		QObject::connect(t_merge, SIGNAL(finished()), t_merge, SLOT(onEnd()));
-		t_merge->start();
+		threadMerge = new ThreadMerge(this);
+		QObject::connect(threadMerge, SIGNAL(finished()), threadMerge, SLOT(onEnd()));
+		threadMerge->start();
 	}
 }
 
@@ -275,7 +279,8 @@ void MainWindow::onLoad(QString path)
 	if (QString::compare(path, loadedFile, Qt::CaseInsensitive) == 0)
 		return;
 
-	//loadedFile = path;
+	stopOpenThreads();
+
 	setLoadedFile(path);
 
 	filePath = new char[path.size() + 1];
@@ -286,17 +291,17 @@ void MainWindow::onLoad(QString path)
 
 	modelLoading = true;
 
-	ThreadOpen * t_3D = new ThreadOpen(this, VIEW_3D);
-	QObject::connect(t_3D, SIGNAL(finished()), t_3D, SLOT(onEnd()));
-	t_3D->start();
+	thread3D = new ThreadOpen(this, VIEW_3D);
+	QObject::connect(thread3D, SIGNAL(finished()), thread3D, SLOT(onEnd()));
+	thread3D->start();
 
-	ThreadOpen * t_Lat = new ThreadOpen(this, VIEW_LATERAL);
-	QObject::connect(t_Lat, SIGNAL(finished()), t_Lat, SLOT(onEnd()));
-	t_Lat->start();
+	threadLateral = new ThreadOpen(this, VIEW_LATERAL);
+	QObject::connect(threadLateral, SIGNAL(finished()), threadLateral, SLOT(onEnd()));
+	threadLateral->start();
 
-	ThreadOpen * t_Plan = new ThreadOpen(this, VIEW_PLAN);
-	QObject::connect(t_Plan, SIGNAL(finished()), t_Plan, SLOT(onEnd()));
-	t_Plan->start();
+	threadPlan = new ThreadOpen(this, VIEW_PLAN);
+	QObject::connect(threadPlan, SIGNAL(finished()), threadPlan, SLOT(onEnd()));
+	threadPlan->start();
 }
 
 void MainWindow::showPlane(bool bPlanView)
@@ -609,3 +614,28 @@ void MainWindow::setLoadedFile(QString newValue)
 	QFileInfo qfi(newValue);
 	ui->lbLoadedFile->setText(qfi.baseName());
 }
+
+void MainWindow::stopOpenThreads()
+{
+	stopThread(thread3D);
+	stopThread(threadLateral);
+	stopThread(threadPlan);
+}
+
+void MainWindow::stopMergeThread()
+{
+	stopThread(threadMerge);
+}
+
+void MainWindow::stopThread(QThread * qThread)
+{
+	if (qThread == nullptr)
+		return;
+
+	if (qThread->isRunning())
+	{
+		qThread->terminate();
+		qThread->wait();
+		qThread = nullptr;
+	}
+}	

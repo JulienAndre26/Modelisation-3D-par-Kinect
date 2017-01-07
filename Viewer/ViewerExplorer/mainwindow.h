@@ -24,6 +24,7 @@ VTK_MODULE_INIT(vtkInteractionStyle)
 #include <QMimeData>
 #include <QMovie>
 #include <QtGui>
+#include <QThread.h>
 
 #include <pcl/point_types.h>
 #include <pcl/ModelCoefficients.h>
@@ -108,4 +109,12 @@ private:
 	QStringList list;
 	QHash<QString, QString> listContent;
 
+	QThread * thread3D = nullptr;
+	QThread * threadLateral = nullptr;
+	QThread * threadPlan = nullptr;
+	QThread * threadMerge = nullptr;
+
+	void stopOpenThreads();
+	void stopMergeThread();
+	void stopThread(QThread * qThread);
 };

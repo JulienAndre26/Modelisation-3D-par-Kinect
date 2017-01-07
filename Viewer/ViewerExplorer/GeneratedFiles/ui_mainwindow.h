@@ -55,6 +55,7 @@ public:
     QLabel *lbDistanceIcon;
     QLabel *lbLoadedFile;
     QPushButton *btnHelp;
+    QLabel *lbDistBack;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -274,7 +275,7 @@ public:
         lbLoadedFile = new QLabel(centralWidget);
         lbLoadedFile->setObjectName(QStringLiteral("lbLoadedFile"));
         lbLoadedFile->setGeometry(QRect(220, 10, 601, 20));
-        lbLoadedFile->setTextFormat(Qt::RichText);
+        lbLoadedFile->setTextFormat(Qt::AutoText);
         lbLoadedFile->setAlignment(Qt::AlignCenter);
         btnHelp = new QPushButton(centralWidget);
         btnHelp->setObjectName(QStringLiteral("btnHelp"));
@@ -288,6 +289,10 @@ public:
 "}\n"
 "\n"
 ""));
+        lbDistBack = new QLabel(centralWidget);
+        lbDistBack->setObjectName(QStringLiteral("lbDistBack"));
+        lbDistBack->setGeometry(QRect(20, 420, 181, 161));
+        lbDistBack->setStyleSheet(QStringLiteral("z: -1;"));
         MainWindow->setCentralWidget(centralWidget);
 
         retranslateUi(MainWindow);
@@ -324,11 +329,12 @@ public:
         lbPin1->setText(QString());
         lbPin2->setText(QString());
         lbDistanceIcon->setText(QString());
-        lbLoadedFile->setText(QApplication::translate("MainWindow", "Please open a capture and select a file", 0));
+        lbLoadedFile->setText(QApplication::translate("MainWindow", "Please browse a capture and open a file", 0));
 #ifndef QT_NO_TOOLTIP
         btnHelp->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Handling 3D model</span></p><p>Clic + Move Mouse : Rotates the model</p><p>Shift + Move Mouse : Moves the model in X, Y or Z axis</p><p>Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
         btnHelp->setText(QString());
+        lbDistBack->setText(QString());
     } // retranslateUi
 
 };

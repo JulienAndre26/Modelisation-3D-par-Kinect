@@ -177,6 +177,9 @@ QPushButton#btnBrowse:pressed {
       <height>281</height>
      </rect>
     </property>
+    <property name="cursor">
+     <cursorShape>OpenHandCursor</cursorShape>
+    </property>
     <property name="styleSheet">
      <string notr="true"/>
     </property>
@@ -190,6 +193,9 @@ QPushButton#btnBrowse:pressed {
       <height>281</height>
      </rect>
     </property>
+    <property name="cursor">
+     <cursorShape>OpenHandCursor</cursorShape>
+    </property>
     <property name="styleSheet">
      <string notr="true"/>
     </property>
@@ -202,6 +208,9 @@ QPushButton#btnBrowse:pressed {
       <width>631</width>
       <height>551</height>
      </rect>
+    </property>
+    <property name="cursor">
+     <cursorShape>OpenHandCursor</cursorShape>
     </property>
     <property name="styleSheet">
      <string notr="true"/>
@@ -230,6 +239,9 @@ padding: 6px;</string>
     </property>
     <property name="text">
      <string>Loading</string>
+    </property>
+    <property name="indent">
+     <number>-1</number>
     </property>
    </widget>
    <widget class="QLabel" name="gifLateral">
@@ -550,10 +562,10 @@ QPushButton#btnDelete:hover {
      </rect>
     </property>
     <property name="text">
-     <string>Please open a capture and select a file</string>
+     <string>Please browse a capture and open a file</string>
     </property>
     <property name="textFormat">
-     <enum>Qt::RichText</enum>
+     <enum>Qt::AutoText</enum>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
