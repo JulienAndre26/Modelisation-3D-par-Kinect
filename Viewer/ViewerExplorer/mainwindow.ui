@@ -235,7 +235,8 @@ border-radius: 10px;
 border-color: grey;
 font: bold 14px;
 min-width: 10em;
-padding: 6px;</string>
+padding: 6px;
+</string>
     </property>
     <property name="text">
      <string>Loading</string>

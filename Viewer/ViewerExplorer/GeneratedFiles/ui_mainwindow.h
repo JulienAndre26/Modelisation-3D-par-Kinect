@@ -156,13 +156,18 @@ public:
         gif3D->setObjectName(QStringLiteral("gif3D"));
         gif3D->setGeometry(QRect(220, 30, 631, 551));
         gif3D->setLayoutDirection(Qt::LeftToRight);
-        gif3D->setStyleSheet(QLatin1String("border-style: outset;\n"
-"border-width: 2px;\n"
-"border-radius: 10px;\n"
-"border-color: grey;\n"
-"font: bold 14px;\n"
-"min-width: 10em;\n"
-"padding: 6px;"));
+        gif3D->setStyleSheet(QLatin1String("QLabel#gif3D {\n"
+"	border-style: outset;\n"
+"	border-width: 2px;\n"
+"	border-radius: 10px;\n"
+"	border-color: grey;\n"
+"	font: bold 14px;\n"
+"	min-width: 10em;\n"
+"	padding: 6px;\n"
+"	width: 50%;\n"
+"	height: 80%;\n"
+"}\n"
+""));
         gif3D->setIndent(-1);
         gifLateral = new QLabel(centralWidget);
         gifLateral->setObjectName(QStringLiteral("gifLateral"));
