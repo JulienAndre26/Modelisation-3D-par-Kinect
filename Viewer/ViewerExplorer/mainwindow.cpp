@@ -11,7 +11,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+	setWindowFlags(windowFlags() | Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowTitleHint);
+	setWindowState(Qt::WindowMaximized);
+
 	/* Manual init of UI */
+	setLayout(ui->gridLayout);
 
 	// Drag'N'Drop
 	setAcceptDrops(true);
@@ -89,6 +93,23 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::resizeEvent(QResizeEvent* event)
+{
+	QMainWindow::resizeEvent(event);
+
+	int value = rect().width() / 4;
+
+	ui->qvtkWidgetLateral->setMaximumWidth(value);
+	ui->qvtkWidgetPlan->setMaximumWidth(value);
+	ui->gifLateral->setMaximumWidth(value);
+	ui->gifPlan->setMaximumWidth(value);
+	ui->wdgRightTop->setMaximumWidth(value);
+
+	setWidgetBorderRadius(ui->qvtkWidget3D, 6);
+	setWidgetBorderRadius(ui->qvtkWidgetLateral, 6);
+	setWidgetBorderRadius(ui->qvtkWidgetPlan, 6);
 }
 
 void MainWindow::on_btnBrowse_clicked()
@@ -297,15 +318,15 @@ void MainWindow::onLoad(QString path)
 
 	modelLoading = true;
 	
-	PCLCore* core(new PCLCore);
-	core->compress(new std::string(filePath));
+	//PCLCore* core(new PCLCore);
+	//core->compress(new std::string(filePath));
 
-	list = detectPlyFiles(captureDirectory);
-	for (QString file : list) {
-		// TODO CHECK IF FILE IS REDUCED
-		// IF NOT MARK IT AFTER REDUCTION
-		reduceFile(file.toStdString());
-	}
+	//list = detectPlyFiles(captureDirectory);
+	//for (QString file : list) {
+	//	// TODO CHECK IF FILE IS REDUCED
+	//	// IF NOT MARK IT AFTER REDUCTION
+	//	reduceFile(file.toStdString());
+	//}
 
 	thread3D = new ThreadOpen(this, VIEW_3D);
 	QObject::connect(thread3D, SIGNAL(finished()), thread3D, SLOT(onEnd()));

@@ -105,6 +105,7 @@ private:
     QStringList detectPlyFiles(QDir dirToImport);
     bool readImportFile(QString import);
 	void dropEvent(QDropEvent *e);
+	void resizeEvent(QResizeEvent* event);
 	void dragEnterEvent(QDragEnterEvent *e);
 	void setWidgetBorderRadius(QWidget* widget, int radius);
 	void importFileOpened(QString fileName);
