@@ -296,6 +296,16 @@ void MainWindow::onLoad(QString path)
 	setAllViewDisplay(false, MOVIE_LOAD);
 
 	modelLoading = true;
+	
+	PCLCore* core(new PCLCore);
+	core->compress(new std::string(filePath));
+
+	list = detectPlyFiles(captureDirectory);
+	for (QString file : list) {
+		// TODO CHECK IF FILE IS REDUCED
+		// IF NOT MARK IT AFTER REDUCTION
+		reduceFile(file.toStdString());
+	}
 
 	thread3D = new ThreadOpen(this, VIEW_3D);
 	QObject::connect(thread3D, SIGNAL(finished()), thread3D, SLOT(onEnd()));
@@ -371,6 +381,7 @@ void MainWindow::showPlane(bool bPlanView)
 void MainWindow::showPLY() {
 
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr src(new pcl::PointCloud<pcl::PointXYZRGB>);
+
 	pcl::io::loadPLYFile<pcl::PointXYZRGB>(filePath, *src);
 	MetricVisualizer * pv = new MetricVisualizer(src, hasColor, this);
 
@@ -698,3 +709,10 @@ void MainWindow::stopThread(QThread * qThread)
 		qThread = nullptr;
 	}
 }	
+
+void MainWindow::reduceFile(std::string file)
+{
+	ThreadReduce * threadReduce = new ThreadReduce(file, &reduceLock);
+	QObject::connect(threadReduce, SIGNAL(finished()), threadReduce, SLOT(onEnd()));
+	threadReduce->start();
+}

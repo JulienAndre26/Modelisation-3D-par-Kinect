@@ -2,50 +2,50 @@
 
 
 // inherited method
-int load(char * filename, void* objectToLoad) {
+int load(const char * filename, void* objectToLoad) {
 
 	return -1;
 }
 
-int IOPLY::load(char * filename, PointCloud::Ptr objectToLoad) {
+int IOPLY::load(const char * filename, PointCloud::Ptr objectToLoad) {
 	pcl::io::loadPLYFile<PointT>(filename, *objectToLoad);
 	return 0;
 }
 
-int IOPLY::load(char * filename, PointCloudColored::Ptr objectToLoad) {
+int IOPLY::load(const char * filename, PointCloudColored::Ptr objectToLoad) {
 	pcl::io::loadPLYFile<PointColorT>(filename, *objectToLoad);
 	return 0;
 }
 
-int IOPLY::load(char * filename, PointCloudNormals::Ptr objectToLoad) {
+int IOPLY::load(const char * filename, PointCloudNormals::Ptr objectToLoad) {
 	pcl::io::loadPLYFile<PointNormalT>(filename, *objectToLoad);
 	return 0;
 }
 
-int IOPLY::load(char * filename, PointCloudFPFH::Ptr  objectToLoad) {
+int IOPLY::load(const char * filename, PointCloudFPFH::Ptr  objectToLoad) {
 	pcl::io::loadPLYFile<FPFHSignature33T>(filename, *objectToLoad);
 	return 0;
 }
 
 // inherited method
-int IOPLY::save(char * filename, void* objectToSave) {
+int IOPLY::save(const char * filename, void* objectToSave) {
 	return -1;
 }
 
 
 
-int IOPLY::save(char* filename, PointCloud::Ptr objectToSave) {
+int IOPLY::save(const char* filename, PointCloud::Ptr objectToSave) {
 	pcl::io::savePLYFile<PointT>(filename, *objectToSave);
 	return 0;
 }
 
-int IOPLY::save(char* filename, PointCloudColored::Ptr objectToSave) {
+int IOPLY::save(const char* filename, PointCloudColored::Ptr objectToSave) {
 	pcl::io::savePLYFile<PointColorT>(filename, *objectToSave);
 	return 0;
 }
 
 
-int IOPLY::save(char* filename, PointCloud::Ptr objectToSave, PointCloudNormals::Ptr normalsObject) {
+int IOPLY::save(const char* filename, PointCloud::Ptr objectToSave, PointCloudNormals::Ptr normalsObject) {
 	PointCloudNormals::Ptr tmp;
 	pcl::copyPointCloud(*objectToSave, *tmp);
 	pcl::copyPointCloud(*normalsObject, *tmp);
@@ -53,7 +53,7 @@ int IOPLY::save(char* filename, PointCloud::Ptr objectToSave, PointCloudNormals:
 	return 0;
 }
 
-int IOPLY::save(char* filename, PointCloudFPFH::Ptr objectToSave) {
+int IOPLY::save(const char* filename, PointCloudFPFH::Ptr objectToSave) {
 	pcl::io::savePLYFile<FPFHSignature33T>(filename, *objectToSave);
 	return 0;
 }

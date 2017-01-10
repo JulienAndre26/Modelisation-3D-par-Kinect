@@ -26,6 +26,7 @@ VTK_MODULE_INIT(vtkInteractionStyle)
 #include <QtGui>
 #include <QThread.h>
 
+#include <PCLCore.h>
 #include <pcl/point_types.h>
 #include <pcl/ModelCoefficients.h>
 #include <pcl/filters/project_inliers.h>
@@ -74,6 +75,7 @@ public:
 		
 	char *filePath;
 	vtkMutexLock *renderLock;
+	QMutex reduceLock;
 
 	bool modelLoading = false;
 
@@ -120,4 +122,6 @@ private:
 	void stopOpenThreads();
 	void stopMergeThread();
 	void stopThread(QThread * qThread);
+
+	void reduceFile(std::string file);
 };
