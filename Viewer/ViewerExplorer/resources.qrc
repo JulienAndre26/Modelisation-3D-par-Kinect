@@ -4,6 +4,8 @@
         <file alias="delete">resources/icons/delete.png</file>
         <file alias="distance">resources/icons/distance.png</file>
         <file alias="pin">resources/icons/pin.png</file>
+        <file alias="help">resources/icons/help.png</file>
+        <file alias="browse">resources/icons/index.jpg</file>
     </qresource>
     <qresource prefix="/gifs">
         <file alias="init">resources/gifs/init.gif</file>

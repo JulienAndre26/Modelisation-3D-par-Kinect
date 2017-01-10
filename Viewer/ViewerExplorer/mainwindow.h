@@ -24,6 +24,7 @@ VTK_MODULE_INIT(vtkInteractionStyle)
 #include <QMimeData>
 #include <QMovie>
 #include <QtGui>
+#include <QThread.h>
 
 #include <pcl/point_types.h>
 #include <pcl/ModelCoefficients.h>
@@ -95,6 +96,7 @@ private:
 	void setWidgetBorderRadius(QWidget* widget, int radius);
 	void importFileOpened(QString fileName);
 	void updateFileList();
+	void MainWindow::setLoadedFile(QString newValue);
 	
 	QMovie * movieInit;
 	QMovie * movieLoad;
@@ -107,4 +109,12 @@ private:
 	QStringList list;
 	QHash<QString, QString> listContent;
 
+	QThread * thread3D = nullptr;
+	QThread * threadLateral = nullptr;
+	QThread * threadPlan = nullptr;
+	QThread * threadMerge = nullptr;
+
+	void stopOpenThreads();
+	void stopMergeThread();
+	void stopThread(QThread * qThread);
 };

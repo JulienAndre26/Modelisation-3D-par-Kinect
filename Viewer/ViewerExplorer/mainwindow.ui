@@ -177,6 +177,9 @@ QPushButton#btnBrowse:pressed {
       <height>281</height>
      </rect>
     </property>
+    <property name="cursor">
+     <cursorShape>OpenHandCursor</cursorShape>
+    </property>
     <property name="styleSheet">
      <string notr="true"/>
     </property>
@@ -190,6 +193,9 @@ QPushButton#btnBrowse:pressed {
       <height>281</height>
      </rect>
     </property>
+    <property name="cursor">
+     <cursorShape>OpenHandCursor</cursorShape>
+    </property>
     <property name="styleSheet">
      <string notr="true"/>
     </property>
@@ -198,10 +204,13 @@ QPushButton#btnBrowse:pressed {
     <property name="geometry">
      <rect>
       <x>220</x>
-      <y>10</y>
+      <y>30</y>
       <width>631</width>
-      <height>571</height>
+      <height>551</height>
      </rect>
+    </property>
+    <property name="cursor">
+     <cursorShape>OpenHandCursor</cursorShape>
     </property>
     <property name="styleSheet">
      <string notr="true"/>
@@ -211,9 +220,9 @@ QPushButton#btnBrowse:pressed {
     <property name="geometry">
      <rect>
       <x>220</x>
-      <y>10</y>
+      <y>30</y>
       <width>631</width>
-      <height>571</height>
+      <height>551</height>
      </rect>
     </property>
     <property name="layoutDirection">
@@ -230,6 +239,9 @@ padding: 6px;</string>
     </property>
     <property name="text">
      <string>Loading</string>
+    </property>
+    <property name="indent">
+     <number>-1</number>
     </property>
    </widget>
    <widget class="QLabel" name="gifLateral">
@@ -538,6 +550,52 @@ QPushButton#btnDelete:hover {
     </property>
     <property name="alignment">
      <set>Qt::AlignBottom|Qt::AlignHCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lbLoadedFile">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>10</y>
+      <width>601</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Please browse a capture and open a file</string>
+    </property>
+    <property name="textFormat">
+     <enum>Qt::AutoText</enum>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnHelp">
+    <property name="geometry">
+     <rect>
+      <x>830</x>
+      <y>10</y>
+      <width>20</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Handling 3D model&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Clic + Move Mouse : Rotates the model&lt;/p&gt;&lt;p&gt;Shift + Move Mouse : Moves the model in X, Y or Z axis&lt;/p&gt;&lt;p&gt;Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton#btnHelp {
+	border: none;
+}
+
+QPushButton#btnHelp:hover {
+	padding: 1px;
+}
+
+</string>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>

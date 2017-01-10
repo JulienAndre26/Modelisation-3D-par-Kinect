@@ -1,11 +1,12 @@
 #include "PCLCore.h"
 
 char * TOTO1() {
-	return strdup("plan1_room.ply");
+
+	return strdup("lit_mur1.ply");
 }
 
 char * TOTO2() {
-	return strdup("plan2_room.ply");
+	return strdup("lit_mur2.ply");
 }
 
 using pcl::visualization::PointCloudColorHandlerGenericField;
@@ -853,6 +854,7 @@ void* PCLCore::merge(void* arg1, void* arg2) {
 		}
 		std::cout << "Loaded " << input_cloud->size() << " data points from room_scan2.pcd" << std::endl;
 
+
 		// Filtering input scan to roughly 10% of original size to increase speed of registration.
 		pcl::PointCloud<pcl::PointXYZ>::Ptr filtered_cloud(new pcl::PointCloud<pcl::PointXYZ>);
 		pcl::ApproximateVoxelGrid<pcl::PointXYZ> approximate_voxel_filter;
@@ -861,20 +863,114 @@ void* PCLCore::merge(void* arg1, void* arg2) {
 		approximate_voxel_filter.filter(*filtered_cloud);
 		std::cout << "Filtered cloud contains " << filtered_cloud->size()
 			<< " data points from room_scan2.pcd" << std::endl;
+		
+		// for 
 
+		pcl::PointCloud<pcl::PointXYZ>::Ptr output_cloud(new pcl::PointCloud<pcl::PointXYZ>);
 		// Initializing Normal Distributions Transform (NDT).
 		pcl::NormalDistributionsTransform<pcl::PointXYZ, pcl::PointXYZ> ndt;
+
+
+		// Setting point cloud to be aligned.
+		ndt.setInputSource(filtered_cloud);
+		// Setting point cloud to be aligned to.
+		ndt.setInputTarget(target_cloud);
+
+
+		float res_init = 1.0;
+		float res_step = 0.5;
+		float res_max = 5;
+		float res_n = (int) ((res_max - res_init) / res_step + 1);
+		
+		int iter_init = 100;
+		int iter_step = 100;
+		int iter_max = 1000;
+		int iter_n = (iter_max - iter_init) / iter_step + 1;
+
+		float step_size = 0.01;
+
+		int i = 0;
+		int total = res_n * iter_n;
+
+		float bestScore = 10000.0;
+		float bestStepSize = 0.01;
+		float bestResolution = 1.0;
+		int bestIter = 300;
+
+		//for (float res = res_init; res <= res_max; res += res_step)
+		//{
+		//	for (int iter = iter_init; iter <= iter_max; iter += iter_step)
+		//	{
+		//		output_cloud->clear();
+
+		//		cout << "[" << ++i << "/" << total << "] " <<
+		//			"Iterations: " << iter << 
+		//			" - Resolution: " << res << 
+		//			" - Step Size: " << step_size << endl;
+
+
+
+		//		// Setting scale dependent NDT parameters
+		//		// Setting minimum transformation difference for termination condition.
+		//		ndt.setTransformationEpsilon(0.001);
+		//		// Setting maximum step size for More-Thuente line search.
+		//		ndt.setStepSize(step_size);
+		//		//Setting Resolution of NDT grid structure (VoxelGridCovariance).
+		//		ndt.setResolution(res);
+
+		//		// Setting max number of registration iterations.
+		//		ndt.setMaximumIterations(iter);
+
+		//		// Set initial alignment estimate found using robot odometry.
+		//		Eigen::AngleAxisf init_rotation(0.6931, Eigen::Vector3f::UnitZ());
+		//		Eigen::Translation3f init_translation(1.79387, 0.720047, 0);
+		//		Eigen::Matrix4f init_guess = (init_translation * init_rotation).matrix();
+
+		//		// Calculating required rigid transform to align the input cloud to the target cloud.
+		//		ndt.align(*output_cloud, init_guess);
+
+		//		float currentScore = ndt.getFitnessScore();
+
+		//		//std::cout << "Normal Distributions Transform has converged:" << ndt.hasConverged()
+		//		//	<< " score: " << ndt.getFitnessScore() << std::endl;
+
+		//		if (currentScore < bestScore)
+		//		{
+		//			bestIter = iter;
+		//			bestResolution = res;
+		//			bestStepSize = step_size;
+		//			bestScore = currentScore;
+
+		//			cout << ">> SCORE: " << bestScore << " - Iterations: " << bestIter << " - Resolution: " << bestResolution << " - Step Size: " << bestStepSize << endl;
+		//		}
+		//	}
+		//}
+
+	/*	float bestStepSize = 0.1;
+		float bestResolution = 2.6;
+		int bestIter = 480;*/
+
+		cout << "SCORE: " << bestScore << " - Iterations: " << bestIter << " - Resolution: " << bestResolution << " - Step Size: " << bestStepSize << endl;
+
+
+		// end for
+		
+		output_cloud->clear();
+
+		// Initializing Normal Distributions Transform (NDT).
+		//pcl::NormalDistributionsTransform<pcl::PointXYZ, pcl::PointXYZ> ndt;
 
 		// Setting scale dependent NDT parameters
 		// Setting minimum transformation difference for termination condition.
 		ndt.setTransformationEpsilon(0.01);
 		// Setting maximum step size for More-Thuente line search.
-		ndt.setStepSize(0.1);
+		ndt.setStepSize(bestStepSize);
 		//Setting Resolution of NDT grid structure (VoxelGridCovariance).
-		ndt.setResolution(1.0);
+		ndt.setResolution(bestResolution);
 
 		// Setting max number of registration iterations.
-		ndt.setMaximumIterations(500);
+
+		ndt.setMaximumIterations(bestIter);
 
 		// Setting point cloud to be aligned.
 		ndt.setInputSource(filtered_cloud);
@@ -887,11 +983,17 @@ void* PCLCore::merge(void* arg1, void* arg2) {
 		Eigen::Matrix4f init_guess = (init_translation * init_rotation).matrix();*/
 
 		// Calculating required rigid transform to align the input cloud to the target cloud.
+
 		pcl::PointCloud<pcl::PointXYZ>::Ptr output_cloud(new pcl::PointCloud<pcl::PointXYZ>);
-		ndt.align(*output_cloud);// , init_guess);
+		//ndt.align(*output_cloud);// , init_guess);
+
+		//pcl::PointCloud<pcl::PointXYZ>::Ptr output_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+		ndt.align(*output_cloud, init_guess);
 
 		std::cout << "Normal Distributions Transform has converged:" << ndt.hasConverged()
 			<< " score: " << ndt.getFitnessScore() << std::endl;
+
+
 
 		// Transforming unfiltered, input cloud using found transform.
 		pcl::transformPointCloud(*input_cloud, *output_cloud, ndt.getFinalTransformation());
