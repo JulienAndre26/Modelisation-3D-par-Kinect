@@ -11,7 +11,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+	setWindowFlags(windowFlags() | Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowTitleHint);
+	setWindowState(Qt::WindowMaximized);
+
 	/* Manual init of UI */
+	setLayout(ui->gridLayout);
 
 	// Drag'N'Drop
 	setAcceptDrops(true);
@@ -89,6 +93,23 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::resizeEvent(QResizeEvent* event)
+{
+	QMainWindow::resizeEvent(event);
+
+	int value = rect().width() / 4;
+
+	ui->qvtkWidgetLateral->setMaximumWidth(value);
+	ui->qvtkWidgetPlan->setMaximumWidth(value);
+	ui->gifLateral->setMaximumWidth(value);
+	ui->gifPlan->setMaximumWidth(value);
+	ui->wdgRightTop->setMaximumWidth(value);
+
+	setWidgetBorderRadius(ui->qvtkWidget3D, 6);
+	setWidgetBorderRadius(ui->qvtkWidgetLateral, 6);
+	setWidgetBorderRadius(ui->qvtkWidgetPlan, 6);
 }
 
 void MainWindow::on_btnBrowse_clicked()
@@ -231,42 +252,23 @@ void MainWindow::on_btnShow_clicked()
 
 bool MainWindow::readImportFile(QString import)
 {
+
     QFile importFile(import);
-    if(importFile.open(QIODevice::ReadOnly))
-    {
-        QTextStream stream(&importFile);
-        QStringList infos;
+    
+	if (!importFile.exists()) {
+		QMessageBox::critical(this, "Bad file import", "Please select a correct import file");
+		return false;
+	}
 
-		int linesCount = 0;
-		while (!stream.atEnd())
-		{
-			stream.readLine();
-			linesCount++;
-		}
+	IOXML * parser = IOXML::Instance();
+	parser->init(import.toLocal8Bit().data());
 
-		if (linesCount != 8)
-		{
-			QMessageBox::critical(this, "Bad file import", "Please select a correct import file");
-			return false;
-		}
-		else
-		{
-			hasColor = false;
-			stream.seek(0);
-			QString path = stream.readLine().split("\\").last();
-			ui->lbCaptureName->setText("<b>" + path + "<\\b>");
-			stream.readLine();
-			stream.readLine();
-			QString color = stream.readLine().split(" ").last();
+	if (parser->get("color").compare("ERROR") == 0) {
+		QMessageBox::critical(this, "Bad file import", "Please select a correct import file");
+		return false;
+	}
 
-			int cmp = QString::compare("true", color, Qt::CaseInsensitive);
-			if (cmp == 0)
-			{
-				hasColor = true;
-			}
-
-		}
-    }
+	hasColor = (parser->get("color").compare("true") == 0);
 
 	return true;
 }
@@ -296,6 +298,16 @@ void MainWindow::onLoad(QString path)
 	setAllViewDisplay(false, MOVIE_LOAD);
 
 	modelLoading = true;
+	
+	//PCLCore* core(new PCLCore);
+	//core->compress(new std::string(filePath));
+
+	//list = detectPlyFiles(captureDirectory);
+	//for (QString file : list) {
+	//	// TODO CHECK IF FILE IS REDUCED
+	//	// IF NOT MARK IT AFTER REDUCTION
+	//	reduceFile(file.toStdString());
+	//}
 
 	thread3D = new ThreadOpen(this, VIEW_3D);
 	QObject::connect(thread3D, SIGNAL(finished()), thread3D, SLOT(onEnd()));
@@ -371,6 +383,7 @@ void MainWindow::showPlane(bool bPlanView)
 void MainWindow::showPLY() {
 
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr src(new pcl::PointCloud<pcl::PointXYZRGB>);
+
 	pcl::io::loadPLYFile<pcl::PointXYZRGB>(filePath, *src);
 	MetricVisualizer * pv = new MetricVisualizer(src, hasColor, this);
 
@@ -698,3 +711,10 @@ void MainWindow::stopThread(QThread * qThread)
 		qThread = nullptr;
 	}
 }	
+
+void MainWindow::reduceFile(std::string file)
+{
+	ThreadReduce * threadReduce = new ThreadReduce(file, &reduceLock);
+	QObject::connect(threadReduce, SIGNAL(finished()), threadReduce, SLOT(onEnd()));
+	threadReduce->start();
+}

@@ -26,11 +26,15 @@ VTK_MODULE_INIT(vtkInteractionStyle)
 #include <QtGui>
 #include <QThread.h>
 
+#include <PCLCore.h>
 #include <pcl/point_types.h>
 #include <pcl/ModelCoefficients.h>
 #include <pcl/filters/project_inliers.h>
 #include <pcl/io/ply_io.h>
 #include <pcl/visualization/pcl_visualizer.h>
+
+#include "IOXML.h"
+
 
 #define VIEW_3D			1
 #define VIEW_LATERAL	2
@@ -74,6 +78,7 @@ public:
 		
 	char *filePath;
 	vtkMutexLock *renderLock;
+	QMutex reduceLock;
 
 	bool modelLoading = false;
 
@@ -103,6 +108,7 @@ private:
     QStringList detectPlyFiles(QDir dirToImport);
     bool readImportFile(QString import);
 	void dropEvent(QDropEvent *e);
+	void resizeEvent(QResizeEvent* event);
 	void dragEnterEvent(QDragEnterEvent *e);
 	void setWidgetBorderRadius(QWidget* widget, int radius);
 	void importFileOpened(QString fileName);
@@ -120,4 +126,6 @@ private:
 	void stopOpenThreads();
 	void stopMergeThread();
 	void stopThread(QThread * qThread);
+
+	void reduceFile(std::string file);
 };

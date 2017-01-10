@@ -7,6 +7,7 @@
 #include <string>
 #include <codecvt>
 #include <stdarg.h>
+#include <vector>
 
 #include "XML.h"
 #include "Standardizer.h"
@@ -68,18 +69,25 @@ public:
 
 	}
 
-	static bool check(string n, ...) {
-		va_list ap;
-		va_start(ap, n);
-		string first = va_arg(ap, string);
-		bool err = true;
-		for (const auto & name : n) {
-			string a = std::string(&name);
-			if (a.compare("ERROR") == 0) 
-				err = false;
+	template<typename ...Args>
+	static bool check(Args... values) {
+		return internalCheck(values..., "EOP");
+	}
+
+	template<typename ...Args>
+	static bool internalCheck(const Args&... variables) {
+		std::vector<string> vec = { variables... };
+		bool isEverythingOK = true;
+		string element;
+		for (unsigned i = 0; i < vec.size(); ++i) {
+			element = vec[i];
+			if (element.compare("EOP") == 0) break;
+			if (element.compare("ERROR") == 0) {
+				isEverythingOK = false;
+				break;
+			}
 		}
-		va_end(ap);
-		return err;
+		return isEverythingOK;
 	}
 
 	static bool fileExists(std::wstring wsPath) {

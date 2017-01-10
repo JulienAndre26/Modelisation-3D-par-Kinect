@@ -13,12 +13,14 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QProgressBar>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include "QVTKWidget.h"
 
@@ -28,67 +30,202 @@ class Ui_MainWindow
 {
 public:
     QWidget *centralWidget;
-    QListWidget *listWidget;
-    QProgressBar *progressBar;
-    QLabel *lbCurrentMerge;
-    QPushButton *btnMerge;
-    QPushButton *btnBrowse;
-    QLabel *lbCaptureName;
-    QVTKWidget *qvtkWidgetLateral;
-    QVTKWidget *qvtkWidgetPlan;
+    QGridLayout *gridLayout_2;
+    QGridLayout *gridLayout;
+    QVBoxLayout *vlMid;
+    QLabel *lbLoadedFile;
     QVTKWidget *qvtkWidget3D;
     QLabel *gif3D;
-    QLabel *gifLateral;
-    QLabel *gifPlan;
-    QPushButton *btnShow;
-    QPushButton *btnAdd;
-    QPushButton *btnDelete;
-    QLabel *lbP1x;
-    QLabel *lbP1y;
-    QLabel *lbP1z;
-    QLabel *lbP2x;
-    QLabel *lbP2z;
-    QLabel *lbP2y;
-    QLabel *lbDistance;
-    QLabel *lbPin1;
-    QLabel *lbPin2;
-    QLabel *lbDistanceIcon;
-    QLabel *lbLoadedFile;
+    QVBoxLayout *vlRight;
+    QWidget *wdgRightTop;
     QPushButton *btnHelp;
+    QVTKWidget *qvtkWidgetLateral;
+    QLabel *gifLateral;
+    QVTKWidget *qvtkWidgetPlan;
+    QLabel *gifPlan;
+    QVBoxLayout *vlLeft;
+    QWidget *wdgLeftTop;
+    QListWidget *listWidget;
+    QPushButton *btnAdd;
+    QPushButton *btnMerge;
+    QPushButton *btnShow;
+    QPushButton *btnDelete;
+    QLabel *lbCaptureName;
+    QPushButton *btnBrowse;
+    QWidget *wdgLeftBottom;
+    QLabel *lbPin1;
+    QLabel *lbP2y;
+    QLabel *lbP1x;
+    QLabel *lbCurrentMerge;
+    QLabel *lbDistance;
+    QLabel *lbDistanceIcon;
+    QLabel *lbP1z;
+    QLabel *lbP2z;
+    QLabel *lbP2x;
+    QLabel *lbP1y;
+    QProgressBar *progressBar;
+    QLabel *lbPin2;
 
     void setupUi(QMainWindow *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(1150, 590);
-        MainWindow->setMaximumSize(QSize(1150, 590));
+        MainWindow->resize(800, 600);
+        MainWindow->setMaximumSize(QSize(10000, 10000));
         QIcon icon;
         icon.addFile(QStringLiteral("app.ico"), QSize(), QIcon::Normal, QIcon::Off);
         MainWindow->setWindowIcon(icon);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        listWidget = new QListWidget(centralWidget);
+        gridLayout_2 = new QGridLayout(centralWidget);
+        gridLayout_2->setSpacing(6);
+        gridLayout_2->setContentsMargins(11, 11, 11, 11);
+        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
+        gridLayout = new QGridLayout();
+        gridLayout->setSpacing(6);
+        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        vlMid = new QVBoxLayout();
+        vlMid->setSpacing(6);
+        vlMid->setObjectName(QStringLiteral("vlMid"));
+        lbLoadedFile = new QLabel(centralWidget);
+        lbLoadedFile->setObjectName(QStringLiteral("lbLoadedFile"));
+        lbLoadedFile->setMinimumSize(QSize(0, 20));
+        lbLoadedFile->setMaximumSize(QSize(16777215, 20));
+        lbLoadedFile->setTextFormat(Qt::AutoText);
+        lbLoadedFile->setAlignment(Qt::AlignCenter);
+
+        vlMid->addWidget(lbLoadedFile);
+
+        qvtkWidget3D = new QVTKWidget(centralWidget);
+        qvtkWidget3D->setObjectName(QStringLiteral("qvtkWidget3D"));
+        qvtkWidget3D->setMinimumSize(QSize(300, 300));
+        qvtkWidget3D->setCursor(QCursor(Qt::OpenHandCursor));
+        qvtkWidget3D->setStyleSheet(QStringLiteral(""));
+
+        vlMid->addWidget(qvtkWidget3D);
+
+        gif3D = new QLabel(centralWidget);
+        gif3D->setObjectName(QStringLiteral("gif3D"));
+        gif3D->setMinimumSize(QSize(186, 0));
+        gif3D->setLayoutDirection(Qt::LeftToRight);
+        gif3D->setStyleSheet(QLatin1String("border-style: outset;\n"
+"border-width: 2px;\n"
+"border-radius: 10px;\n"
+"border-color: grey;\n"
+"font: bold 14px;\n"
+"min-width: 10em;\n"
+"padding: 6px;"));
+        gif3D->setIndent(-1);
+
+        vlMid->addWidget(gif3D);
+
+
+        gridLayout->addLayout(vlMid, 0, 1, 1, 1);
+
+        vlRight = new QVBoxLayout();
+        vlRight->setSpacing(6);
+        vlRight->setObjectName(QStringLiteral("vlRight"));
+        wdgRightTop = new QWidget(centralWidget);
+        wdgRightTop->setObjectName(QStringLiteral("wdgRightTop"));
+        wdgRightTop->setMinimumSize(QSize(100, 20));
+        wdgRightTop->setMaximumSize(QSize(300, 20));
+        btnHelp = new QPushButton(wdgRightTop);
+        btnHelp->setObjectName(QStringLiteral("btnHelp"));
+        btnHelp->setGeometry(QRect(277, 0, 20, 20));
+        btnHelp->setStyleSheet(QLatin1String("QPushButton#btnHelp {\n"
+"	border: none;\n"
+"}\n"
+"\n"
+"QPushButton#btnHelp:hover {\n"
+"	padding: 1px;\n"
+"}\n"
+"\n"
+""));
+
+        vlRight->addWidget(wdgRightTop);
+
+        qvtkWidgetLateral = new QVTKWidget(centralWidget);
+        qvtkWidgetLateral->setObjectName(QStringLiteral("qvtkWidgetLateral"));
+        qvtkWidgetLateral->setMinimumSize(QSize(100, 100));
+        qvtkWidgetLateral->setMaximumSize(QSize(300, 16777215));
+        qvtkWidgetLateral->setCursor(QCursor(Qt::OpenHandCursor));
+        qvtkWidgetLateral->setStyleSheet(QStringLiteral(""));
+
+        vlRight->addWidget(qvtkWidgetLateral);
+
+        gifLateral = new QLabel(centralWidget);
+        gifLateral->setObjectName(QStringLiteral("gifLateral"));
+        gifLateral->setMinimumSize(QSize(186, 100));
+        gifLateral->setMaximumSize(QSize(300, 16777215));
+        gifLateral->setLayoutDirection(Qt::LeftToRight);
+        gifLateral->setStyleSheet(QLatin1String("border-style: outset;\n"
+"border-width: 2px;\n"
+"border-radius: 10px;\n"
+"border-color: grey;\n"
+"font: bold 14px;\n"
+"min-width: 10em;\n"
+"padding: 6px;"));
+
+        vlRight->addWidget(gifLateral);
+
+        qvtkWidgetPlan = new QVTKWidget(centralWidget);
+        qvtkWidgetPlan->setObjectName(QStringLiteral("qvtkWidgetPlan"));
+        qvtkWidgetPlan->setMinimumSize(QSize(100, 100));
+        qvtkWidgetPlan->setMaximumSize(QSize(300, 16777215));
+        qvtkWidgetPlan->setCursor(QCursor(Qt::OpenHandCursor));
+        qvtkWidgetPlan->setStyleSheet(QStringLiteral(""));
+
+        vlRight->addWidget(qvtkWidgetPlan);
+
+        gifPlan = new QLabel(centralWidget);
+        gifPlan->setObjectName(QStringLiteral("gifPlan"));
+        gifPlan->setMinimumSize(QSize(186, 100));
+        gifPlan->setMaximumSize(QSize(300, 16777215));
+        gifPlan->setLayoutDirection(Qt::LeftToRight);
+        gifPlan->setStyleSheet(QLatin1String("border-style: outset;\n"
+"border-width: 2px;\n"
+"border-radius: 10px;\n"
+"border-color: grey;\n"
+"font: bold 14px;\n"
+"min-width: 10em;\n"
+"padding: 6px;"));
+
+        vlRight->addWidget(gifPlan);
+
+
+        gridLayout->addLayout(vlRight, 0, 2, 1, 1);
+
+        vlLeft = new QVBoxLayout();
+        vlLeft->setSpacing(6);
+        vlLeft->setObjectName(QStringLiteral("vlLeft"));
+        wdgLeftTop = new QWidget(centralWidget);
+        wdgLeftTop->setObjectName(QStringLiteral("wdgLeftTop"));
+        wdgLeftTop->setMinimumSize(QSize(250, 300));
+        wdgLeftTop->setMaximumSize(QSize(250, 16777215));
+        listWidget = new QListWidget(wdgLeftTop);
         listWidget->setObjectName(QStringLiteral("listWidget"));
-        listWidget->setGeometry(QRect(10, 80, 201, 151));
+        listWidget->setGeometry(QRect(20, 100, 201, 151));
         listWidget->setStyleSheet(QLatin1String("border-style: outset;\n"
 "border-width: 2px;\n"
 "border-radius: 6px;\n"
 "border-color: grey;\n"
 "padding: 4px;"));
-        progressBar = new QProgressBar(centralWidget);
-        progressBar->setObjectName(QStringLiteral("progressBar"));
-        progressBar->setGeometry(QRect(10, 310, 201, 21));
-        progressBar->setValue(0);
-        progressBar->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
-        progressBar->setTextVisible(true);
-        lbCurrentMerge = new QLabel(centralWidget);
-        lbCurrentMerge->setObjectName(QStringLiteral("lbCurrentMerge"));
-        lbCurrentMerge->setGeometry(QRect(10, 290, 201, 16));
-        lbCurrentMerge->setAlignment(Qt::AlignCenter);
-        btnMerge = new QPushButton(centralWidget);
+        btnAdd = new QPushButton(wdgLeftTop);
+        btnAdd->setObjectName(QStringLiteral("btnAdd"));
+        btnAdd->setGeometry(QRect(180, 80, 21, 21));
+        btnAdd->setStyleSheet(QLatin1String("QPushButton#btnAdd {\n"
+"	border: none;\n"
+"}\n"
+"\n"
+"QPushButton#btnAdd:hover {\n"
+"	padding: 1px;\n"
+"}\n"
+"\n"
+""));
+        btnMerge = new QPushButton(wdgLeftTop);
         btnMerge->setObjectName(QStringLiteral("btnMerge"));
         btnMerge->setEnabled(false);
-        btnMerge->setGeometry(QRect(120, 240, 91, 31));
+        btnMerge->setGeometry(QRect(130, 260, 91, 31));
         btnMerge->setStyleSheet(QLatin1String("QPushButton#btnMerge {\n"
 "	font: 11pt \"Nirmala UI\";\n"
 "	background-color:#d1e0e0;\n"
@@ -109,92 +246,10 @@ public:
 "\n"
 "\n"
 ""));
-        btnBrowse = new QPushButton(centralWidget);
-        btnBrowse->setObjectName(QStringLiteral("btnBrowse"));
-        btnBrowse->setGeometry(QRect(10, 10, 201, 31));
-        btnBrowse->setStyleSheet(QLatin1String("QPushButton#btnBrowse {\n"
-"	font: 11pt \"Nirmala UI\";\n"
-"	background-color:#d1e0e0;\n"
-"	border-style: outset;\n"
-"	border-width: 2px;\n"
-"	border-radius: 10px;\n"
-"	border-color: grey;\n"
-"	padding: 1px;\n"
-"}\n"
-"\n"
-"QPushButton#btnBrowse:hover {\n"
-"	background-color:#BCC9C9;\n"
-"}\n"
-"\n"
-"QPushButton#btnBrowse:pressed {\n"
-"	background-color:#a7b3b3;\n"
-"}\n"
-"\n"
-"\n"
-""));
-        lbCaptureName = new QLabel(centralWidget);
-        lbCaptureName->setObjectName(QStringLiteral("lbCaptureName"));
-        lbCaptureName->setGeometry(QRect(10, 60, 161, 20));
-        lbCaptureName->setTextFormat(Qt::RichText);
-        lbCaptureName->setAlignment(Qt::AlignCenter);
-        qvtkWidgetLateral = new QVTKWidget(centralWidget);
-        qvtkWidgetLateral->setObjectName(QStringLiteral("qvtkWidgetLateral"));
-        qvtkWidgetLateral->setGeometry(QRect(860, 30, 281, 271));
-        qvtkWidgetLateral->setCursor(QCursor(Qt::OpenHandCursor));
-        qvtkWidgetLateral->setStyleSheet(QStringLiteral(""));
-        qvtkWidgetPlan = new QVTKWidget(centralWidget);
-        qvtkWidgetPlan->setObjectName(QStringLiteral("qvtkWidgetPlan"));
-        qvtkWidgetPlan->setGeometry(QRect(860, 310, 281, 271));
-        qvtkWidgetPlan->setCursor(QCursor(Qt::OpenHandCursor));
-        qvtkWidgetPlan->setStyleSheet(QStringLiteral(""));
-        qvtkWidget3D = new QVTKWidget(centralWidget);
-        qvtkWidget3D->setObjectName(QStringLiteral("qvtkWidget3D"));
-        qvtkWidget3D->setGeometry(QRect(220, 30, 631, 551));
-        qvtkWidget3D->setCursor(QCursor(Qt::OpenHandCursor));
-        qvtkWidget3D->setStyleSheet(QStringLiteral(""));
-        gif3D = new QLabel(centralWidget);
-        gif3D->setObjectName(QStringLiteral("gif3D"));
-        gif3D->setGeometry(QRect(220, 30, 631, 551));
-        gif3D->setLayoutDirection(Qt::LeftToRight);
-        gif3D->setStyleSheet(QLatin1String("QLabel#gif3D {\n"
-"	border-style: outset;\n"
-"	border-width: 2px;\n"
-"	border-radius: 10px;\n"
-"	border-color: grey;\n"
-"	font: bold 14px;\n"
-"	min-width: 10em;\n"
-"	padding: 6px;\n"
-"	width: 50%;\n"
-"	height: 80%;\n"
-"}\n"
-""));
-        gif3D->setIndent(-1);
-        gifLateral = new QLabel(centralWidget);
-        gifLateral->setObjectName(QStringLiteral("gifLateral"));
-        gifLateral->setGeometry(QRect(860, 30, 281, 271));
-        gifLateral->setLayoutDirection(Qt::LeftToRight);
-        gifLateral->setStyleSheet(QLatin1String("border-style: outset;\n"
-"border-width: 2px;\n"
-"border-radius: 10px;\n"
-"border-color: grey;\n"
-"font: bold 14px;\n"
-"min-width: 10em;\n"
-"padding: 6px;"));
-        gifPlan = new QLabel(centralWidget);
-        gifPlan->setObjectName(QStringLiteral("gifPlan"));
-        gifPlan->setGeometry(QRect(860, 310, 281, 271));
-        gifPlan->setLayoutDirection(Qt::LeftToRight);
-        gifPlan->setStyleSheet(QLatin1String("border-style: outset;\n"
-"border-width: 2px;\n"
-"border-radius: 10px;\n"
-"border-color: grey;\n"
-"font: bold 14px;\n"
-"min-width: 10em;\n"
-"padding: 6px;"));
-        btnShow = new QPushButton(centralWidget);
+        btnShow = new QPushButton(wdgLeftTop);
         btnShow->setObjectName(QStringLiteral("btnShow"));
         btnShow->setEnabled(false);
-        btnShow->setGeometry(QRect(10, 240, 91, 31));
+        btnShow->setGeometry(QRect(20, 260, 91, 31));
         btnShow->setMinimumSize(QSize(0, 0));
         btnShow->setStyleSheet(QLatin1String("QPushButton#btnShow {\n"
 "	font: 11pt \"Nirmala UI\";\n"
@@ -216,21 +271,9 @@ public:
 "\n"
 "\n"
 ""));
-        btnAdd = new QPushButton(centralWidget);
-        btnAdd->setObjectName(QStringLiteral("btnAdd"));
-        btnAdd->setGeometry(QRect(170, 60, 21, 21));
-        btnAdd->setStyleSheet(QLatin1String("QPushButton#btnAdd {\n"
-"	border: none;\n"
-"}\n"
-"\n"
-"QPushButton#btnAdd:hover {\n"
-"	padding: 1px;\n"
-"}\n"
-"\n"
-""));
-        btnDelete = new QPushButton(centralWidget);
+        btnDelete = new QPushButton(wdgLeftTop);
         btnDelete->setObjectName(QStringLiteral("btnDelete"));
-        btnDelete->setGeometry(QRect(190, 60, 21, 21));
+        btnDelete->setGeometry(QRect(200, 80, 21, 21));
         btnDelete->setStyleSheet(QLatin1String("QPushButton#btnDelete {\n"
 "	border: none;\n"
 "}\n"
@@ -240,63 +283,100 @@ public:
 "}\n"
 "\n"
 ""));
-        lbP1x = new QLabel(centralWidget);
-        lbP1x->setObjectName(QStringLiteral("lbP1x"));
-        lbP1x->setGeometry(QRect(20, 490, 81, 16));
-        lbP1x->setTextFormat(Qt::RichText);
-        lbP1y = new QLabel(centralWidget);
-        lbP1y->setObjectName(QStringLiteral("lbP1y"));
-        lbP1y->setGeometry(QRect(20, 510, 81, 16));
-        lbP1y->setTextFormat(Qt::RichText);
-        lbP1z = new QLabel(centralWidget);
-        lbP1z->setObjectName(QStringLiteral("lbP1z"));
-        lbP1z->setGeometry(QRect(20, 530, 81, 16));
-        lbP1z->setTextFormat(Qt::RichText);
-        lbP2x = new QLabel(centralWidget);
-        lbP2x->setObjectName(QStringLiteral("lbP2x"));
-        lbP2x->setGeometry(QRect(120, 490, 81, 16));
-        lbP2x->setTextFormat(Qt::RichText);
-        lbP2z = new QLabel(centralWidget);
-        lbP2z->setObjectName(QStringLiteral("lbP2z"));
-        lbP2z->setGeometry(QRect(120, 530, 81, 16));
-        lbP2z->setTextFormat(Qt::RichText);
-        lbP2y = new QLabel(centralWidget);
-        lbP2y->setObjectName(QStringLiteral("lbP2y"));
-        lbP2y->setGeometry(QRect(120, 510, 81, 16));
-        lbP2y->setTextFormat(Qt::RichText);
-        lbDistance = new QLabel(centralWidget);
-        lbDistance->setObjectName(QStringLiteral("lbDistance"));
-        lbDistance->setGeometry(QRect(50, 560, 141, 20));
-        lbDistance->setTextFormat(Qt::RichText);
-        lbPin1 = new QLabel(centralWidget);
-        lbPin1->setObjectName(QStringLiteral("lbPin1"));
-        lbPin1->setGeometry(QRect(40, 450, 41, 31));
-        lbPin1->setAlignment(Qt::AlignCenter);
-        lbPin2 = new QLabel(centralWidget);
-        lbPin2->setObjectName(QStringLiteral("lbPin2"));
-        lbPin2->setGeometry(QRect(140, 450, 41, 31));
-        lbPin2->setAlignment(Qt::AlignCenter);
-        lbDistanceIcon = new QLabel(centralWidget);
-        lbDistanceIcon->setObjectName(QStringLiteral("lbDistanceIcon"));
-        lbDistanceIcon->setGeometry(QRect(10, 550, 41, 31));
-        lbDistanceIcon->setAlignment(Qt::AlignBottom|Qt::AlignHCenter);
-        lbLoadedFile = new QLabel(centralWidget);
-        lbLoadedFile->setObjectName(QStringLiteral("lbLoadedFile"));
-        lbLoadedFile->setGeometry(QRect(220, 10, 631, 20));
-        lbLoadedFile->setTextFormat(Qt::AutoText);
-        lbLoadedFile->setAlignment(Qt::AlignCenter);
-        btnHelp = new QPushButton(centralWidget);
-        btnHelp->setObjectName(QStringLiteral("btnHelp"));
-        btnHelp->setGeometry(QRect(1120, 10, 20, 20));
-        btnHelp->setStyleSheet(QLatin1String("QPushButton#btnHelp {\n"
-"	border: none;\n"
-"}\n"
-"\n"
-"QPushButton#btnHelp:hover {\n"
+        lbCaptureName = new QLabel(wdgLeftTop);
+        lbCaptureName->setObjectName(QStringLiteral("lbCaptureName"));
+        lbCaptureName->setGeometry(QRect(20, 80, 161, 16));
+        lbCaptureName->setTextFormat(Qt::RichText);
+        lbCaptureName->setAlignment(Qt::AlignCenter);
+        btnBrowse = new QPushButton(wdgLeftTop);
+        btnBrowse->setObjectName(QStringLiteral("btnBrowse"));
+        btnBrowse->setGeometry(QRect(20, 30, 201, 31));
+        btnBrowse->setStyleSheet(QLatin1String("QPushButton#btnBrowse {\n"
+"	font: 11pt \"Nirmala UI\";\n"
+"	background-color:#d1e0e0;\n"
+"	border-style: outset;\n"
+"	border-width: 2px;\n"
+"	border-radius: 10px;\n"
+"	border-color: grey;\n"
 "	padding: 1px;\n"
 "}\n"
 "\n"
+"QPushButton#btnBrowse:hover {\n"
+"	background-color:#BCC9C9;\n"
+"}\n"
+"\n"
+"QPushButton#btnBrowse:pressed {\n"
+"	background-color:#a7b3b3;\n"
+"}\n"
+"\n"
+"\n"
 ""));
+
+        vlLeft->addWidget(wdgLeftTop);
+
+        wdgLeftBottom = new QWidget(centralWidget);
+        wdgLeftBottom->setObjectName(QStringLiteral("wdgLeftBottom"));
+        wdgLeftBottom->setMinimumSize(QSize(250, 245));
+        wdgLeftBottom->setMaximumSize(QSize(250, 16777215));
+        lbPin1 = new QLabel(wdgLeftBottom);
+        lbPin1->setObjectName(QStringLiteral("lbPin1"));
+        lbPin1->setGeometry(QRect(50, 150, 41, 31));
+        lbPin1->setAlignment(Qt::AlignCenter);
+        lbP2y = new QLabel(wdgLeftBottom);
+        lbP2y->setObjectName(QStringLiteral("lbP2y"));
+        lbP2y->setGeometry(QRect(130, 200, 81, 16));
+        lbP2y->setTextFormat(Qt::RichText);
+        lbP1x = new QLabel(wdgLeftBottom);
+        lbP1x->setObjectName(QStringLiteral("lbP1x"));
+        lbP1x->setGeometry(QRect(30, 180, 81, 16));
+        lbP1x->setTextFormat(Qt::RichText);
+        lbCurrentMerge = new QLabel(wdgLeftBottom);
+        lbCurrentMerge->setObjectName(QStringLiteral("lbCurrentMerge"));
+        lbCurrentMerge->setGeometry(QRect(20, 20, 201, 16));
+        lbCurrentMerge->setAlignment(Qt::AlignCenter);
+        lbDistance = new QLabel(wdgLeftBottom);
+        lbDistance->setObjectName(QStringLiteral("lbDistance"));
+        lbDistance->setGeometry(QRect(60, 250, 141, 20));
+        lbDistance->setTextFormat(Qt::RichText);
+        lbDistanceIcon = new QLabel(wdgLeftBottom);
+        lbDistanceIcon->setObjectName(QStringLiteral("lbDistanceIcon"));
+        lbDistanceIcon->setGeometry(QRect(20, 240, 41, 31));
+        lbDistanceIcon->setAlignment(Qt::AlignBottom|Qt::AlignHCenter);
+        lbP1z = new QLabel(wdgLeftBottom);
+        lbP1z->setObjectName(QStringLiteral("lbP1z"));
+        lbP1z->setGeometry(QRect(30, 220, 81, 16));
+        lbP1z->setTextFormat(Qt::RichText);
+        lbP2z = new QLabel(wdgLeftBottom);
+        lbP2z->setObjectName(QStringLiteral("lbP2z"));
+        lbP2z->setGeometry(QRect(130, 220, 81, 16));
+        lbP2z->setTextFormat(Qt::RichText);
+        lbP2x = new QLabel(wdgLeftBottom);
+        lbP2x->setObjectName(QStringLiteral("lbP2x"));
+        lbP2x->setGeometry(QRect(130, 180, 81, 16));
+        lbP2x->setTextFormat(Qt::RichText);
+        lbP1y = new QLabel(wdgLeftBottom);
+        lbP1y->setObjectName(QStringLiteral("lbP1y"));
+        lbP1y->setGeometry(QRect(30, 200, 81, 16));
+        lbP1y->setTextFormat(Qt::RichText);
+        progressBar = new QProgressBar(wdgLeftBottom);
+        progressBar->setObjectName(QStringLiteral("progressBar"));
+        progressBar->setGeometry(QRect(20, 40, 201, 21));
+        progressBar->setValue(0);
+        progressBar->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        progressBar->setTextVisible(true);
+        lbPin2 = new QLabel(wdgLeftBottom);
+        lbPin2->setObjectName(QStringLiteral("lbPin2"));
+        lbPin2->setGeometry(QRect(150, 150, 41, 31));
+        lbPin2->setAlignment(Qt::AlignCenter);
+
+        vlLeft->addWidget(wdgLeftBottom);
+
+
+        gridLayout->addLayout(vlLeft, 0, 0, 1, 1);
+
+
+        gridLayout_2->addLayout(gridLayout, 0, 0, 1, 1);
+
         MainWindow->setCentralWidget(centralWidget);
 
         retranslateUi(MainWindow);
@@ -307,37 +387,37 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "Kinect 3D Modelling", 0));
-        lbCurrentMerge->setText(QString());
-        btnMerge->setText(QApplication::translate("MainWindow", "Merge", 0));
-        btnBrowse->setText(QApplication::translate("MainWindow", "Browse", 0));
-        lbCaptureName->setText(QString());
-        gif3D->setText(QApplication::translate("MainWindow", "Loading", 0));
-        gifLateral->setText(QApplication::translate("MainWindow", "Loading", 0));
-        gifPlan->setText(QApplication::translate("MainWindow", "Loading", 0));
-        btnShow->setText(QApplication::translate("MainWindow", "Show", 0));
-#ifndef QT_NO_TOOLTIP
-        btnAdd->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Add a 3D plan to this capture</span></p><p>It will copy the selected PLY file into the capture's folder.</p></body></html>", 0));
-#endif // QT_NO_TOOLTIP
-        btnAdd->setText(QString());
-#ifndef QT_NO_TOOLTIP
-        btnDelete->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Removes a 3D plan from this capture</span></p><p>It will remove the selected PLY file from the capture's folder.</p></body></html>", 0));
-#endif // QT_NO_TOOLTIP
-        btnDelete->setText(QString());
-        lbP1x->setText(QApplication::translate("MainWindow", "X1", 0));
-        lbP1y->setText(QApplication::translate("MainWindow", "Y1", 0));
-        lbP1z->setText(QApplication::translate("MainWindow", "Z1", 0));
-        lbP2x->setText(QApplication::translate("MainWindow", "X2", 0));
-        lbP2z->setText(QApplication::translate("MainWindow", "Z3", 0));
-        lbP2y->setText(QApplication::translate("MainWindow", "Y2", 0));
-        lbDistance->setText(QApplication::translate("MainWindow", "Distance: xx.xx m (xx.xx cm)", 0));
-        lbPin1->setText(QString());
-        lbPin2->setText(QString());
-        lbDistanceIcon->setText(QString());
         lbLoadedFile->setText(QApplication::translate("MainWindow", "Please browse a capture and open a file", 0));
+        gif3D->setText(QApplication::translate("MainWindow", "Loading", 0));
 #ifndef QT_NO_TOOLTIP
         btnHelp->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Handling 3D model</span></p><p>Clic + Move Mouse : Rotates the model</p><p>Shift + Move Mouse : Moves the model in X, Y or Z axis</p><p>Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
         btnHelp->setText(QString());
+        gifLateral->setText(QApplication::translate("MainWindow", "Loading", 0));
+        gifPlan->setText(QApplication::translate("MainWindow", "Loading", 0));
+#ifndef QT_NO_TOOLTIP
+        btnAdd->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Add a 3D plan to this capture</span></p><p>It will copy the selected PLY file into the capture's folder.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
+        btnAdd->setText(QString());
+        btnMerge->setText(QApplication::translate("MainWindow", "Merge", 0));
+        btnShow->setText(QApplication::translate("MainWindow", "Show", 0));
+#ifndef QT_NO_TOOLTIP
+        btnDelete->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Removes a 3D plan from this capture</span></p><p>It will remove the selected PLY file from the capture's folder.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
+        btnDelete->setText(QString());
+        lbCaptureName->setText(QString());
+        btnBrowse->setText(QApplication::translate("MainWindow", "Browse", 0));
+        lbPin1->setText(QString());
+        lbP2y->setText(QApplication::translate("MainWindow", "Y2", 0));
+        lbP1x->setText(QApplication::translate("MainWindow", "X1", 0));
+        lbCurrentMerge->setText(QString());
+        lbDistance->setText(QApplication::translate("MainWindow", "Distance: xx.xx m (xx.xx cm)", 0));
+        lbDistanceIcon->setText(QString());
+        lbP1z->setText(QApplication::translate("MainWindow", "Z1", 0));
+        lbP2z->setText(QApplication::translate("MainWindow", "Z3", 0));
+        lbP2x->setText(QApplication::translate("MainWindow", "X2", 0));
+        lbP1y->setText(QApplication::translate("MainWindow", "Y1", 0));
+        lbPin2->setText(QString());
     } // retranslateUi
 
 };

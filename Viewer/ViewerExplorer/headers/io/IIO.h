@@ -6,6 +6,6 @@
 class IIO {
 
 public:
-	int load(char * filename, void* objectToLoad);
-	int save(char * filename, void* objectToSave);
+	int load(const char * filename, void* objectToLoad);
+	int save(const char * filename, void* objectToSave);
 };
