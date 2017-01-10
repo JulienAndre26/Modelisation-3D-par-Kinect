@@ -13,7 +13,10 @@ private:
 	QDomDocument * document;
 	QFile * file;
 	QDomElement *  element;
+	QDomElement  root;
 	QDomNode * node;
+
+	QDomElement * findElement(std::string name);
 
 public:
 	
@@ -26,6 +29,9 @@ public:
 	void add(std::string name, std::string value);
 	void add(std::string name, int value);
 	void add(std::string name, float value);
+	bool edit(std::string name, std::string newValue);
+	bool edit(std::string name, int newValue);
+	bool edit(std::string name, float newValue);
 	bool save(std::string filename);
 
 	// inherited method
