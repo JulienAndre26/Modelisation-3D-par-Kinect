@@ -1,5 +1,7 @@
 #pragma once
 
+#include <PCLCore.h>
+
 #include <QThread.h>
 #include <iostream>
 
@@ -51,5 +53,35 @@ private:
 	{
 		cout << "Merge Thread launched..." << endl;
 		mw->processMerge();
+	}
+};
+
+
+class ThreadReduce : public QThread
+{
+	Q_OBJECT
+
+public:
+	ThreadReduce(std::string filePath, QMutex* lock) { this->path = filePath; this->lock = lock; }
+
+	public slots :
+		void onEnd()
+	{
+		cout << "Thread reduce " << path << " finished" << endl;
+	}
+
+private:
+	std::string path;
+	QMutex* lock;
+
+	void run()
+	{
+		cout << "Thread reduce " << path << " launched..." << endl;
+		PCLCore* core(new PCLCore);
+		core->compress(&path);
+		//lock->lock();
+		// MARK AS COMPRESSED
+		//lock->unlock();
+		
 	}
 };

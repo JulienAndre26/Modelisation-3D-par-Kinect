@@ -1,7 +1,6 @@
 #include "PCLCore.h"
 
 char * TOTO1() {
-
 	return strdup("lit_mur1.ply");
 }
 
@@ -9,8 +8,8 @@ char * TOTO2() {
 	return strdup("lit_mur2.ply");
 }
 
-using pcl::visualization::PointCloudColorHandlerGenericField;
-using pcl::visualization::PointCloudColorHandlerCustom;
+//using pcl::visualization::PointCloudColorHandlerGenericField;
+//using pcl::visualization::PointCloudColorHandlerCustom;
 
 
 unsigned int text_id = 0;
@@ -810,8 +809,7 @@ void method_nico(PointCloud::Ptr source, PointCloud::Ptr target, PointCloud::Ptr
 
 
 #include <pcl/registration/ndt.h>
-#include <pcl/filters/approximate_voxel_grid.h>
-void* PCLCore::merge(void* arg1, void* arg2) {
+void* PCLCore::merge(std::string* file_path_from, std::string* file_path_to) {
 
 		// TODO : Thread management
 
@@ -1113,11 +1111,23 @@ void* PCLCore::merge(void* arg1, void* arg2) {
 }
 
 
-void* PCLCore::compress(void* arg) {
-	return (void*)0;
+int PCLCore::compress(std::string* file_path) {
+	PointCloud::Ptr raw_cloud(new PointCloud);
+	PointCloud::Ptr filtered_cloud(new PointCloud);
+	IOPLY::load(file_path->c_str(), raw_cloud);
+	
+	pcl::ApproximateVoxelGrid<PointT> avg;
+	// keeps only 1 voxel (point) within a sphere of 1cm radius
+	avg.setLeafSize(0.01, 0.01, 0.01);
+	avg.setInputCloud(raw_cloud);
+	avg.filter(*filtered_cloud);
+
+	IOPLY::save(file_path->c_str(), filtered_cloud);
+
+	return 0;
 }
 
 
-void* PCLCore::other(void* args) {
+void* PCLCore::other(std::string* file_path) {
 	return (void*)0;
 }
