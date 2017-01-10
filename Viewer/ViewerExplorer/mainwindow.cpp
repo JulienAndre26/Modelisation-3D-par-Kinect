@@ -460,6 +460,8 @@ void MainWindow::setViewDisplay(int nView, bool bShowWidget, int nStatus)
 		return;
 	}
 
+	//ql->clear();
+
 	// Stopping previous movie
 	ql->movie()->stop();
 
@@ -489,6 +491,8 @@ void MainWindow::setViewDisplay(int nView, bool bShowWidget, int nStatus)
 
 	if (bShowWidget)
 		setWidgetBorderRadius(qw, 6);
+
+	ql->repaint();
 
 }
 
