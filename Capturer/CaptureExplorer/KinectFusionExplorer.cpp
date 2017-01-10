@@ -378,6 +378,8 @@ void CKinectFusionExplorer::HandleCompletedFrame()
 
 	// We allow the capture
 	SetEnableCaptureUI(TRUE);
+	SetEnableConfUI(TRUE);
+	SetEnableKinectTilt(TRUE);
 }
 
 /// <summary>
@@ -1018,6 +1020,16 @@ void CKinectFusionExplorer::SetEnableConfUI(int nEnable)
 	EnableWindow(hElem, nEnable);
 	hElem = GetDlgItem(m_hWnd, IDC_MESH_FORMAT_STL_RADIO);
 	EnableWindow(hElem, nEnable);*/
+}
+
+void CKinectFusionExplorer::SetEnableKinectTilt(int nEnable)
+{
+	HWND hElem = GetDlgItem(m_hWnd, IDC_SENSOR_TILT_TOP);
+	EnableWindow(hElem, nEnable);
+	hElem = GetDlgItem(m_hWnd, IDC_SENSOR_TILT_MIDDLE);
+	EnableWindow(hElem, nEnable);
+	hElem = GetDlgItem(m_hWnd, IDC_SENSOR_TILT_BOTTOM);
+	EnableWindow(hElem, nEnable);
 }
 
 /// <summary>

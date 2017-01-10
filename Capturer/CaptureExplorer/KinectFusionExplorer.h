@@ -67,6 +67,7 @@ public:
 
 	void						SetEnableConfUI(int nEnable);
 	void						SetEnableCaptureUI(int nEnable);
+	void						SetEnableKinectTilt(int nEnable);
 	void						UpdateMeshCountUI();
 	void						UpdateCaptureNameUI();
 	void						SetEnableColorUI(bool bEnable);

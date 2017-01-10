@@ -123,6 +123,7 @@ public:
 		if (res) 
 		{
 			// add to structure
+			sConf->nVPM = stoi(vpm);
 			sConf->nX = stoi(x);
 			sConf->nY = stoi(y);
 			sConf->nZ = stoi(z);
