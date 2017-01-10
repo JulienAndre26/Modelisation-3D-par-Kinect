@@ -88,15 +88,6 @@ private slots:
 	
 private:
     Ui::MainWindow *ui;
-
-    QStringList detectPlyFiles(QDir dirToImport);
-    bool readImportFile(QString import);
-	void dropEvent(QDropEvent *e);
-	void dragEnterEvent(QDragEnterEvent *e);
-	void setWidgetBorderRadius(QWidget* widget, int radius);
-	void importFileOpened(QString fileName);
-	void updateFileList();
-	void MainWindow::setLoadedFile(QString newValue);
 	
 	QMovie * movieInit;
 	QMovie * movieLoad;
@@ -108,6 +99,18 @@ private:
 	QString loadedFile;
 	QStringList list;
 	QHash<QString, QString> listContent;
+
+    QStringList detectPlyFiles(QDir dirToImport);
+    bool readImportFile(QString import);
+	void dropEvent(QDropEvent *e);
+	void dragEnterEvent(QDragEnterEvent *e);
+	void setWidgetBorderRadius(QWidget* widget, int radius);
+	void importFileOpened(QString fileName);
+	void updateFileList();
+	void setLoadedFile(QString newValue);
+	QLabel * getLabel(int nView);
+	QVTKWidget * getWidget(int nView);
+	QMovie * getMovie(int nStatus);
 
 	QThread * thread3D = nullptr;
 	QThread * threadLateral = nullptr;
