@@ -33,6 +33,9 @@ VTK_MODULE_INIT(vtkInteractionStyle)
 #include <pcl/io/ply_io.h>
 #include <pcl/visualization/pcl_visualizer.h>
 
+#include "IOXML.h"
+
+
 #define VIEW_3D			1
 #define VIEW_LATERAL	2
 #define VIEW_PLAN		3

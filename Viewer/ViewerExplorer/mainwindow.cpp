@@ -252,42 +252,23 @@ void MainWindow::on_btnShow_clicked()
 
 bool MainWindow::readImportFile(QString import)
 {
+
     QFile importFile(import);
-    if(importFile.open(QIODevice::ReadOnly))
-    {
-        QTextStream stream(&importFile);
-        QStringList infos;
+    
+	if (!importFile.exists()) {
+		QMessageBox::critical(this, "Bad file import", "Please select a correct import file");
+		return false;
+	}
 
-		int linesCount = 0;
-		while (!stream.atEnd())
-		{
-			stream.readLine();
-			linesCount++;
-		}
+	IOXML * parser = IOXML::Instance();
+	parser->init(import.toLocal8Bit().data());
 
-		if (linesCount != 8)
-		{
-			QMessageBox::critical(this, "Bad file import", "Please select a correct import file");
-			return false;
-		}
-		else
-		{
-			hasColor = false;
-			stream.seek(0);
-			QString path = stream.readLine().split("\\").last();
-			ui->lbCaptureName->setText("<b>" + path + "<\\b>");
-			stream.readLine();
-			stream.readLine();
-			QString color = stream.readLine().split(" ").last();
+	if (parser->get("color").compare("ERROR") == 0) {
+		QMessageBox::critical(this, "Bad file import", "Please select a correct import file");
+		return false;
+	}
 
-			int cmp = QString::compare("true", color, Qt::CaseInsensitive);
-			if (cmp == 0)
-			{
-				hasColor = true;
-			}
-
-		}
-    }
+	hasColor = (parser->get("color").compare("true") == 0);
 
 	return true;
 }
