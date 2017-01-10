@@ -75,7 +75,8 @@ public:
 		bool err = true;
 		for (const auto & name : n) {
 			string a = std::string(&name);
-			if (strcmp(a.c_str() , "ERROR") == 0) err = false;
+			if (a.compare("ERROR") == 0) 
+				err = false;
 		}
 		va_end(ap);
 		return err;
@@ -89,6 +90,12 @@ public:
 	}
 
 	static bool readConfFile(std::wstring wsConfPath, READ_CONF_EXT * sConf) {
+
+		if (sConf == nullptr)
+			return false;
+
+		if (!fileExists(wsConfPath))
+			return false;
 
 		bool res = true;
 		// Load mode
@@ -105,7 +112,8 @@ public:
 		std::string z = xml->get("z");
 		// check for variables
 		res = check(path, count, color, vpm, x, y, z);
-		if (res) {
+		if (res) 
+		{
 			// add to structure
 			sConf->nX = stoi(x);
 			sConf->nY = stoi(y);

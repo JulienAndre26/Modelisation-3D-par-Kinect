@@ -123,7 +123,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>tinyxml2.lib;NuiSensorChooser.lib;Kinect10.lib;$(KinectFusionLib64).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>NuiSensorChooser.lib;Kinect10.lib;$(KinectFusionLib64).lib;%(AdditionalDependencies)</AdditionalDependencies>
       <StackReserveSize>10000000</StackReserveSize>
       <StackCommitSize>10000000</StackCommitSize>
       <AdditionalLibraryDirectories>.;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
