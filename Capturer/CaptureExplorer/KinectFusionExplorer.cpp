@@ -28,8 +28,8 @@ std::thread * auto_save_thread;
 #define MIN_DEPTH_DISTANCE_MM 350   // Must be greater than 0
 #define MAX_DEPTH_DISTANCE_MM 8000
 
-#define MIN_INTEGRATION_WEIGHT 1    // Must be greater than 0
-#define MAX_INTEGRATION_WEIGHT 1000
+//#define MIN_INTEGRATION_WEIGHT 1    // Must be greater than 0
+//#define MAX_INTEGRATION_WEIGHT 1000
 
 #define MIN_TILT_ANGLE -15    // Must be greater than -15
 #define MAX_TILT_ANGLE 15
@@ -399,19 +399,19 @@ void CKinectFusionExplorer::InitializeUIControls()
 
     // Set slider ranges
 	// Weight
-    SendDlgItemMessage(
+    /*SendDlgItemMessage(
         m_hWnd,
         IDC_INTEGRATION_WEIGHT_SLIDER,
         TBM_SETRANGE,
         TRUE,
-        MAKELPARAM(MIN_INTEGRATION_WEIGHT, MAX_INTEGRATION_WEIGHT));
+        MAKELPARAM(MIN_INTEGRATION_WEIGHT, MAX_INTEGRATION_WEIGHT));*/
 
-    SendDlgItemMessage(
+    /*SendDlgItemMessage(
         m_hWnd,
         IDC_INTEGRATION_WEIGHT_SLIDER,
         TBM_SETPOS,
         TRUE,
-        (UINT)m_params.m_cMaxIntegrationWeight);
+        (UINT)m_params.m_cMaxIntegrationWeight);*/
 
 	// Tilt
 	SendDlgItemMessage(
@@ -422,10 +422,10 @@ void CKinectFusionExplorer::InitializeUIControls()
 		(UINT) 0);
 
     // Update slider text according to its value
-    WCHAR str[MAX_PATH];
+    /*WCHAR str[MAX_PATH];
     swprintf_s(str, ARRAYSIZE(str), L"%d", m_params.m_cMaxIntegrationWeight);
     SetDlgItemText(m_hWnd, IDC_INTEGRATION_WEIGHT_TEXT, str);
-
+*/
 	// Set Quality Radio Buttons
 	// MEDIUM
 	if ((int)m_params.m_reconstructionParams.voxelsPerMeter == 128
@@ -473,28 +473,28 @@ void CKinectFusionExplorer::InitializeUIControls()
 	CheckDlgButton(m_hWnd, IDC_SENSOR_TILT_BOTTOM, BST_UNCHECKED);
 	m_processor.TiltSensor(0);
 	
-	// File format
-    if (Stl == m_saveMeshFormat)
-    {
-        CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_STL_RADIO, BST_CHECKED);
-		CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_OBJ_RADIO, BST_UNCHECKED);
-		CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_PLY_RADIO, BST_UNCHECKED);
-		SetEnableColorUI(FALSE);
-    }
-    else if (Obj == m_saveMeshFormat)
-    {
-		CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_STL_RADIO, BST_UNCHECKED);
-		CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_OBJ_RADIO, BST_CHECKED);
-		CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_PLY_RADIO, BST_UNCHECKED);
-		SetEnableColorUI(FALSE);
-    }
-    else if (Ply == m_saveMeshFormat)
-    {
-		CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_STL_RADIO, BST_UNCHECKED);
-		CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_OBJ_RADIO, BST_UNCHECKED);
-		CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_PLY_RADIO, BST_CHECKED);
-		SetEnableColorUI(TRUE);
-    }
+	//// File format
+ //   if (Stl == m_saveMeshFormat)
+ //   {
+ //       CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_STL_RADIO, BST_CHECKED);
+	//	CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_OBJ_RADIO, BST_UNCHECKED);
+	//	CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_PLY_RADIO, BST_UNCHECKED);
+	//	SetEnableColorUI(FALSE);
+ //   }
+ //   else if (Obj == m_saveMeshFormat)
+ //   {
+	//	CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_STL_RADIO, BST_UNCHECKED);
+	//	CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_OBJ_RADIO, BST_CHECKED);
+	//	CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_PLY_RADIO, BST_UNCHECKED);
+	//	SetEnableColorUI(FALSE);
+ //   }
+ //   else if (Ply == m_saveMeshFormat)
+ //   {
+	//	CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_STL_RADIO, BST_UNCHECKED);
+	//	CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_OBJ_RADIO, BST_UNCHECKED);
+	//	CheckDlgButton(m_hWnd, IDC_MESH_FORMAT_PLY_RADIO, BST_CHECKED);
+	//	SetEnableColorUI(TRUE);
+ //   }
 
 	// Init auto save progressbar
 	SendMessage(GetDlgItem(m_hWnd, IDC_AUTO_PROGRESS), PBM_SETBARCOLOR, 0, RGB(255,255,0));
@@ -600,22 +600,22 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
         m_params.m_bPauseIntegration = !m_params.m_bPauseIntegration;
     }    
 
-	// Set the file format
-	if (IDC_MESH_FORMAT_STL_RADIO == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-    {
-        m_saveMeshFormat = Stl;
-		SetEnableColorUI(FALSE);
-    }
-    if (IDC_MESH_FORMAT_OBJ_RADIO == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-    {
-        m_saveMeshFormat = Obj;
-		SetEnableColorUI(FALSE);
-    }
-    if (IDC_MESH_FORMAT_PLY_RADIO == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
-    {
-        m_saveMeshFormat = Ply;
-		SetEnableColorUI(TRUE);
-    }
+	//// Set the file format
+	//if (IDC_MESH_FORMAT_STL_RADIO == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
+ //   {
+ //       m_saveMeshFormat = Stl;
+	//	SetEnableColorUI(FALSE);
+ //   }
+ //   if (IDC_MESH_FORMAT_OBJ_RADIO == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
+ //   {
+ //       m_saveMeshFormat = Obj;
+	//	SetEnableColorUI(FALSE);
+ //   }
+ //   if (IDC_MESH_FORMAT_PLY_RADIO == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
+ //   {
+ //       m_saveMeshFormat = Ply;
+	//	SetEnableColorUI(TRUE);
+ //   }
 
 	// Launch/Stop auto save mode
 	if (IDC_BUTTON_AUTO_MODE == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
@@ -670,13 +670,13 @@ void CKinectFusionExplorer::SetEnableColorUI(bool bEnable)
 void CKinectFusionExplorer::UpdateHSliders()
 {
 	// Get weight new value
-    int maxWeight = (int)SendDlgItemMessage(m_hWnd, IDC_INTEGRATION_WEIGHT_SLIDER, TBM_GETPOS, 0,0);
-    m_params.m_cMaxIntegrationWeight = maxWeight % (MAX_INTEGRATION_WEIGHT+1);
+    //int maxWeight = (int)SendDlgItemMessage(m_hWnd, IDC_INTEGRATION_WEIGHT_SLIDER, TBM_GETPOS, 0,0);
+    //m_params.m_cMaxIntegrationWeight = maxWeight % (MAX_INTEGRATION_WEIGHT+1);
 
-    // Update text
-    WCHAR str[MAX_PATH];
-    swprintf_s(str, ARRAYSIZE(str), L"%d", m_params.m_cMaxIntegrationWeight);
-    SetDlgItemText(m_hWnd, IDC_INTEGRATION_WEIGHT_TEXT, str);
+    //// Update text
+    //WCHAR str[MAX_PATH];
+    //swprintf_s(str, ARRAYSIZE(str), L"%d", m_params.m_cMaxIntegrationWeight);
+    //SetDlgItemText(m_hWnd, IDC_INTEGRATION_WEIGHT_TEXT, str);
 
     m_processor.SetParams(m_params);
 }
@@ -1012,12 +1012,12 @@ void CKinectFusionExplorer::SetEnableConfUI(int nEnable)
 	EnableWindow(hElem, nEnable);
 	hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_TYPE_LOW);
 	EnableWindow(hElem, nEnable);
-	hElem = GetDlgItem(m_hWnd, IDC_MESH_FORMAT_OBJ_RADIO);
+	/*hElem = GetDlgItem(m_hWnd, IDC_MESH_FORMAT_OBJ_RADIO);
 	EnableWindow(hElem, nEnable);
 	hElem = GetDlgItem(m_hWnd, IDC_MESH_FORMAT_PLY_RADIO);
 	EnableWindow(hElem, nEnable);
 	hElem = GetDlgItem(m_hWnd, IDC_MESH_FORMAT_STL_RADIO);
-	EnableWindow(hElem, nEnable);
+	EnableWindow(hElem, nEnable);*/
 }
 
 /// <summary>
