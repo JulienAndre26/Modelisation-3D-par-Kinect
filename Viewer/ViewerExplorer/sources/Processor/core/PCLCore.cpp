@@ -984,11 +984,11 @@ void* PCLCore::merge(void* arg1, void* arg2) {
 
 		// Calculating required rigid transform to align the input cloud to the target cloud.
 
-		pcl::PointCloud<pcl::PointXYZ>::Ptr output_cloud(new pcl::PointCloud<pcl::PointXYZ>);
-		//ndt.align(*output_cloud);// , init_guess);
+		//pcl::PointCloud<pcl::PointXYZ>::Ptr output_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+		ndt.align(*output_cloud);// , init_guess);
 
 		//pcl::PointCloud<pcl::PointXYZ>::Ptr output_cloud(new pcl::PointCloud<pcl::PointXYZ>);
-		ndt.align(*output_cloud, init_guess);
+		//ndt.align(*output_cloud, init_guess);
 
 		std::cout << "Normal Distributions Transform has converged:" << ndt.hasConverged()
 			<< " score: " << ndt.getFitnessScore() << std::endl;

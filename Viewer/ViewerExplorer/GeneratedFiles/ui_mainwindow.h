@@ -55,7 +55,6 @@ public:
     QLabel *lbDistanceIcon;
     QLabel *lbLoadedFile;
     QPushButton *btnHelp;
-    QLabel *lbDistBack;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -141,14 +140,17 @@ public:
         qvtkWidgetLateral = new QVTKWidget(centralWidget);
         qvtkWidgetLateral->setObjectName(QStringLiteral("qvtkWidgetLateral"));
         qvtkWidgetLateral->setGeometry(QRect(860, 10, 281, 281));
+        qvtkWidgetLateral->setCursor(QCursor(Qt::OpenHandCursor));
         qvtkWidgetLateral->setStyleSheet(QStringLiteral(""));
         qvtkWidgetPlan = new QVTKWidget(centralWidget);
         qvtkWidgetPlan->setObjectName(QStringLiteral("qvtkWidgetPlan"));
         qvtkWidgetPlan->setGeometry(QRect(860, 300, 281, 281));
+        qvtkWidgetPlan->setCursor(QCursor(Qt::OpenHandCursor));
         qvtkWidgetPlan->setStyleSheet(QStringLiteral(""));
         qvtkWidget3D = new QVTKWidget(centralWidget);
         qvtkWidget3D->setObjectName(QStringLiteral("qvtkWidget3D"));
         qvtkWidget3D->setGeometry(QRect(220, 30, 631, 551));
+        qvtkWidget3D->setCursor(QCursor(Qt::OpenHandCursor));
         qvtkWidget3D->setStyleSheet(QStringLiteral(""));
         gif3D = new QLabel(centralWidget);
         gif3D->setObjectName(QStringLiteral("gif3D"));
@@ -161,6 +163,7 @@ public:
 "font: bold 14px;\n"
 "min-width: 10em;\n"
 "padding: 6px;"));
+        gif3D->setIndent(-1);
         gifLateral = new QLabel(centralWidget);
         gifLateral->setObjectName(QStringLiteral("gifLateral"));
         gifLateral->setGeometry(QRect(860, 10, 281, 281));
@@ -289,10 +292,6 @@ public:
 "}\n"
 "\n"
 ""));
-        lbDistBack = new QLabel(centralWidget);
-        lbDistBack->setObjectName(QStringLiteral("lbDistBack"));
-        lbDistBack->setGeometry(QRect(20, 420, 181, 161));
-        lbDistBack->setStyleSheet(QStringLiteral("z: -1;"));
         MainWindow->setCentralWidget(centralWidget);
 
         retranslateUi(MainWindow);
@@ -334,7 +333,6 @@ public:
         btnHelp->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Handling 3D model</span></p><p>Clic + Move Mouse : Rotates the model</p><p>Shift + Move Mouse : Moves the model in X, Y or Z axis</p><p>Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
         btnHelp->setText(QString());
-        lbDistBack->setText(QString());
     } // retranslateUi
 
 };
