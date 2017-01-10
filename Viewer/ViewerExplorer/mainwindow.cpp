@@ -78,6 +78,12 @@ MainWindow::MainWindow(QWidget *parent) :
 	// Variables
 	setLoadedFile("");
 	ui->lbLoadedFile->setText("Please browse a capture and open a file");
+
+	// Buttons icons
+	ui->btnBrowse->setIcon(QIcon(":/icons/browse"));
+	//button->setIconSize(QSize(16, 16));
+
+
 }
 
 MainWindow::~MainWindow()
