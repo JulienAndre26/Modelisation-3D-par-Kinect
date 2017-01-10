@@ -123,11 +123,10 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>NuiSensorChooser.lib;Kinect10.lib;$(KinectFusionLib64).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>tinyxml2.lib;NuiSensorChooser.lib;Kinect10.lib;$(KinectFusionLib64).lib;%(AdditionalDependencies)</AdditionalDependencies>
       <StackReserveSize>10000000</StackReserveSize>
       <StackCommitSize>10000000</StackCommitSize>
-      <AdditionalLibraryDirectories>
-      </AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /C /Y "$(KINECT_TOOLKIT_DIR)Redist\amd64\$(KinectFusionLib64).dll" "$(OutDir)"</Command>
@@ -202,8 +201,11 @@
     <ClInclude Include="KinectFusionParams.h" />
     <ClInclude Include="KinectFusionProcessor.h" />
     <ClInclude Include="KinectFusionProcessorFrame.h" />
+    <ClInclude Include="Standardizer.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="tinyxml2.h" />
+    <ClInclude Include="XML.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ImageRenderer.cpp" />
@@ -212,6 +214,8 @@
     <ClCompile Include="KinectFusionProcessor.cpp" />
     <ClCompile Include="KinectFusionProcessorFrame.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="tinyxml2.cpp" />
+    <ClCompile Include="XML.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="KinectFusionExplorer-D2D.rc" />

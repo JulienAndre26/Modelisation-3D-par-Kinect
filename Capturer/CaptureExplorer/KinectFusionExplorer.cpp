@@ -330,6 +330,7 @@ LRESULT CALLBACK CKinectFusionExplorer::DlgProc(
 /// <returns>S_OK on success, otherwise failure code</returns>
 void CKinectFusionExplorer::HandleCompletedFrame()
 {
+	
     KinectFusionProcessorFrame const* pFrame = nullptr;
 
     // Flush any extra WM_FRAMEREADY messages from the queue
