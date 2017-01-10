@@ -1,6 +1,7 @@
 #include "PCLCore.h"
 
 char * TOTO1() {
+
 	return strdup("lit_mur1.ply");
 }
 
@@ -774,6 +775,38 @@ void method_nico(PointCloud::Ptr source, PointCloud::Ptr target, PointCloud::Ptr
 	//
 }
 
+//#include <pcl/registration/correspondence_estimation.h>
+//#include <pcl/registration/correspondence_rejection_sample_consensus.h>
+//#include <pcl/registration/ia_ransac.h>
+//#include <pcl/features/normal_3d.h>
+//#include <pcl/features/feature.h>
+//void SCA() {
+//	
+//	pcl::CorrespondenceEstimation<FeatureT, FeatureT> est;
+//	est.setInputCloud(source_features);
+//	est.setInputTarget(target_features);
+//	est.determineCorrespondences(correspondences);
+//
+//	pcl::CorrespondenceRejectorSampleConsensus<PointT> sac;
+//	sac.setInputCloud(source);
+//	sac.setTargetCloud(target);
+//	sac.setInlierThreshold(epsilon);
+//	sac.setMaxIterations(N);
+//	sac.setInputCorrespondences(correspondences);
+//	sac.getCorrespondences(inliers);
+//	Eigen::Matrix4f transformation = sac.getBestTransformation();
+//
+//	pcl::SampleConsensusInitialAlignment<PointT, PointT, FeatureT> sac_ia;
+//	sac_ia.setNumberOfSamples(n) sac_ia.setMinSampleDistance(d);
+//	sac_ia.setCorrespondenceRandomness(k);
+//	sac_ia.setMaximumIterations(N);
+//	sac_ia.setInputCloud(source);
+//	sac_ia.setInputTarget(target);
+//	sac_ia.setSourceFeatures(source_features);
+//	sac_ia.setTargetFeatures(target_features);
+//	sac_ia.align(aligned_source);
+//	Eigen::Matrix4f = sac_ia.getFinalTransformation();
+//}
 
 
 #include <pcl/registration/ndt.h>
@@ -825,7 +858,7 @@ void* PCLCore::merge(void* arg1, void* arg2) {
 		// Filtering input scan to roughly 10% of original size to increase speed of registration.
 		pcl::PointCloud<pcl::PointXYZ>::Ptr filtered_cloud(new pcl::PointCloud<pcl::PointXYZ>);
 		pcl::ApproximateVoxelGrid<pcl::PointXYZ> approximate_voxel_filter;
-		approximate_voxel_filter.setLeafSize(0.2, 0.2, 0.2);
+		approximate_voxel_filter.setLeafSize(0.01, 0.01, 0.01);
 		approximate_voxel_filter.setInputCloud(input_cloud);
 		approximate_voxel_filter.filter(*filtered_cloud);
 		std::cout << "Filtered cloud contains " << filtered_cloud->size()
@@ -936,6 +969,7 @@ void* PCLCore::merge(void* arg1, void* arg2) {
 		ndt.setResolution(bestResolution);
 
 		// Setting max number of registration iterations.
+
 		ndt.setMaximumIterations(bestIter);
 
 		// Setting point cloud to be aligned.
@@ -944,11 +978,15 @@ void* PCLCore::merge(void* arg1, void* arg2) {
 		ndt.setInputTarget(target_cloud);
 
 		// Set initial alignment estimate found using robot odometry.
-		Eigen::AngleAxisf init_rotation(0.6931, Eigen::Vector3f::UnitZ());
+		/*Eigen::AngleAxisf init_rotation(0.6931, Eigen::Vector3f::UnitZ());
 		Eigen::Translation3f init_translation(1.79387, 0.720047, 0);
-		Eigen::Matrix4f init_guess = (init_translation * init_rotation).matrix();
+		Eigen::Matrix4f init_guess = (init_translation * init_rotation).matrix();*/
 
 		// Calculating required rigid transform to align the input cloud to the target cloud.
+
+		pcl::PointCloud<pcl::PointXYZ>::Ptr output_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+		//ndt.align(*output_cloud);// , init_guess);
+
 		//pcl::PointCloud<pcl::PointXYZ>::Ptr output_cloud(new pcl::PointCloud<pcl::PointXYZ>);
 		ndt.align(*output_cloud, init_guess);
 

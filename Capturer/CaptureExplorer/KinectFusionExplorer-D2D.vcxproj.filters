@@ -19,6 +19,12 @@
     <ClCompile Include="Timer.cpp">
       <Filter>Kinect Fusion\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="tinyxml2.cpp">
+      <Filter>Kinect Fusion\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="XML.cpp">
+      <Filter>Kinect Fusion\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KinectFusionParams.h">
@@ -53,6 +59,15 @@
     </ClInclude>
     <ClInclude Include="KinectFusionExternals.h">
       <Filter>Kinect Fusion\KinectFusionExplorer</Filter>
+    </ClInclude>
+    <ClInclude Include="tinyxml2.h">
+      <Filter>Kinect Fusion\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="XML.h">
+      <Filter>Kinect Fusion\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Standardizer.h">
+      <Filter>Kinect Fusion\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
