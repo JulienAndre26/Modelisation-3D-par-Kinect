@@ -155,7 +155,7 @@ QPushButton#btnBrowse:pressed {
       <x>10</x>
       <y>60</y>
       <width>161</width>
-      <height>16</height>
+      <height>20</height>
      </rect>
     </property>
     <property name="text">
@@ -172,9 +172,9 @@ QPushButton#btnBrowse:pressed {
     <property name="geometry">
      <rect>
       <x>860</x>
-      <y>10</y>
+      <y>30</y>
       <width>281</width>
-      <height>281</height>
+      <height>271</height>
      </rect>
     </property>
     <property name="cursor">
@@ -188,9 +188,9 @@ QPushButton#btnBrowse:pressed {
     <property name="geometry">
      <rect>
       <x>860</x>
-      <y>300</y>
+      <y>310</y>
       <width>281</width>
-      <height>281</height>
+      <height>271</height>
      </rect>
     </property>
     <property name="cursor">
@@ -235,7 +235,8 @@ border-radius: 10px;
 border-color: grey;
 font: bold 14px;
 min-width: 10em;
-padding: 6px;</string>
+padding: 6px;
+</string>
     </property>
     <property name="text">
      <string>Loading</string>
@@ -248,9 +249,9 @@ padding: 6px;</string>
     <property name="geometry">
      <rect>
       <x>860</x>
-      <y>10</y>
+      <y>30</y>
       <width>281</width>
-      <height>281</height>
+      <height>271</height>
      </rect>
     </property>
     <property name="layoutDirection">
@@ -273,9 +274,9 @@ padding: 6px;</string>
     <property name="geometry">
      <rect>
       <x>860</x>
-      <y>300</y>
+      <y>310</y>
       <width>281</width>
-      <height>281</height>
+      <height>271</height>
      </rect>
     </property>
     <property name="layoutDirection">
@@ -557,7 +558,7 @@ QPushButton#btnDelete:hover {
      <rect>
       <x>220</x>
       <y>10</y>
-      <width>601</width>
+      <width>631</width>
       <height>20</height>
      </rect>
     </property>
@@ -574,7 +575,7 @@ QPushButton#btnDelete:hover {
    <widget class="QPushButton" name="btnHelp">
     <property name="geometry">
      <rect>
-      <x>830</x>
+      <x>1120</x>
       <y>10</y>
       <width>20</width>
       <height>20</height>

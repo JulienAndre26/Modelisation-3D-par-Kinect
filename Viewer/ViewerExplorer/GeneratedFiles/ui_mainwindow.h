@@ -134,17 +134,17 @@ public:
 ""));
         lbCaptureName = new QLabel(centralWidget);
         lbCaptureName->setObjectName(QStringLiteral("lbCaptureName"));
-        lbCaptureName->setGeometry(QRect(10, 60, 161, 16));
+        lbCaptureName->setGeometry(QRect(10, 60, 161, 20));
         lbCaptureName->setTextFormat(Qt::RichText);
         lbCaptureName->setAlignment(Qt::AlignCenter);
         qvtkWidgetLateral = new QVTKWidget(centralWidget);
         qvtkWidgetLateral->setObjectName(QStringLiteral("qvtkWidgetLateral"));
-        qvtkWidgetLateral->setGeometry(QRect(860, 10, 281, 281));
+        qvtkWidgetLateral->setGeometry(QRect(860, 30, 281, 271));
         qvtkWidgetLateral->setCursor(QCursor(Qt::OpenHandCursor));
         qvtkWidgetLateral->setStyleSheet(QStringLiteral(""));
         qvtkWidgetPlan = new QVTKWidget(centralWidget);
         qvtkWidgetPlan->setObjectName(QStringLiteral("qvtkWidgetPlan"));
-        qvtkWidgetPlan->setGeometry(QRect(860, 300, 281, 281));
+        qvtkWidgetPlan->setGeometry(QRect(860, 310, 281, 271));
         qvtkWidgetPlan->setCursor(QCursor(Qt::OpenHandCursor));
         qvtkWidgetPlan->setStyleSheet(QStringLiteral(""));
         qvtkWidget3D = new QVTKWidget(centralWidget);
@@ -162,11 +162,12 @@ public:
 "border-color: grey;\n"
 "font: bold 14px;\n"
 "min-width: 10em;\n"
-"padding: 6px;"));
+"padding: 6px;\n"
+""));
         gif3D->setIndent(-1);
         gifLateral = new QLabel(centralWidget);
         gifLateral->setObjectName(QStringLiteral("gifLateral"));
-        gifLateral->setGeometry(QRect(860, 10, 281, 281));
+        gifLateral->setGeometry(QRect(860, 30, 281, 271));
         gifLateral->setLayoutDirection(Qt::LeftToRight);
         gifLateral->setStyleSheet(QLatin1String("border-style: outset;\n"
 "border-width: 2px;\n"
@@ -177,7 +178,7 @@ public:
 "padding: 6px;"));
         gifPlan = new QLabel(centralWidget);
         gifPlan->setObjectName(QStringLiteral("gifPlan"));
-        gifPlan->setGeometry(QRect(860, 300, 281, 281));
+        gifPlan->setGeometry(QRect(860, 310, 281, 271));
         gifPlan->setLayoutDirection(Qt::LeftToRight);
         gifPlan->setStyleSheet(QLatin1String("border-style: outset;\n"
 "border-width: 2px;\n"
@@ -277,12 +278,12 @@ public:
         lbDistanceIcon->setAlignment(Qt::AlignBottom|Qt::AlignHCenter);
         lbLoadedFile = new QLabel(centralWidget);
         lbLoadedFile->setObjectName(QStringLiteral("lbLoadedFile"));
-        lbLoadedFile->setGeometry(QRect(220, 10, 601, 20));
+        lbLoadedFile->setGeometry(QRect(220, 10, 631, 20));
         lbLoadedFile->setTextFormat(Qt::AutoText);
         lbLoadedFile->setAlignment(Qt::AlignCenter);
         btnHelp = new QPushButton(centralWidget);
         btnHelp->setObjectName(QStringLiteral("btnHelp"));
-        btnHelp->setGeometry(QRect(830, 10, 20, 20));
+        btnHelp->setGeometry(QRect(1120, 10, 20, 20));
         btnHelp->setStyleSheet(QLatin1String("QPushButton#btnHelp {\n"
 "	border: none;\n"
 "}\n"

@@ -5,7 +5,9 @@
         <file alias="distance">resources/icons/distance.png</file>
         <file alias="pin">resources/icons/pin.png</file>
         <file alias="help">resources/icons/help.png</file>
-        <file alias="browse">resources/icons/index.jpg</file>
+        <file alias="browse">resources/icons/browse.png</file>
+        <file alias="show">resources/icons/show.png</file>
+        <file alias="merge">resources/icons/merge.png</file>
     </qresource>
     <qresource prefix="/gifs">
         <file alias="init">resources/gifs/init.gif</file>

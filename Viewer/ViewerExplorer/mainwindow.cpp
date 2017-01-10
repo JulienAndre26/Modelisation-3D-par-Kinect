@@ -62,6 +62,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->btnHelp->setIcon(iconHelp);
 	ui->btnHelp->setIconSize(pixHelp.rect().size());
 
+	ui->btnBrowse->setIcon(QIcon(":/icons/browse"));
+	ui->btnShow->setIcon(QIcon(":/icons/show"));
+	ui->btnMerge->setIcon(QIcon(":/icons/merge"));
+
 	// Gifs
 	movieInit = new QMovie(":/gifs/init");
 	movieLoad = new QMovie(":/gifs/load");
@@ -78,11 +82,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	// Variables
 	setLoadedFile("");
 	ui->lbLoadedFile->setText("Please browse a capture and open a file");
-
-	// Buttons icons
-	ui->btnBrowse->setIcon(QIcon(":/icons/browse"));
-	//button->setIconSize(QSize(16, 16));
-
+	
 
 }
 
@@ -439,67 +439,116 @@ void MainWindow::setWidgetBorderRadius(QWidget* widget, int radius) {
 
 void MainWindow::setViewDisplay(int nView, bool bShowWidget, int nStatus)
 {
-	QVTKWidget * qw;
-	QLabel * ql;
-	QMovie * qm;
+	QVTKWidget * qw = getWidget(nView);
+	QLabel * ql = getLabel(nView);
+	QMovie * qm = getMovie(nStatus);
 	
+	// Stopping previous movie
+	if (ql != nullptr)
+		ql->movie()->stop();
+
+	if (qm != nullptr) 
+	{
+		ql->setMovie(qm);
+		qm->start();
+	}
+
+	if (ql != nullptr) 
+	{
+		ql->setVisible(!bShowWidget);
+		ql->repaint();
+	}
+
+	if (qw != nullptr)
+	{
+		qw->setVisible(bShowWidget);
+		if (bShowWidget)
+			setWidgetBorderRadius(qw, 6);
+	}
+}
+
+QMovie * MainWindow::getMovie(int nStatus)
+{
+	QMovie * qm;
+	 
+	// Set the new movie
+	switch (nStatus) {
+	case MOVIE_INIT:
+		qm = movieInit;
+		break;
+	case MOVIE_LOAD:
+		qm = movieLoad;
+		break;
+	case MOVIE_MERGE:
+		qm = movieMerge;
+		break;
+	default:
+		qm = nullptr;
+	}
+
+	return qm;
+}
+
+QVTKWidget * MainWindow::getWidget(int nView)
+{
+	QVTKWidget * qw;
+
 	// Getting Qt elements to set
 	switch (nView)
 	{
 	case VIEW_3D:
 		qw = this->ui->qvtkWidget3D;
-		ql= this->ui->gif3D;
+		//ql = this->ui->gif3D;
 		break;
 
 	case VIEW_LATERAL:
 		qw = this->ui->qvtkWidgetLateral;
-		ql = this->ui->gifLateral;
+		//ql = this->ui->gifLateral;
 		break;
 
 	case VIEW_PLAN:
 		qw = this->ui->qvtkWidgetPlan;
+		//ql = this->ui->gifPlan;
+		break;
+
+	default:
+		cout << "MainWindow::setViewDisplay : Invalid view number " + nView << endl;
+		//ql = nullptr;
+		qw = nullptr;
+	}
+
+	return qw;
+}
+
+QLabel * MainWindow::getLabel(int nView)
+{
+	QLabel * ql;
+
+	// Getting Qt elements to set
+	switch (nView)
+	{
+	case VIEW_3D:
+		//qw = this->ui->qvtkWidget3D;
+		ql = this->ui->gif3D;
+		break;
+
+	case VIEW_LATERAL:
+		//qw = this->ui->qvtkWidgetLateral;
+		ql = this->ui->gifLateral;
+		break;
+
+	case VIEW_PLAN:
+		//qw = this->ui->qvtkWidgetPlan;
 		ql = this->ui->gifPlan;
 		break;
 
 	default:
 		cout << "MainWindow::setViewDisplay : Invalid view number " + nView << endl;
-		return;
+		ql = nullptr;
+		//qw = nullptr;
 	}
 
-	//ql->clear();
-
-	// Stopping previous movie
-	ql->movie()->stop();
-
-	// Set the new movie
-	if (nStatus != NULL)
-	{
-		switch (nStatus) {
-		case MOVIE_INIT:
-			qm = movieInit;
-			break;
-		case MOVIE_LOAD:
-			qm = movieLoad;
-			break;
-		case MOVIE_MERGE:
-			qm = movieMerge;
-			break;
-		default:
-			qm = nullptr;
-		}
-
-		ql->setMovie(qm);
-		qm->start();
-	}
-
-	ql->setVisible(!bShowWidget);
-	qw->setVisible(bShowWidget);
-
-	if (bShowWidget)
-		setWidgetBorderRadius(qw, 6);
-
-	ql->repaint();
-
+	return ql;
 }
 
 void MainWindow::setAllViewDisplay(bool bShowWidget, int nStatus)
