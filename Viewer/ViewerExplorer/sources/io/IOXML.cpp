@@ -27,9 +27,14 @@ int IOXML::init(std::string filename) {
 		file->close();
 		return XML_IMPORT_ERROR;
 	}
+	root = document->documentElement();
 	element = &(document->firstChild().toElement());
 	// everything is ok
 	return XML_OK;
+}
+
+QDomElement * IOXML::findElement(std::string name) {
+	return &(root.firstChildElement(QString(name.c_str())));
 }
 
 /*
@@ -37,17 +42,9 @@ int IOXML::init(std::string filename) {
 * of an element according to its tag name.
 */
 std::string IOXML::get(std::string name) {
-	element = &(document->firstChild().toElement());
-
-	// retrieve element list
-	QDomNodeList  elt = element->elementsByTagName(QString::fromStdString(name));
-
-
-	std::cout << name << " with size : " << elt.size() << std::endl;
-	// if some elements have been found
-	if (elt.size() > 0)
-		// return the first one
-		return  elt.at(0).toElement().text().toLocal8Bit().constData();
+	QDomElement * elt = findElement(name);
+	if (!elt->isNull()) 
+		return elt->text().toLocal8Bit().constData();
 	else
 		return std::string("ERROR");
 }
@@ -64,6 +61,47 @@ void IOXML::add(std::string name, float value) {
 
 }
 
+bool IOXML::edit(std::string name, std::string newValue) {
+	QDomElement elt = root.firstChildElement(QString(name.c_str()));
+	if (!elt.isNull() && !elt.firstChild().isNull()) {
+		elt.firstChild().setNodeValue(newValue.c_str());
+		return true;
+	}
+	return false;
+}
+
+bool IOXML::edit(std::string name, int newValue) {
+	QDomElement elt = root.firstChildElement(QString(name.c_str()));
+	if (!elt.isNull() && !elt.firstChild().isNull()) {
+		elt.firstChild().setNodeValue(std::to_string(newValue).c_str());
+		return true;
+	}
+	return false;
+}
+
+bool IOXML::edit(std::string name, float newValue) {
+	QDomElement elt = root.firstChildElement(QString(name.c_str()));
+	if (!elt.isNull() && !elt.firstChild().isNull()) {
+		elt.firstChild().setNodeValue(std::to_string(newValue).c_str());
+		return true;
+	}
+	return false;
+}
+
 bool IOXML::save(std::string filename) {
+	try {
+		file = new QFile(filename.c_str());
+
+		if (file->open(QIODevice::WriteOnly)) {
+			file->write(document->toString().toLocal8Bit().constData());
+			file->close();
+			return true;
+		}
+		
+	}
+	catch (const std::exception & e){
+		std::cerr << e.what();
+	}
+	
 	return false;
 }
