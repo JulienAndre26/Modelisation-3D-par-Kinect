@@ -105,7 +105,6 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 	ui->qvtkWidgetPlan->setMaximumWidth(value);
 	ui->gifLateral->setMaximumWidth(value);
 	ui->gifPlan->setMaximumWidth(value);
-	ui->wdgRightTop->setMaximumWidth(value);
 
 	setWidgetBorderRadius(ui->qvtkWidget3D, 6);
 	setWidgetBorderRadius(ui->qvtkWidgetLateral, 6);

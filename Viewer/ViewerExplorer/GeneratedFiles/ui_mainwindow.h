@@ -14,6 +14,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QGridLayout>
+#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QListWidget>
@@ -37,7 +38,8 @@ public:
     QVTKWidget *qvtkWidget3D;
     QLabel *gif3D;
     QVBoxLayout *vlRight;
-    QWidget *wdgRightTop;
+    QHBoxLayout *horizontalLayout;
+    QLabel *label;
     QPushButton *btnHelp;
     QVTKWidget *qvtkWidgetLateral;
     QLabel *gifLateral;
@@ -110,19 +112,13 @@ public:
         gif3D->setObjectName(QStringLiteral("gif3D"));
         gif3D->setMinimumSize(QSize(186, 0));
         gif3D->setLayoutDirection(Qt::LeftToRight);
-        gif3D->setStyleSheet(QLatin1String("QLabel#gif3D {\n"
-"	border-style: outset;\n"
-"	border-width: 2px;\n"
-"	border-radius: 10px;\n"
-"	border-color: grey;\n"
-"	font: bold 14px;\n"
-"	min-width: 10em;\n"
-"	padding: 6px;\n"
-"}\n"
-"\n"
-"QLabel#gif3D:hover {\n"
-"	padding: 20px;\n"
-"}"));
+        gif3D->setStyleSheet(QLatin1String("border-style: outset;\n"
+"border-width: 2px;\n"
+"border-radius: 10px;\n"
+"border-color: grey;\n"
+"font: bold 14px;\n"
+"min-width: 10em;\n"
+"padding: 6px;"));
         gif3D->setIndent(-1);
 
         vlMid->addWidget(gif3D);
@@ -133,13 +129,20 @@ public:
         vlRight = new QVBoxLayout();
         vlRight->setSpacing(6);
         vlRight->setObjectName(QStringLiteral("vlRight"));
-        wdgRightTop = new QWidget(centralWidget);
-        wdgRightTop->setObjectName(QStringLiteral("wdgRightTop"));
-        wdgRightTop->setMinimumSize(QSize(100, 20));
-        wdgRightTop->setMaximumSize(QSize(300, 20));
-        btnHelp = new QPushButton(wdgRightTop);
+        horizontalLayout = new QHBoxLayout();
+        horizontalLayout->setSpacing(6);
+        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        label = new QLabel(centralWidget);
+        label->setObjectName(QStringLiteral("label"));
+        label->setMinimumSize(QSize(0, 20));
+        label->setMaximumSize(QSize(16777215, 20));
+
+        horizontalLayout->addWidget(label);
+
+        btnHelp = new QPushButton(centralWidget);
         btnHelp->setObjectName(QStringLiteral("btnHelp"));
-        btnHelp->setGeometry(QRect(190, 0, 20, 20));
+        btnHelp->setMinimumSize(QSize(20, 20));
+        btnHelp->setMaximumSize(QSize(20, 20));
         btnHelp->setStyleSheet(QLatin1String("QPushButton#btnHelp {\n"
 "	border: none;\n"
 "}\n"
@@ -150,7 +153,10 @@ public:
 "\n"
 ""));
 
-        vlRight->addWidget(wdgRightTop);
+        horizontalLayout->addWidget(btnHelp);
+
+
+        vlRight->addLayout(horizontalLayout);
 
         qvtkWidgetLateral = new QVTKWidget(centralWidget);
         qvtkWidgetLateral->setObjectName(QStringLiteral("qvtkWidgetLateral"));
@@ -397,6 +403,7 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "Kinect 3D Modelling", 0));
         lbLoadedFile->setText(QApplication::translate("MainWindow", "Please browse a capture and open a file", 0));
         gif3D->setText(QApplication::translate("MainWindow", "Loading", 0));
+        label->setText(QApplication::translate("MainWindow", "invisible", 0));
 #ifndef QT_NO_TOOLTIP
         btnHelp->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Handling 3D model</span></p><p>Clic + Move Mouse : Rotates the model</p><p>Shift + Move Mouse : Moves the model in X, Y or Z axis</p><p>Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
