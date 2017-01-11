@@ -87,9 +87,12 @@ private slots:
     void on_btnBrowse_clicked();
     void on_btnMerge_clicked();
 	void on_btnShow_clicked();
-	void on_btnHelp_clicked();
+	void on_btnHelpR_clicked();
+	void on_btnHelpM_clicked();
 	void on_btnAdd_clicked();
 	void on_btnDelete_clicked();
+	void on_btnFS_clicked();
+	void on_btnExitFS_clicked();
 
 	void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
 	void on_listWidget_itemClicked(QListWidgetItem *item);
@@ -103,6 +106,9 @@ private:
 	QMovie * movieMerge;
 
 	bool hasColor = false;
+	bool isFullscreenActive = false;
+	bool isWidgetActive = false;
+
 	QDir captureDirectory;
 	QString selectedFile;
 	QString loadedFile;
@@ -134,4 +140,7 @@ private:
 	void stopMergeThread();
 	void stopThread(QThread * qThread);
 
+	void setFullscreenActive(bool bFullscreen);
+
+	void showHelp();
 };

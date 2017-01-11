@@ -35,6 +35,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->lbPin1->setVisible(false);
 	ui->lbPin2->setVisible(false);
 	ui->lbDistanceIcon->setVisible(false);
+	ui->btnExitFS->setVisible(false);
+	ui->btnHelpM->setVisible(false);
 
 	// Alignements
 	ui->gif3D->setAlignment(Qt::AlignCenter);
@@ -61,16 +63,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	QPixmap pixHelp(":/icons/help");
 	QIcon iconHelp(pixHelp);
-	ui->btnHelp->setIcon(iconHelp);
-	ui->btnHelp->setIconSize(pixHelp.rect().size());
+	ui->btnHelpR->setIcon(iconHelp);
+	ui->btnHelpR->setIconSize(pixHelp.rect().size());
+	ui->btnHelpM->setIcon(iconHelp);
+	ui->btnHelpM->setIconSize(pixHelp.rect().size());
 
 	ui->btnBrowse->setIcon(QIcon(":/icons/browse"));
 	ui->btnShow->setIcon(QIcon(":/icons/show"));
 	ui->btnMerge->setIcon(QIcon(":/icons/merge"));
 
-	ui->btnBrowse->setIcon(QIcon(":/icons/browse"));
-	ui->btnShow->setIcon(QIcon(":/icons/show"));
-	ui->btnMerge->setIcon(QIcon(":/icons/merge"));
+	ui->btnFS->setIcon(QIcon(":/icons/fs"));
+	ui->btnExitFS->setIcon(QIcon(":/icons/exit_fs"));
 
 	// Gifs
 	movieInit = new QMovie(":/gifs/init");
@@ -114,10 +117,14 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 }
 
 
-void MainWindow::on_btnHelp_clicked()
+void MainWindow::on_btnHelpR_clicked()
 {
-	QMessageBox::information(this, "Handling 3D model", "<p><b>Handling 3D model</b></p><p><img src = ':/icons/m_left'> + <img src = ':/icons/m_move'> : Rotates the model</p><p><img src = ':/icons/k_shift'> + <img src = ':/icons/m_left'> + <img src = ':/icons/m_move'> : Moves the model in X, Y or Z axis</p><p><img src = ':/icons/k_ctrl'> + <img src = ':/icons/m_left'> + <img src = ':/icons/m_move'> : Rotates the model in X and Y axis</p><p><img src = ':/icons/k_shift'> + <img src = ':/icons/m_left'> : Puts a pin for measurement (place two pins to get the distance between pins)</p>",
-		QMessageBox::Close);
+	showHelp();
+}
+
+void MainWindow::on_btnHelpM_clicked()
+{
+	showHelp();
 }
 
 void MainWindow::on_btnBrowse_clicked()
@@ -142,7 +149,11 @@ void MainWindow::importFileOpened(QString fileName)
 
 		updateFileList();
 		
+		setLoadedFile("");
 		ui->lbLoadedFile->setText("Please open a file");
+
+		isWidgetActive = false;
+		setFullscreenActive(this->isFullscreenActive);
 	}
 }
 
@@ -160,7 +171,7 @@ void MainWindow::updateFileList()
 	font.setPointSize(8);
 	font.setFixedPitch(true);
 
-	QIcon fileIcon(":icons/3d");
+	QIcon fileIcon(":icons/file");
 	for (int i = 0; i < ui->listWidget->count(); ++i)
 	{
 		QListWidgetItem* item = ui->listWidget->item(i);
@@ -495,13 +506,14 @@ void MainWindow::setViewDisplay(int nView, bool bShowWidget, int nStatus)
 		qm->start();
 	}
 
-	if (ql != nullptr) 
+	bool bDisplay = nView == VIEW_3D || ((nView == VIEW_LATERAL || nView == VIEW_PLAN) && !this->isFullscreenActive);
+	if (ql != nullptr && bDisplay)
 	{
 		ql->setVisible(!bShowWidget);
 		ql->repaint();
 	}
 
-	if (qw != nullptr)
+	if (qw != nullptr && isWidgetActive && bDisplay)
 	{
 		qw->setVisible(bShowWidget);
 		if (bShowWidget)
@@ -540,22 +552,18 @@ QVTKWidget * MainWindow::getWidget(int nView)
 	{
 	case VIEW_3D:
 		qw = this->ui->qvtkWidget3D;
-		//ql = this->ui->gif3D;
 		break;
 
 	case VIEW_LATERAL:
 		qw = this->ui->qvtkWidgetLateral;
-		//ql = this->ui->gifLateral;
 		break;
 
 	case VIEW_PLAN:
 		qw = this->ui->qvtkWidgetPlan;
-		//ql = this->ui->gifPlan;
 		break;
 
 	default:
 		cout << "MainWindow::setViewDisplay : Invalid view number " + nView << endl;
-		//ql = nullptr;
 		qw = nullptr;
 	}
 
@@ -602,6 +610,8 @@ void MainWindow::setAllViewDisplay(bool bShowWidget, int nStatus)
 
 void MainWindow::processView(int nView)
 {
+	isWidgetActive = false;
+
 	switch (nView)
 	{
 	case VIEW_3D:
@@ -616,6 +626,8 @@ void MainWindow::processView(int nView)
 	default:
 		cout << "MainWindow::processView : Invalid view number " + nView << endl;
 	}
+
+	isWidgetActive = true;
 }
 
 void MainWindow::on_btnAdd_clicked()
@@ -746,4 +758,49 @@ void MainWindow::reduceFile(std::string file)
 	ThreadReduce * threadReduce = new ThreadReduce(file, &reduceLock);
 	QObject::connect(threadReduce, SIGNAL(finished()), threadReduce, SLOT(onEnd()));
 	threadReduce->start();
+}
+
+void MainWindow::on_btnFS_clicked() 
+{
+	setFullscreenActive(true);
+}
+
+void MainWindow::on_btnExitFS_clicked() 
+{
+	setFullscreenActive(false);
+}
+
+void MainWindow::setFullscreenActive(bool bFullscreen)
+{
+	cout << "setFullscreen(" << bFullscreen << ") isWidgetActive = " << isWidgetActive << endl;
+
+	ui->btnFS->setVisible(!bFullscreen);
+	ui->lbInvisible->setVisible(!bFullscreen);
+	ui->btnHelpR->setVisible(!bFullscreen);
+
+	bool bDisplayGifs = !isWidgetActive && !bFullscreen;
+	ui->gifLateral->setVisible(bDisplayGifs);
+	ui->gifPlan->setVisible(bDisplayGifs);
+
+	bool bDisplayWidgets = isWidgetActive && !bFullscreen;
+	ui->qvtkWidgetLateral->setVisible(bDisplayWidgets);
+	ui->qvtkWidgetPlan->setVisible(bDisplayWidgets);
+	
+	ui->btnExitFS->setVisible(bFullscreen);
+	ui->btnHelpM->setVisible(bFullscreen);
+
+	if (bDisplayWidgets)
+	{
+		setWidgetBorderRadius(ui->qvtkWidgetLateral, 6);
+		setWidgetBorderRadius(ui->qvtkWidgetPlan, 6);
+	}
+	setWidgetBorderRadius(ui->qvtkWidget3D, 6);
+
+	this->isFullscreenActive = bFullscreen;
+}
+
+void MainWindow::showHelp()
+{
+	QMessageBox::information(this, "Handling 3D model", "<p><b>Handling 3D model</b></p><p><img src = ':/icons/m_left'> + <img src = ':/icons/m_move'> : Rotates the model</p><p><img src = ':/icons/k_shift'> + <img src = ':/icons/m_left'> + <img src = ':/icons/m_move'> : Moves the model in X, Y or Z axis</p><p><img src = ':/icons/k_ctrl'> + <img src = ':/icons/m_left'> + <img src = ':/icons/m_move'> : Rotates the model in X and Y axis</p><p><img src = ':/icons/k_shift'> + <img src = ':/icons/m_left'> : Puts a pin for measurement (place two pins to get the distance between pins)</p>",
+		QMessageBox::Close);
 }

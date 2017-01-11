@@ -34,13 +34,17 @@ public:
     QGridLayout *gridLayout_2;
     QGridLayout *gridLayout;
     QVBoxLayout *vlMid;
+    QHBoxLayout *horizontalLayout_2;
     QLabel *lbLoadedFile;
+    QPushButton *btnExitFS;
+    QPushButton *btnHelpM;
     QVTKWidget *qvtkWidget3D;
     QLabel *gif3D;
     QVBoxLayout *vlRight;
     QHBoxLayout *horizontalLayout;
     QLabel *lbInvisible;
-    QPushButton *btnHelp;
+    QPushButton *btnFS;
+    QPushButton *btnHelpR;
     QVTKWidget *qvtkWidgetLateral;
     QLabel *gifLateral;
     QVTKWidget *qvtkWidgetPlan;
@@ -90,6 +94,9 @@ public:
         vlMid = new QVBoxLayout();
         vlMid->setSpacing(6);
         vlMid->setObjectName(QStringLiteral("vlMid"));
+        horizontalLayout_2 = new QHBoxLayout();
+        horizontalLayout_2->setSpacing(6);
+        horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
         lbLoadedFile = new QLabel(centralWidget);
         lbLoadedFile->setObjectName(QStringLiteral("lbLoadedFile"));
         lbLoadedFile->setMinimumSize(QSize(0, 20));
@@ -99,7 +106,38 @@ public:
         lbLoadedFile->setTextFormat(Qt::AutoText);
         lbLoadedFile->setAlignment(Qt::AlignCenter);
 
-        vlMid->addWidget(lbLoadedFile);
+        horizontalLayout_2->addWidget(lbLoadedFile);
+
+        btnExitFS = new QPushButton(centralWidget);
+        btnExitFS->setObjectName(QStringLiteral("btnExitFS"));
+        btnExitFS->setMinimumSize(QSize(20, 20));
+        btnExitFS->setMaximumSize(QSize(20, 20));
+        btnExitFS->setStyleSheet(QLatin1String("QPushButton#btnExitFS {\n"
+"	border: none;\n"
+"}\n"
+"\n"
+"QPushButton#btnExitFS:hover {\n"
+"	padding: 2px;\n"
+"}"));
+
+        horizontalLayout_2->addWidget(btnExitFS);
+
+        btnHelpM = new QPushButton(centralWidget);
+        btnHelpM->setObjectName(QStringLiteral("btnHelpM"));
+        btnHelpM->setMinimumSize(QSize(20, 20));
+        btnHelpM->setMaximumSize(QSize(20, 20));
+        btnHelpM->setStyleSheet(QLatin1String("QPushButton#btnHelpM {\n"
+"	border: none;\n"
+"}\n"
+"\n"
+"QPushButton#btnHelpM:hover {\n"
+"	padding: 2px;\n"
+"}"));
+
+        horizontalLayout_2->addWidget(btnHelpM);
+
+
+        vlMid->addLayout(horizontalLayout_2);
 
         qvtkWidget3D = new QVTKWidget(centralWidget);
         qvtkWidget3D->setObjectName(QStringLiteral("qvtkWidget3D"));
@@ -140,19 +178,33 @@ public:
 
         horizontalLayout->addWidget(lbInvisible);
 
-        btnHelp = new QPushButton(centralWidget);
-        btnHelp->setObjectName(QStringLiteral("btnHelp"));
-        btnHelp->setMinimumSize(QSize(20, 20));
-        btnHelp->setMaximumSize(QSize(20, 20));
-        btnHelp->setStyleSheet(QLatin1String("QPushButton#btnHelp {\n"
+        btnFS = new QPushButton(centralWidget);
+        btnFS->setObjectName(QStringLiteral("btnFS"));
+        btnFS->setMinimumSize(QSize(20, 20));
+        btnFS->setMaximumSize(QSize(20, 20));
+        btnFS->setStyleSheet(QLatin1String("QPushButton#btnFS {\n"
 "	border: none;\n"
 "}\n"
 "\n"
-"QPushButton#btnHelp:hover {\n"
+"QPushButton#btnFS:hover {\n"
 "	padding: 2px;\n"
 "}"));
 
-        horizontalLayout->addWidget(btnHelp);
+        horizontalLayout->addWidget(btnFS);
+
+        btnHelpR = new QPushButton(centralWidget);
+        btnHelpR->setObjectName(QStringLiteral("btnHelpR"));
+        btnHelpR->setMinimumSize(QSize(20, 20));
+        btnHelpR->setMaximumSize(QSize(20, 20));
+        btnHelpR->setStyleSheet(QLatin1String("QPushButton#btnHelpR {\n"
+"	border: none;\n"
+"}\n"
+"\n"
+"QPushButton#btnHelpR:hover {\n"
+"	padding: 2px;\n"
+"}"));
+
+        horizontalLayout->addWidget(btnHelpR);
 
 
         vlRight->addLayout(horizontalLayout);
@@ -416,12 +468,15 @@ public:
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "Kinect 3D Modelling", 0));
         lbLoadedFile->setText(QApplication::translate("MainWindow", "Please browse a capture and open a file", 0));
+        btnExitFS->setText(QString());
+        btnHelpM->setText(QString());
         gif3D->setText(QApplication::translate("MainWindow", "Loading", 0));
         lbInvisible->setText(QString());
+        btnFS->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        btnHelp->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Handling 3D model</span></p><p>Clic + Move Mouse : Rotates the model</p><p>Shift + Move Mouse : Moves the model in X, Y or Z axis</p><p>Ctrl + Move Mouse : Rotates the model in X and Y axis</p><p>Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)</p></body></html>", 0));
+        btnHelpR->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Handling 3D model</span></p><p>Clic + Move Mouse : Rotates the model</p><p>Shift + Move Mouse : Moves the model in X, Y or Z axis</p><p>Ctrl + Move Mouse : Rotates the model in X and Y axis</p><p>Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
-        btnHelp->setText(QString());
+        btnHelpR->setText(QString());
         gifLateral->setText(QApplication::translate("MainWindow", "Loading", 0));
         gifPlan->setText(QApplication::translate("MainWindow", "Loading", 0));
 #ifndef QT_NO_TOOLTIP
