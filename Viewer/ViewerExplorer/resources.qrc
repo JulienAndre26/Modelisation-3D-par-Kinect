@@ -8,6 +8,15 @@
         <file alias="browse">resources/icons/browse.png</file>
         <file alias="show">resources/icons/show.png</file>
         <file alias="merge">resources/icons/merge.png</file>
+        <file alias="w_hide">resources/icons/win_hide.png</file>
+        <file alias="w_max">resources/icons/win_maximize.png</file>
+        <file alias="w_quit">resources/icons/win_quit.png</file>
+        <file alias="w_min">resources/icons/win_reduce.png</file>
+        <file alias="file">resources/icons/file.png</file>
+        <file alias="k_ctrl">resources/icons/key_ctrl.png</file>
+        <file alias="k_shift">resources/icons/key_shift.png</file>
+        <file alias="m_left">resources/icons/mouse_left.png</file>
+        <file alias="m_move">resources/icons/mouse_move.png</file>
     </qresource>
     <qresource prefix="/gifs">
         <file alias="init">resources/gifs/init.gif</file>

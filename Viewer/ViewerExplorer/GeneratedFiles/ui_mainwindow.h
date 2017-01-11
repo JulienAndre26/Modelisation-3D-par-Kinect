@@ -39,7 +39,7 @@ public:
     QLabel *gif3D;
     QVBoxLayout *vlRight;
     QHBoxLayout *horizontalLayout;
-    QLabel *label;
+    QLabel *lbInvisible;
     QPushButton *btnHelp;
     QVTKWidget *qvtkWidgetLateral;
     QLabel *gifLateral;
@@ -54,6 +54,7 @@ public:
     QPushButton *btnDelete;
     QLabel *lbCaptureName;
     QPushButton *btnBrowse;
+    QLabel *label;
     QWidget *wdgLeftBottom;
     QLabel *lbPin1;
     QLabel *lbP2y;
@@ -132,12 +133,12 @@ public:
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(6);
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
-        label = new QLabel(centralWidget);
-        label->setObjectName(QStringLiteral("label"));
-        label->setMinimumSize(QSize(0, 20));
-        label->setMaximumSize(QSize(16777215, 20));
+        lbInvisible = new QLabel(centralWidget);
+        lbInvisible->setObjectName(QStringLiteral("lbInvisible"));
+        lbInvisible->setMinimumSize(QSize(0, 20));
+        lbInvisible->setMaximumSize(QSize(16777215, 20));
 
-        horizontalLayout->addWidget(label);
+        horizontalLayout->addWidget(lbInvisible);
 
         btnHelp = new QPushButton(centralWidget);
         btnHelp->setObjectName(QStringLiteral("btnHelp"));
@@ -148,10 +149,8 @@ public:
 "}\n"
 "\n"
 "QPushButton#btnHelp:hover {\n"
-"	padding: 1px;\n"
-"}\n"
-"\n"
-""));
+"	padding: 2px;\n"
+"}"));
 
         horizontalLayout->addWidget(btnHelp);
 
@@ -215,7 +214,7 @@ public:
         wdgLeftTop = new QWidget(centralWidget);
         wdgLeftTop->setObjectName(QStringLiteral("wdgLeftTop"));
         wdgLeftTop->setMinimumSize(QSize(250, 300));
-        wdgLeftTop->setMaximumSize(QSize(250, 16777215));
+        wdgLeftTop->setMaximumSize(QSize(250, 300));
         listWidget = new QListWidget(wdgLeftTop);
         listWidget->setObjectName(QStringLiteral("listWidget"));
         listWidget->setGeometry(QRect(20, 100, 201, 151));
@@ -223,7 +222,8 @@ public:
 "border-width: 2px;\n"
 "border-radius: 6px;\n"
 "border-color: grey;\n"
-"padding: 4px;"));
+"padding: 4px;\n"
+""));
         btnAdd = new QPushButton(wdgLeftTop);
         btnAdd->setObjectName(QStringLiteral("btnAdd"));
         btnAdd->setGeometry(QRect(180, 80, 21, 21));
@@ -300,6 +300,7 @@ public:
         lbCaptureName = new QLabel(wdgLeftTop);
         lbCaptureName->setObjectName(QStringLiteral("lbCaptureName"));
         lbCaptureName->setGeometry(QRect(20, 80, 161, 16));
+        lbCaptureName->setStyleSheet(QStringLiteral("font: 9pt \"Nirmala UI\";"));
         lbCaptureName->setTextFormat(Qt::RichText);
         lbCaptureName->setAlignment(Qt::AlignCenter);
         btnBrowse = new QPushButton(wdgLeftTop);
@@ -328,49 +329,62 @@ public:
 
         vlLeft->addWidget(wdgLeftTop);
 
+        label = new QLabel(centralWidget);
+        label->setObjectName(QStringLiteral("label"));
+
+        vlLeft->addWidget(label);
+
         wdgLeftBottom = new QWidget(centralWidget);
         wdgLeftBottom->setObjectName(QStringLiteral("wdgLeftBottom"));
         wdgLeftBottom->setMinimumSize(QSize(250, 245));
-        wdgLeftBottom->setMaximumSize(QSize(250, 16777215));
+        wdgLeftBottom->setMaximumSize(QSize(250, 245));
         lbPin1 = new QLabel(wdgLeftBottom);
         lbPin1->setObjectName(QStringLiteral("lbPin1"));
-        lbPin1->setGeometry(QRect(50, 150, 41, 31));
+        lbPin1->setGeometry(QRect(50, 110, 41, 31));
         lbPin1->setAlignment(Qt::AlignCenter);
         lbP2y = new QLabel(wdgLeftBottom);
         lbP2y->setObjectName(QStringLiteral("lbP2y"));
-        lbP2y->setGeometry(QRect(130, 200, 81, 16));
+        lbP2y->setGeometry(QRect(130, 160, 81, 16));
+        lbP2y->setStyleSheet(QStringLiteral("font: 9pt \"Nirmala UI\";"));
         lbP2y->setTextFormat(Qt::RichText);
         lbP1x = new QLabel(wdgLeftBottom);
         lbP1x->setObjectName(QStringLiteral("lbP1x"));
-        lbP1x->setGeometry(QRect(30, 180, 81, 16));
+        lbP1x->setGeometry(QRect(30, 140, 81, 16));
+        lbP1x->setStyleSheet(QStringLiteral("font: 9pt \"Nirmala UI\";"));
         lbP1x->setTextFormat(Qt::RichText);
         lbCurrentMerge = new QLabel(wdgLeftBottom);
         lbCurrentMerge->setObjectName(QStringLiteral("lbCurrentMerge"));
         lbCurrentMerge->setGeometry(QRect(20, 20, 201, 16));
+        lbCurrentMerge->setStyleSheet(QStringLiteral("font: 9pt \"Nirmala UI\";"));
         lbCurrentMerge->setAlignment(Qt::AlignCenter);
         lbDistance = new QLabel(wdgLeftBottom);
         lbDistance->setObjectName(QStringLiteral("lbDistance"));
-        lbDistance->setGeometry(QRect(60, 250, 141, 20));
+        lbDistance->setGeometry(QRect(50, 220, 151, 20));
+        lbDistance->setStyleSheet(QStringLiteral("font: 9pt \"Nirmala UI\";"));
         lbDistance->setTextFormat(Qt::RichText);
         lbDistanceIcon = new QLabel(wdgLeftBottom);
         lbDistanceIcon->setObjectName(QStringLiteral("lbDistanceIcon"));
-        lbDistanceIcon->setGeometry(QRect(20, 240, 41, 31));
+        lbDistanceIcon->setGeometry(QRect(10, 210, 41, 31));
         lbDistanceIcon->setAlignment(Qt::AlignBottom|Qt::AlignHCenter);
         lbP1z = new QLabel(wdgLeftBottom);
         lbP1z->setObjectName(QStringLiteral("lbP1z"));
-        lbP1z->setGeometry(QRect(30, 220, 81, 16));
+        lbP1z->setGeometry(QRect(30, 180, 81, 16));
+        lbP1z->setStyleSheet(QStringLiteral("font: 9pt \"Nirmala UI\";"));
         lbP1z->setTextFormat(Qt::RichText);
         lbP2z = new QLabel(wdgLeftBottom);
         lbP2z->setObjectName(QStringLiteral("lbP2z"));
-        lbP2z->setGeometry(QRect(130, 220, 81, 16));
+        lbP2z->setGeometry(QRect(130, 180, 81, 16));
+        lbP2z->setStyleSheet(QStringLiteral("font: 9pt \"Nirmala UI\";"));
         lbP2z->setTextFormat(Qt::RichText);
         lbP2x = new QLabel(wdgLeftBottom);
         lbP2x->setObjectName(QStringLiteral("lbP2x"));
-        lbP2x->setGeometry(QRect(130, 180, 81, 16));
+        lbP2x->setGeometry(QRect(130, 140, 81, 16));
+        lbP2x->setStyleSheet(QStringLiteral("font: 9pt \"Nirmala UI\";"));
         lbP2x->setTextFormat(Qt::RichText);
         lbP1y = new QLabel(wdgLeftBottom);
         lbP1y->setObjectName(QStringLiteral("lbP1y"));
-        lbP1y->setGeometry(QRect(30, 200, 81, 16));
+        lbP1y->setGeometry(QRect(30, 160, 81, 16));
+        lbP1y->setStyleSheet(QStringLiteral("font: 9pt \"Nirmala UI\";"));
         lbP1y->setTextFormat(Qt::RichText);
         progressBar = new QProgressBar(wdgLeftBottom);
         progressBar->setObjectName(QStringLiteral("progressBar"));
@@ -380,7 +394,7 @@ public:
         progressBar->setTextVisible(true);
         lbPin2 = new QLabel(wdgLeftBottom);
         lbPin2->setObjectName(QStringLiteral("lbPin2"));
-        lbPin2->setGeometry(QRect(150, 150, 41, 31));
+        lbPin2->setGeometry(QRect(150, 110, 41, 31));
         lbPin2->setAlignment(Qt::AlignCenter);
 
         vlLeft->addWidget(wdgLeftBottom);
@@ -403,9 +417,9 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "Kinect 3D Modelling", 0));
         lbLoadedFile->setText(QApplication::translate("MainWindow", "Please browse a capture and open a file", 0));
         gif3D->setText(QApplication::translate("MainWindow", "Loading", 0));
-        label->setText(QApplication::translate("MainWindow", "invisible", 0));
+        lbInvisible->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        btnHelp->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Handling 3D model</span></p><p>Clic + Move Mouse : Rotates the model</p><p>Shift + Move Mouse : Moves the model in X, Y or Z axis</p><p>Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)</p></body></html>", 0));
+        btnHelp->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Handling 3D model</span></p><p>&lt;img src = ':/icons/m_left'&gt; + Move Mouse : Rotates the model</p><p>Shift + Move Mouse : Moves the model in X, Y or Z axis</p><p>Ctrl + Move Mouse : Rotates the model in X and Y axis</p><p>Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
         btnHelp->setText(QString());
         gifLateral->setText(QApplication::translate("MainWindow", "Loading", 0));
@@ -422,6 +436,7 @@ public:
         btnDelete->setText(QString());
         lbCaptureName->setText(QString());
         btnBrowse->setText(QApplication::translate("MainWindow", "Browse", 0));
+        label->setText(QString());
         lbPin1->setText(QString());
         lbP2y->setText(QApplication::translate("MainWindow", "Y2", 0));
         lbP1x->setText(QApplication::translate("MainWindow", "X1", 0));

@@ -142,7 +142,7 @@ padding: 6px;</string>
              </size>
             </property>
             <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Handling 3D model&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Clic + Move Mouse : Rotates the model&lt;/p&gt;&lt;p&gt;Shift + Move Mouse : Moves the model in X, Y or Z axis&lt;/p&gt;&lt;p&gt;Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Handling 3D model&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Clic + Move Mouse : Rotates the model&lt;/p&gt;&lt;p&gt;Shift + Move Mouse : Moves the model in X, Y or Z axis&lt;/p&gt;&lt;p&gt;Ctrl + Move Mouse : Rotates the model in X and Y axis&lt;/p&gt;&lt;p&gt;Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="styleSheet">
              <string notr="true">QPushButton#btnHelp {
@@ -150,10 +150,8 @@ padding: 6px;</string>
 }
 
 QPushButton#btnHelp:hover {
-	padding: 1px;
-}
-
-</string>
+	padding: 2px;
+}</string>
             </property>
             <property name="text">
              <string/>
@@ -283,7 +281,7 @@ padding: 6px;</string>
           <property name="maximumSize">
            <size>
             <width>250</width>
-            <height>16777215</height>
+            <height>300</height>
            </size>
           </property>
           <widget class="QListWidget" name="listWidget">
@@ -300,7 +298,8 @@ padding: 6px;</string>
 border-width: 2px;
 border-radius: 6px;
 border-color: grey;
-padding: 4px;</string>
+padding: 4px;
+</string>
            </property>
           </widget>
           <widget class="QPushButton" name="btnAdd">
@@ -448,6 +447,9 @@ QPushButton#btnDelete:hover {
              <height>16</height>
             </rect>
            </property>
+           <property name="styleSheet">
+            <string notr="true">font: 9pt &quot;Nirmala UI&quot;;</string>
+           </property>
            <property name="text">
             <string/>
            </property>
@@ -496,6 +498,13 @@ QPushButton#btnBrowse:pressed {
          </widget>
         </item>
         <item>
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QWidget" name="wdgLeftBottom" native="true">
           <property name="minimumSize">
            <size>
@@ -506,14 +515,14 @@ QPushButton#btnBrowse:pressed {
           <property name="maximumSize">
            <size>
             <width>250</width>
-            <height>16777215</height>
+            <height>245</height>
            </size>
           </property>
           <widget class="QLabel" name="lbPin1">
            <property name="geometry">
             <rect>
              <x>50</x>
-             <y>150</y>
+             <y>110</y>
              <width>41</width>
              <height>31</height>
             </rect>
@@ -529,10 +538,13 @@ QPushButton#btnBrowse:pressed {
            <property name="geometry">
             <rect>
              <x>130</x>
-             <y>200</y>
+             <y>160</y>
              <width>81</width>
              <height>16</height>
             </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">font: 9pt &quot;Nirmala UI&quot;;</string>
            </property>
            <property name="text">
             <string>Y2</string>
@@ -545,10 +557,13 @@ QPushButton#btnBrowse:pressed {
            <property name="geometry">
             <rect>
              <x>30</x>
-             <y>180</y>
+             <y>140</y>
              <width>81</width>
              <height>16</height>
             </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">font: 9pt &quot;Nirmala UI&quot;;</string>
            </property>
            <property name="text">
             <string>X1</string>
@@ -566,6 +581,9 @@ QPushButton#btnBrowse:pressed {
              <height>16</height>
             </rect>
            </property>
+           <property name="styleSheet">
+            <string notr="true">font: 9pt &quot;Nirmala UI&quot;;</string>
+           </property>
            <property name="text">
             <string/>
            </property>
@@ -576,11 +594,14 @@ QPushButton#btnBrowse:pressed {
           <widget class="QLabel" name="lbDistance">
            <property name="geometry">
             <rect>
-             <x>60</x>
-             <y>250</y>
-             <width>141</width>
+             <x>50</x>
+             <y>220</y>
+             <width>151</width>
              <height>20</height>
             </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">font: 9pt &quot;Nirmala UI&quot;;</string>
            </property>
            <property name="text">
             <string>Distance: xx.xx m (xx.xx cm)</string>
@@ -592,8 +613,8 @@ QPushButton#btnBrowse:pressed {
           <widget class="QLabel" name="lbDistanceIcon">
            <property name="geometry">
             <rect>
-             <x>20</x>
-             <y>240</y>
+             <x>10</x>
+             <y>210</y>
              <width>41</width>
              <height>31</height>
             </rect>
@@ -609,10 +630,13 @@ QPushButton#btnBrowse:pressed {
            <property name="geometry">
             <rect>
              <x>30</x>
-             <y>220</y>
+             <y>180</y>
              <width>81</width>
              <height>16</height>
             </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">font: 9pt &quot;Nirmala UI&quot;;</string>
            </property>
            <property name="text">
             <string>Z1</string>
@@ -625,10 +649,13 @@ QPushButton#btnBrowse:pressed {
            <property name="geometry">
             <rect>
              <x>130</x>
-             <y>220</y>
+             <y>180</y>
              <width>81</width>
              <height>16</height>
             </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">font: 9pt &quot;Nirmala UI&quot;;</string>
            </property>
            <property name="text">
             <string>Z3</string>
@@ -641,10 +668,13 @@ QPushButton#btnBrowse:pressed {
            <property name="geometry">
             <rect>
              <x>130</x>
-             <y>180</y>
+             <y>140</y>
              <width>81</width>
              <height>16</height>
             </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">font: 9pt &quot;Nirmala UI&quot;;</string>
            </property>
            <property name="text">
             <string>X2</string>
@@ -657,10 +687,13 @@ QPushButton#btnBrowse:pressed {
            <property name="geometry">
             <rect>
              <x>30</x>
-             <y>200</y>
+             <y>160</y>
              <width>81</width>
              <height>16</height>
             </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">font: 9pt &quot;Nirmala UI&quot;;</string>
            </property>
            <property name="text">
             <string>Y1</string>
@@ -692,7 +725,7 @@ QPushButton#btnBrowse:pressed {
            <property name="geometry">
             <rect>
              <x>150</x>
-             <y>150</y>
+             <y>110</y>
              <width>41</width>
              <height>31</height>
             </rect>

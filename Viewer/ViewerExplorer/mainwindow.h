@@ -34,6 +34,7 @@ VTK_MODULE_INIT(vtkInteractionStyle)
 #include <pcl/visualization/pcl_visualizer.h>
 
 #include "IOXML.h"
+#include "IOPLY.h"
 
 
 #define VIEW_3D			1
@@ -87,10 +88,12 @@ private slots:
     void on_btnMerge_clicked();
 	void on_btnShow_clicked();
 	void on_btnHelp_clicked();
-	void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
-	void on_listWidget_itemClicked(QListWidgetItem *item);
 	void on_btnAdd_clicked();
 	void on_btnDelete_clicked();
+
+	void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
+	void on_listWidget_itemClicked(QListWidgetItem *item);
+
 	
 private:
     Ui::MainWindow *ui;
@@ -106,27 +109,29 @@ private:
 	QStringList list;
 	QHash<QString, QString> listContent;
 
-    QStringList detectPlyFiles(QDir dirToImport);
-    bool readImportFile(QString import);
-	void dropEvent(QDropEvent *e);
-	void resizeEvent(QResizeEvent* event);
-	void dragEnterEvent(QDragEnterEvent *e);
-	void setWidgetBorderRadius(QWidget* widget, int radius);
-	void importFileOpened(QString fileName);
-	void updateFileList();
-	void setLoadedFile(QString newValue);
-	QLabel * getLabel(int nView);
-	QVTKWidget * getWidget(int nView);
-	QMovie * getMovie(int nStatus);
-
 	QThread * thread3D = nullptr;
 	QThread * threadLateral = nullptr;
 	QThread * threadPlan = nullptr;
 	QThread * threadMerge = nullptr;
 
+	void dropEvent(QDropEvent *e);
+	void resizeEvent(QResizeEvent* event);
+	void dragEnterEvent(QDragEnterEvent *e);
+
+	QStringList detectPlyFiles(QDir dirToImport);
+	bool readImportFile(QString import);
+	void importFileOpened(QString fileName);
+	void updateFileList();
+	void setLoadedFile(QString newValue);
+	void setWidgetBorderRadius(QWidget* widget, int radius);
+	void reduceFile(std::string file);
+
+	QLabel * getLabel(int nView);
+	QVTKWidget * getWidget(int nView);
+	QMovie * getMovie(int nStatus);
+
 	void stopOpenThreads();
 	void stopMergeThread();
 	void stopThread(QThread * qThread);
 
-	void reduceFile(std::string file);
 };

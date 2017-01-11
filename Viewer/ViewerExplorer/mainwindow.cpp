@@ -11,11 +11,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-	setWindowFlags(windowFlags() | Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowTitleHint);
-	setWindowState(Qt::WindowMaximized);
+	setWindowFlags(windowFlags() | Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowTitleHint /*| Qt::Window | Qt::FramelessWindowHint*/);
 
 	/* Manual init of UI */
-	setLayout(ui->gridLayout);
 
 	// Drag'N'Drop
 	setAcceptDrops(true);
@@ -70,6 +68,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->btnShow->setIcon(QIcon(":/icons/show"));
 	ui->btnMerge->setIcon(QIcon(":/icons/merge"));
 
+	ui->btnBrowse->setIcon(QIcon(":/icons/browse"));
+	ui->btnShow->setIcon(QIcon(":/icons/show"));
+	ui->btnMerge->setIcon(QIcon(":/icons/merge"));
+
 	// Gifs
 	movieInit = new QMovie(":/gifs/init");
 	movieLoad = new QMovie(":/gifs/load");
@@ -87,7 +89,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	setLoadedFile("");
 	ui->lbLoadedFile->setText("Please browse a capture and open a file");
 	
-
+	showMaximized();
 }
 
 MainWindow::~MainWindow()
@@ -114,7 +116,7 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 
 void MainWindow::on_btnHelp_clicked()
 {
-	QMessageBox::information(this, "Handling 3D model", "<p><b>Handling 3D model</b></p><p>Clic + Move Mouse : Rotates the model</p><p>Shift + Move Mouse : Moves the model in X, Y or Z axis</p><p>Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)</p>",
+	QMessageBox::information(this, "Handling 3D model", "<p><b>Handling 3D model</b></p><p><img src = ':/icons/m_left'> + <img src = ':/icons/m_move'> : Rotates the model</p><p><img src = ':/icons/k_shift'> + <img src = ':/icons/m_left'> + <img src = ':/icons/m_move'> : Moves the model in X, Y or Z axis</p><p><img src = ':/icons/k_ctrl'> + <img src = ':/icons/m_left'> + <img src = ':/icons/m_move'> : Rotates the model in X and Y axis</p><p><img src = ':/icons/k_shift'> + <img src = ':/icons/m_left'> : Puts a pin for measurement (place two pins to get the distance between pins)</p>",
 		QMessageBox::Close);
 }
 
@@ -136,7 +138,10 @@ void MainWindow::importFileOpened(QString fileName)
 		stopMergeThread();
 
 		captureDirectory = importFileInfo.absoluteDir();
+		ui->lbCaptureName->setText("<b>" + captureDirectory.dirName() + "</b>");
+
 		updateFileList();
+		
 		ui->lbLoadedFile->setText("Please open a file");
 	}
 }
@@ -149,6 +154,19 @@ void MainWindow::updateFileList()
 	list = detectPlyFiles(captureDirectory);
 	ui->listWidget->clear();
 	ui->listWidget->addItems(listContent.keys());
+
+	QFont font("Nirmala UI");
+	font.setStyleHint(QFont::Monospace);
+	font.setPointSize(8);
+	font.setFixedPitch(true);
+
+	QIcon fileIcon(":icons/file");
+	for (int i = 0; i < ui->listWidget->count(); ++i)
+	{
+		QListWidgetItem* item = ui->listWidget->item(i);
+		item->setIcon(fileIcon);
+		item->setFont(font);
+	}
 
 	ui->btnAdd->setVisible(true);
 	ui->btnDelete->setVisible(true);
@@ -333,7 +351,8 @@ void MainWindow::showPlane(bool bPlanView)
 	// Point cloud in 2D
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr src_projected(new pcl::PointCloud<pcl::PointXYZRGB>);
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr src(new pcl::PointCloud<pcl::PointXYZRGB>);
-	pcl::io::loadPLYFile<pcl::PointXYZRGB>(filePath, *src);
+	//pcl::io::loadPLYFile<pcl::PointXYZRGB>(filePath, *src);
+	IOPLY::load(filePath, src);
 
 	// Create a set of planar coefficients with X=0,Y|Z=1|0
 	pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients());
@@ -390,7 +409,9 @@ void MainWindow::showPLY() {
 
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr src(new pcl::PointCloud<pcl::PointXYZRGB>);
 
-	pcl::io::loadPLYFile<pcl::PointXYZRGB>(filePath, *src);
+	//pcl::io::loadPLYFile<pcl::PointXYZRGB>(filePath, *src);
+	IOPLY::load(filePath, src);
+
 	MetricVisualizer * pv = new MetricVisualizer(src, hasColor, this);
 
 	renderLock->Lock();
