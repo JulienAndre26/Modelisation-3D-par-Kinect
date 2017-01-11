@@ -91,6 +91,8 @@ public:
         lbLoadedFile->setObjectName(QStringLiteral("lbLoadedFile"));
         lbLoadedFile->setMinimumSize(QSize(0, 20));
         lbLoadedFile->setMaximumSize(QSize(16777215, 20));
+        lbLoadedFile->setStyleSheet(QLatin1String("font: 11pt \"Nirmala UI\";\n"
+""));
         lbLoadedFile->setTextFormat(Qt::AutoText);
         lbLoadedFile->setAlignment(Qt::AlignCenter);
 

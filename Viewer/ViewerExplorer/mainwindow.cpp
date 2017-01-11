@@ -417,10 +417,12 @@ void MainWindow::dropEvent(QDropEvent *e)
 
 void MainWindow::setWidgetBorderRadius(QWidget* widget, int radius) {
 
+	QCoreApplication::processEvents();
+
 	// cache widget with and height
 	int width = widget->width();
 	int height = widget->height();
-
+	
 	// Initialize a rectangular masked region
 	QRegion region(0, 0, width, height, QRegion::Rectangle);
 

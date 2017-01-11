@@ -43,6 +43,10 @@
             <height>20</height>
            </size>
           </property>
+          <property name="styleSheet">
+           <string notr="true">font: 11pt &quot;Nirmala UI&quot;;
+</string>
+          </property>
           <property name="text">
            <string>Please browse a capture and open a file</string>
           </property>
