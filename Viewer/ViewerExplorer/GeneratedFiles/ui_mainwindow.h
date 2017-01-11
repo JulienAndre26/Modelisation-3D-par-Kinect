@@ -110,13 +110,19 @@ public:
         gif3D->setObjectName(QStringLiteral("gif3D"));
         gif3D->setMinimumSize(QSize(186, 0));
         gif3D->setLayoutDirection(Qt::LeftToRight);
-        gif3D->setStyleSheet(QLatin1String("border-style: outset;\n"
-"border-width: 2px;\n"
-"border-radius: 10px;\n"
-"border-color: grey;\n"
-"font: bold 14px;\n"
-"min-width: 10em;\n"
-"padding: 6px;"));
+        gif3D->setStyleSheet(QLatin1String("QLabel#gif3D {\n"
+"	border-style: outset;\n"
+"	border-width: 2px;\n"
+"	border-radius: 10px;\n"
+"	border-color: grey;\n"
+"	font: bold 14px;\n"
+"	min-width: 10em;\n"
+"	padding: 6px;\n"
+"}\n"
+"\n"
+"QLabel#gif3D:hover {\n"
+"	padding: 20px;\n"
+"}"));
         gif3D->setIndent(-1);
 
         vlMid->addWidget(gif3D);
@@ -133,7 +139,7 @@ public:
         wdgRightTop->setMaximumSize(QSize(300, 20));
         btnHelp = new QPushButton(wdgRightTop);
         btnHelp->setObjectName(QStringLiteral("btnHelp"));
-        btnHelp->setGeometry(QRect(277, 0, 20, 20));
+        btnHelp->setGeometry(QRect(190, 0, 20, 20));
         btnHelp->setStyleSheet(QLatin1String("QPushButton#btnHelp {\n"
 "	border: none;\n"
 "}\n"

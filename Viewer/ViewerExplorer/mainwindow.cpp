@@ -112,6 +112,13 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 	setWidgetBorderRadius(ui->qvtkWidgetPlan, 6);
 }
 
+
+void MainWindow::on_btnHelp_clicked()
+{
+	QMessageBox::information(this, "Handling 3D model", "<p><b>Handling 3D model</b></p><p>Clic + Move Mouse : Rotates the model</p><p>Shift + Move Mouse : Moves the model in X, Y or Z axis</p><p>Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)</p>",
+		QMessageBox::Close);
+}
+
 void MainWindow::on_btnBrowse_clicked()
 {
     QString importName = QFileDialog::getOpenFileName(this, tr("Open File"), QDir::homePath(), tr("Import files (*.import)"));

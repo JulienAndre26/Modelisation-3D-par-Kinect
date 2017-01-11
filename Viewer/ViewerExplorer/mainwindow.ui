@@ -123,7 +123,7 @@ padding: 6px;</string>
           <widget class="QPushButton" name="btnHelp">
            <property name="geometry">
             <rect>
-             <x>277</x>
+             <x>190</x>
              <y>0</y>
              <width>20</width>
              <height>20</height>
