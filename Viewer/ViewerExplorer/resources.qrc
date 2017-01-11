@@ -17,6 +17,7 @@
         <file alias="k_shift">resources/icons/key_shift.png</file>
         <file alias="m_left">resources/icons/mouse_left.png</file>
         <file alias="m_move">resources/icons/mouse_move.png</file>
+        <file alias="3d">resources/icons/3d.png</file>
     </qresource>
     <qresource prefix="/gifs">
         <file alias="init">resources/gifs/init.gif</file>

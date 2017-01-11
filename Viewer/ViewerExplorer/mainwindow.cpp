@@ -160,7 +160,7 @@ void MainWindow::updateFileList()
 	font.setPointSize(8);
 	font.setFixedPitch(true);
 
-	QIcon fileIcon(":icons/file");
+	QIcon fileIcon(":icons/3d");
 	for (int i = 0; i < ui->listWidget->count(); ++i)
 	{
 		QListWidgetItem* item = ui->listWidget->item(i);

@@ -216,16 +216,6 @@
     <ClInclude Include="headers\Processor\Processor.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="resources\gifs\init.gif" />
-    <Image Include="resources\gifs\load.gif" />
-    <Image Include="resources\gifs\merge.gif" />
-    <Image Include="resources\icons\add.png" />
-    <Image Include="resources\icons\delete.png" />
-    <Image Include="resources\icons\distance.png" />
-    <Image Include="resources\icons\help.png" />
-    <Image Include="resources\icons\pin.png" />
-  </ItemGroup>
-  <ItemGroup>
     <CustomBuild Include="resources.qrc">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(FullPath);%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Rcc%27ing %(Identity)...</Message>

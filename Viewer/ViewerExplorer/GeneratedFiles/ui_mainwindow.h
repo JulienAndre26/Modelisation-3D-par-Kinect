@@ -419,7 +419,7 @@ public:
         gif3D->setText(QApplication::translate("MainWindow", "Loading", 0));
         lbInvisible->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        btnHelp->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Handling 3D model</span></p><p>&lt;img src = ':/icons/m_left'&gt; + Move Mouse : Rotates the model</p><p>Shift + Move Mouse : Moves the model in X, Y or Z axis</p><p>Ctrl + Move Mouse : Rotates the model in X and Y axis</p><p>Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)</p></body></html>", 0));
+        btnHelp->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Handling 3D model</span></p><p>Clic + Move Mouse : Rotates the model</p><p>Shift + Move Mouse : Moves the model in X, Y or Z axis</p><p>Ctrl + Move Mouse : Rotates the model in X and Y axis</p><p>Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
         btnHelp->setText(QString());
         gifLateral->setText(QApplication::translate("MainWindow", "Loading", 0));

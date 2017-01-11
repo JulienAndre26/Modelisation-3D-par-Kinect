@@ -74,12 +74,6 @@
       <Extensions>qrc;*</Extensions>
       <ParseFiles>false</ParseFiles>
     </Filter>
-    <Filter Include="Resource Files\Gifs">
-      <UniqueIdentifier>{5844990a-5580-43c9-8380-16494f4d6f5f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\Icons">
-      <UniqueIdentifier>{def7d5c9-e6b2-4764-9c63-ec580de5c12f}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -164,31 +158,5 @@
     <ClInclude Include="headers\io\IOXML.h">
       <Filter>Header Files\IO</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="resources\gifs\init.gif">
-      <Filter>Resource Files\Gifs</Filter>
-    </Image>
-    <Image Include="resources\gifs\load.gif">
-      <Filter>Resource Files\Gifs</Filter>
-    </Image>
-    <Image Include="resources\gifs\merge.gif">
-      <Filter>Resource Files\Gifs</Filter>
-    </Image>
-    <Image Include="resources\icons\add.png">
-      <Filter>Resource Files\Icons</Filter>
-    </Image>
-    <Image Include="resources\icons\delete.png">
-      <Filter>Resource Files\Icons</Filter>
-    </Image>
-    <Image Include="resources\icons\distance.png">
-      <Filter>Resource Files\Icons</Filter>
-    </Image>
-    <Image Include="resources\icons\pin.png">
-      <Filter>Resource Files\Icons</Filter>
-    </Image>
-    <Image Include="resources\icons\help.png">
-      <Filter>Resource Files\Icons</Filter>
-    </Image>
   </ItemGroup>
 </Project>
