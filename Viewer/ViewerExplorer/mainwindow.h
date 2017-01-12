@@ -108,6 +108,7 @@ private:
 	bool hasColor = false;
 	bool isFullscreenActive = false;
 	bool isWidgetActive = false;
+	bool isMeshMode = false;
 
 	QDir captureDirectory;
 	QString selectedFile;

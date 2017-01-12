@@ -130,14 +130,14 @@
     <Filter Include="Kinect Fusion\ImageRenderer">
       <UniqueIdentifier>{0a8f7207-8fbf-4080-9e04-42a49685ef1a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Kinect Fusion\KinectFusionHelper">
-      <UniqueIdentifier>{3e0fcaf8-d99b-4322-946e-148c4eab1cce}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Kinect Fusion\Utils">
       <UniqueIdentifier>{c5381efb-09fa-4080-a9a2-91c4da054b90}</UniqueIdentifier>
     </Filter>
     <Filter Include="Kinect Fusion\KinectFusionProcessor">
       <UniqueIdentifier>{54f638dc-2b27-44ff-85f1-f044f78d9c4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Kinect Fusion\KinectFusionHelper">
+      <UniqueIdentifier>{3e0fcaf8-d99b-4322-946e-148c4eab1cce}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

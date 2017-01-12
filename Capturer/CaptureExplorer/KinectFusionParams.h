@@ -16,6 +16,30 @@ enum KinectFusionMeshTypes
     Ply = 2
 };
 
+enum KinectFusionQualityLow
+{
+	lVPM = 32,
+	lX = 320,
+	lY = 160,
+	lZ = 512
+};
+
+enum KinectFusionQualityMedium
+{
+	mVPM = 64,
+	mX = 640,
+	mY = 320,
+	mZ = 512
+};
+
+enum KinectFusionQualityHigh
+{
+	hVPM = 128,
+	hX = 1280,
+	hY = 640,
+	hZ = 640
+};
+
 /// <summary>
 /// Parameters to control the behavior of the KinectFusionProcessor.
 /// </summary>
@@ -88,10 +112,10 @@ struct KinectFusionParams
         //m_reconstructionParams.voxelCountZ = 512;       // This will require a GPU with at least 512MB
 
 		// LOW
-		m_reconstructionParams.voxelsPerMeter = 64;    // 1000mm / 256vpm = ~3.9mm/voxel
-		m_reconstructionParams.voxelCountX = 320;       // 512 / 256vpm = 2m wide reconstruction
-		m_reconstructionParams.voxelCountY = 256;       // Memory = 512*384*512 * 4bytes per voxel
-		m_reconstructionParams.voxelCountZ = 512;       // This will require a GPU with at least 512MB
+		m_reconstructionParams.voxelsPerMeter = lVPM;    // 1000mm / 256vpm = ~3.9mm/voxel
+		m_reconstructionParams.voxelCountX = lX;       // 512 / 256vpm = 2m wide reconstruction
+		m_reconstructionParams.voxelCountY = lY;       // Memory = 512*384*512 * 4bytes per voxel
+		m_reconstructionParams.voxelCountZ = lZ;       // This will require a GPU with at least 512MB
 
 
 		/*m_reconstructionParams.voxelsPerMeter = 64;    // 1000mm / 256vpm = ~3.9mm/voxel

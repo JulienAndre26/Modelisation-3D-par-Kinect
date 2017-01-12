@@ -4,7 +4,7 @@
 #include "Processor.h"
 #include "mainwindow.h"
 
-MainWindow * GUI; // La joie du C++ crado
+MainWindow * GUI;
 
 struct callback_args {
 	// structure used to pass arguments to the callback function
@@ -75,25 +75,14 @@ void _callback(const pcl::visualization::PointPickingEvent& event, void* args)
 
 class MetricVisualizer : public Visualizer  {
 private:
+	int v;
 	struct callback_args args;
 public:
 
 	MetricVisualizer(PointCloudColored::Ptr src, bool bColored, MainWindow * mw) {
-		GUI = mw; // Dégoutant
+		GUI = mw;
 
-		// Data Structure
-		PointCloud::Ptr clicked_points_3d(new PointCloud);
-		args.clicked_points_3d = clicked_points_3d;
-		args.viewerPtr = Visualizer::Ptr(this);
-		args.distance = new char[128];
-		sprintf(args.distance, "%f", 0);
-
-		// Event Listener
-		this->registerPointPickingCallback(_callback, (void*)&args);
-		
-		// Prepare Point Cloud
-		int v(123);
-		this->createViewPort(0.0, 0.0, 1.0, 1.0, v);
+		init();
 
 		if (!bColored) // Add custom color if the point cloud is not colored
 		{
@@ -110,6 +99,30 @@ public:
 			pcl::visualization::PointCloudColorHandlerRGBField<pcl::PointXYZRGB> src_rgb(src);
 			this->addPointCloud<PointColorT>(src, src_rgb, "v1_source", v);
 		}
+	}
+
+	MetricVisualizer(PolygonMesh::Ptr src, MainWindow * mw) {
+		GUI = mw; // Dégoutant
+
+		init();
+		
+		this->addPolygonMesh(*src);
+	}
+
+	void init() {
+		// Data Structure
+		PointCloud::Ptr clicked_points_3d(new PointCloud);
+		args.clicked_points_3d = clicked_points_3d;
+		args.viewerPtr = Visualizer::Ptr(this);
+		args.distance = new char[128];
+		sprintf(args.distance, "%f", 0);
+
+		// Event Listener
+		this->registerPointPickingCallback(_callback, (void*)&args);
+
+		// Prepare Point Cloud
+		v = 123;
+		this->createViewPort(0.0, 0.0, 1.0, 1.0, v);
 	}
 
 	~MetricVisualizer() {};

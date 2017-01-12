@@ -13,6 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
@@ -58,7 +59,8 @@ public:
     QPushButton *btnDelete;
     QLabel *lbCaptureName;
     QPushButton *btnBrowse;
-    QLabel *label;
+    QCheckBox *cbDisplayMesh;
+    QLabel *invisible2;
     QWidget *wdgLeftBottom;
     QLabel *lbPin1;
     QLabel *lbP2y;
@@ -142,7 +144,7 @@ public:
         qvtkWidget3D = new QVTKWidget(centralWidget);
         qvtkWidget3D->setObjectName(QStringLiteral("qvtkWidget3D"));
         qvtkWidget3D->setMinimumSize(QSize(300, 300));
-        qvtkWidget3D->setCursor(QCursor(Qt::OpenHandCursor));
+        qvtkWidget3D->setCursor(QCursor(Qt::CrossCursor));
         qvtkWidget3D->setStyleSheet(QStringLiteral(""));
 
         vlMid->addWidget(qvtkWidget3D);
@@ -213,7 +215,7 @@ public:
         qvtkWidgetLateral->setObjectName(QStringLiteral("qvtkWidgetLateral"));
         qvtkWidgetLateral->setMinimumSize(QSize(100, 100));
         qvtkWidgetLateral->setMaximumSize(QSize(300, 16777215));
-        qvtkWidgetLateral->setCursor(QCursor(Qt::OpenHandCursor));
+        qvtkWidgetLateral->setCursor(QCursor(Qt::CrossCursor));
         qvtkWidgetLateral->setStyleSheet(QStringLiteral(""));
 
         vlRight->addWidget(qvtkWidgetLateral);
@@ -237,7 +239,7 @@ public:
         qvtkWidgetPlan->setObjectName(QStringLiteral("qvtkWidgetPlan"));
         qvtkWidgetPlan->setMinimumSize(QSize(100, 100));
         qvtkWidgetPlan->setMaximumSize(QSize(300, 16777215));
-        qvtkWidgetPlan->setCursor(QCursor(Qt::OpenHandCursor));
+        qvtkWidgetPlan->setCursor(QCursor(Qt::CrossCursor));
         qvtkWidgetPlan->setStyleSheet(QStringLiteral(""));
 
         vlRight->addWidget(qvtkWidgetPlan);
@@ -265,8 +267,8 @@ public:
         vlLeft->setObjectName(QStringLiteral("vlLeft"));
         wdgLeftTop = new QWidget(centralWidget);
         wdgLeftTop->setObjectName(QStringLiteral("wdgLeftTop"));
-        wdgLeftTop->setMinimumSize(QSize(250, 300));
-        wdgLeftTop->setMaximumSize(QSize(250, 300));
+        wdgLeftTop->setMinimumSize(QSize(250, 340));
+        wdgLeftTop->setMaximumSize(QSize(250, 340));
         listWidget = new QListWidget(wdgLeftTop);
         listWidget->setObjectName(QStringLiteral("listWidget"));
         listWidget->setGeometry(QRect(20, 100, 201, 151));
@@ -378,18 +380,23 @@ public:
 "\n"
 "\n"
 ""));
+        cbDisplayMesh = new QCheckBox(wdgLeftTop);
+        cbDisplayMesh->setObjectName(QStringLiteral("cbDisplayMesh"));
+        cbDisplayMesh->setGeometry(QRect(20, 300, 131, 31));
+        cbDisplayMesh->setStyleSheet(QLatin1String("font: 10pt \"Nirmala UI\";\n"
+""));
 
         vlLeft->addWidget(wdgLeftTop);
 
-        label = new QLabel(centralWidget);
-        label->setObjectName(QStringLiteral("label"));
+        invisible2 = new QLabel(centralWidget);
+        invisible2->setObjectName(QStringLiteral("invisible2"));
 
-        vlLeft->addWidget(label);
+        vlLeft->addWidget(invisible2);
 
         wdgLeftBottom = new QWidget(centralWidget);
         wdgLeftBottom->setObjectName(QStringLiteral("wdgLeftBottom"));
         wdgLeftBottom->setMinimumSize(QSize(250, 245));
-        wdgLeftBottom->setMaximumSize(QSize(250, 245));
+        wdgLeftBottom->setMaximumSize(QSize(250, 225));
         lbPin1 = new QLabel(wdgLeftBottom);
         lbPin1->setObjectName(QStringLiteral("lbPin1"));
         lbPin1->setGeometry(QRect(50, 110, 41, 31));
@@ -406,7 +413,7 @@ public:
         lbP1x->setTextFormat(Qt::RichText);
         lbCurrentMerge = new QLabel(wdgLeftBottom);
         lbCurrentMerge->setObjectName(QStringLiteral("lbCurrentMerge"));
-        lbCurrentMerge->setGeometry(QRect(20, 20, 201, 16));
+        lbCurrentMerge->setGeometry(QRect(20, 40, 201, 16));
         lbCurrentMerge->setStyleSheet(QStringLiteral("font: 9pt \"Nirmala UI\";"));
         lbCurrentMerge->setAlignment(Qt::AlignCenter);
         lbDistance = new QLabel(wdgLeftBottom);
@@ -440,7 +447,7 @@ public:
         lbP1y->setTextFormat(Qt::RichText);
         progressBar = new QProgressBar(wdgLeftBottom);
         progressBar->setObjectName(QStringLiteral("progressBar"));
-        progressBar->setGeometry(QRect(20, 40, 201, 21));
+        progressBar->setGeometry(QRect(20, 60, 201, 21));
         progressBar->setValue(0);
         progressBar->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
         progressBar->setTextVisible(true);
@@ -468,10 +475,19 @@ public:
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "Kinect 3D Modelling", 0));
         lbLoadedFile->setText(QApplication::translate("MainWindow", "Please browse a capture and open a file", 0));
+#ifndef QT_NO_TOOLTIP
+        btnExitFS->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Fullscreen Mode</span></p><p>It will enlarge the central view.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
         btnExitFS->setText(QString());
+#ifndef QT_NO_TOOLTIP
+        btnHelpM->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Handling 3D model</span></p><p>Clic + Move Mouse : Rotates the model</p><p>Shift + Move Mouse : Moves the model in X, Y or Z axis</p><p>Ctrl + Move Mouse : Rotates the model in X and Y axis</p><p>Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
         btnHelpM->setText(QString());
         gif3D->setText(QApplication::translate("MainWindow", "Loading", 0));
         lbInvisible->setText(QString());
+#ifndef QT_NO_TOOLTIP
+        btnFS->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Exit Fullscreen Mode</span></p><p>It will reduce the central view.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
         btnFS->setText(QString());
 #ifndef QT_NO_TOOLTIP
         btnHelpR->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Handling 3D model</span></p><p>Clic + Move Mouse : Rotates the model</p><p>Shift + Move Mouse : Moves the model in X, Y or Z axis</p><p>Ctrl + Move Mouse : Rotates the model in X and Y axis</p><p>Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)</p></body></html>", 0));
@@ -491,7 +507,8 @@ public:
         btnDelete->setText(QString());
         lbCaptureName->setText(QString());
         btnBrowse->setText(QApplication::translate("MainWindow", "Browse", 0));
-        label->setText(QString());
+        cbDisplayMesh->setText(QApplication::translate("MainWindow", "Display as mesh", 0));
+        invisible2->setText(QString());
         lbPin1->setText(QString());
         lbP2y->setText(QApplication::translate("MainWindow", "Y2", 0));
         lbP1x->setText(QApplication::translate("MainWindow", "X1", 0));

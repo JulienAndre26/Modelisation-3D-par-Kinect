@@ -323,7 +323,6 @@ void MainWindow::onLoad(QString path)
 		return;
 
 	stopOpenThreads();
-
 	setLoadedFile(path);
 
 	filePath = new char[path.size() + 1];
@@ -332,6 +331,7 @@ void MainWindow::onLoad(QString path)
 
 	setAllViewDisplay(false, MOVIE_LOAD);
 
+	isMeshMode = ui->cbDisplayMesh->isChecked();
 	modelLoading = true;
 	
 	//PCLCore* core(new PCLCore);
@@ -416,14 +416,25 @@ void MainWindow::showPlane(bool bPlanView)
 /*
 * Show the 3D Model selected (filePath) - Handling Colors
 */
+#include <pcl/io/vtk_io.h> 
+#include <pcl/io/vtk_lib_io.h> 
+#include <pcl/io/ply_io.h>
 void MainWindow::showPLY() {
+	
+	MetricVisualizer * pv;
 
-	pcl::PointCloud<pcl::PointXYZRGB>::Ptr src(new pcl::PointCloud<pcl::PointXYZRGB>);
-
-	//pcl::io::loadPLYFile<pcl::PointXYZRGB>(filePath, *src);
-	IOPLY::load(filePath, src);
-
-	MetricVisualizer * pv = new MetricVisualizer(src, hasColor, this);
+	if (isMeshMode)
+	{
+		pcl::PolygonMesh::Ptr mesh(new pcl::PolygonMesh);
+		pcl::io::loadPolygonFile(filePath, *mesh);
+		pv = new MetricVisualizer(mesh, this);
+	}
+	else 
+	{
+		pcl::PointCloud<pcl::PointXYZRGB>::Ptr src(new pcl::PointCloud<pcl::PointXYZRGB>);
+		IOPLY::load(filePath, src);
+		pv = new MetricVisualizer(src, hasColor, this);
+	}
 
 	renderLock->Lock();
 	vtkSmartPointer<vtkRenderWindow> renderWindow = pv->getRenderWindow();

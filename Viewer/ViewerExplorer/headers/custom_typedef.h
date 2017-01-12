@@ -16,3 +16,5 @@ typedef pcl::FPFHSignature33				FPFHSignature33T;
 typedef pcl::PointCloud<FPFHSignature33T>	PointCloudFPFH;
 typedef pcl::PointIndices					IndicesT;
 typedef pcl::visualization::PCLVisualizer	Visualizer;
+typedef pcl::PolygonMesh					PolygonMesh;
+

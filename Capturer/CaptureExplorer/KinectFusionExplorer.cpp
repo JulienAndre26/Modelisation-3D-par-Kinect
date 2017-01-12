@@ -531,21 +531,27 @@ void CKinectFusionExplorer::ProcessUI(WPARAM wParam, LPARAM lParam)
 	// Set Capture Quality
 	if (IDC_CAPTURE_TYPE_MEDIUM == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
 	{
-		m_params.m_reconstructionParams.voxelsPerMeter = 128;    // 1000mm / 256vpm = ~3.9mm/voxel
-		m_params.m_reconstructionParams.voxelCountX = 640;       // 512 / 256vpm = 2m wide reconstruction
-		m_params.m_reconstructionParams.voxelCountY = 512;       // Memory = 512*384*512 * 4bytes per voxel
+		m_params.m_reconstructionParams.voxelsPerMeter = mVPM;    // 1000mm / 256vpm = ~3.9mm/voxel
+		m_params.m_reconstructionParams.voxelCountX = mX;       // 512 / 256vpm = 2m wide reconstruction
+		m_params.m_reconstructionParams.voxelCountY = mY;       // Memory = 512*384*512 * 4bytes per voxel
+		m_params.m_reconstructionParams.voxelCountZ = mZ;
+		DisplayDimensions(m_params.m_reconstructionParams);
 	}
 	if (IDC_CAPTURE_TYPE_HIGH == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
 	{
-		m_params.m_reconstructionParams.voxelsPerMeter = 256;    // 1000mm / 256vpm = ~3.9mm/voxel
-		m_params.m_reconstructionParams.voxelCountX = 1280;       // 512 / 256vpm = 2m wide reconstruction
-		m_params.m_reconstructionParams.voxelCountY = 512;       // Memory = 512*384*512 * 4bytes per voxel
+		m_params.m_reconstructionParams.voxelsPerMeter = hVPM;    // 1000mm / 256vpm = ~3.9mm/voxel
+		m_params.m_reconstructionParams.voxelCountX = hX;       // 512 / 256vpm = 2m wide reconstruction
+		m_params.m_reconstructionParams.voxelCountY = hY;       // Memory = 512*384*512 * 4bytes per voxel
+		m_params.m_reconstructionParams.voxelCountZ = hZ;
+		DisplayDimensions(m_params.m_reconstructionParams);
 	}
 	if (IDC_CAPTURE_TYPE_LOW == LOWORD(wParam) && BN_CLICKED == HIWORD(wParam))
 	{
-		m_params.m_reconstructionParams.voxelsPerMeter = 64;    // 1000mm / 256vpm = ~3.9mm/voxel
-		m_params.m_reconstructionParams.voxelCountX = 320;       // 512 / 256vpm = 2m wide reconstruction
-		m_params.m_reconstructionParams.voxelCountY = 256;       // Memory = 512*384*512 * 4bytes per voxel
+		m_params.m_reconstructionParams.voxelsPerMeter = lVPM;    // 1000mm / 256vpm = ~3.9mm/voxel
+		m_params.m_reconstructionParams.voxelCountX = lX;       // 512 / 256vpm = 2m wide reconstruction
+		m_params.m_reconstructionParams.voxelCountY = lY;       // Memory = 512*384*512 * 4bytes per voxel
+		m_params.m_reconstructionParams.voxelCountZ = lZ;
+		DisplayDimensions(m_params.m_reconstructionParams);
 	}
 
 	// Set Tilt Position
@@ -733,6 +739,31 @@ void CKinectFusionExplorer::SetFramesPerSecond(float fFramesPerSecond)
 		// Update text
         SendDlgItemMessageW(m_hWnd, IDC_FRAMES_PER_SECOND, WM_SETTEXT, 0, (LPARAM)str);
     }
+}
+
+void CKinectFusionExplorer::DisplayDimensions(NUI_FUSION_RECONSTRUCTION_PARAMETERS params)
+{
+	int nVpm = params.voxelsPerMeter;
+
+	int nWidth = params.voxelCountX / nVpm;
+	int nHeight = params.voxelCountY / nVpm;
+	int nDepth = params.voxelCountZ / nVpm;
+	
+	std::wstring wsVpm = std::to_wstring(nVpm);
+	std::wstring wsWidth = std::to_wstring(nWidth);
+	std::wstring wsHeight = std::to_wstring(nHeight);
+	std::wstring wsDepth = std::to_wstring(nDepth);
+
+	std::wstring wsDimensions(
+		L"Quality: " + wsVpm + L" voxel(s)/meter " 
+		+ L"- Width: " + wsWidth + L" meter(s) " 
+		+ L"- Height: " + wsHeight + L" meter(s) "
+		+ L"- Depth: " + wsDepth + L" meter(s)"
+	);
+
+	USES_CONVERSION;
+	LPOLESTR pwszMsg = W2OLE((LPWSTR)wsDimensions.c_str());
+	SetStatusMessage(pwszMsg);
 }
 
 /// <summary>

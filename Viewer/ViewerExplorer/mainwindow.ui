@@ -133,7 +133,7 @@ QPushButton#btnHelpM:hover {
            </size>
           </property>
           <property name="cursor">
-           <cursorShape>OpenHandCursor</cursorShape>
+           <cursorShape>CrossCursor</cursorShape>
           </property>
           <property name="styleSheet">
            <string notr="true"/>
@@ -272,7 +272,7 @@ QPushButton#btnHelpR:hover {
            </size>
           </property>
           <property name="cursor">
-           <cursorShape>OpenHandCursor</cursorShape>
+           <cursorShape>CrossCursor</cursorShape>
           </property>
           <property name="styleSheet">
            <string notr="true"/>
@@ -325,7 +325,7 @@ padding: 6px;</string>
            </size>
           </property>
           <property name="cursor">
-           <cursorShape>OpenHandCursor</cursorShape>
+           <cursorShape>CrossCursor</cursorShape>
           </property>
           <property name="styleSheet">
            <string notr="true"/>
@@ -372,13 +372,13 @@ padding: 6px;</string>
           <property name="minimumSize">
            <size>
             <width>250</width>
-            <height>300</height>
+            <height>340</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
             <width>250</width>
-            <height>300</height>
+            <height>340</height>
            </size>
           </property>
           <widget class="QListWidget" name="listWidget">
@@ -592,10 +592,27 @@ QPushButton#btnBrowse:pressed {
             <string>Browse</string>
            </property>
           </widget>
+          <widget class="QCheckBox" name="cbDisplayMesh">
+           <property name="geometry">
+            <rect>
+             <x>20</x>
+             <y>300</y>
+             <width>131</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">font: 10pt &quot;Nirmala UI&quot;;
+</string>
+           </property>
+           <property name="text">
+            <string>Display as mesh</string>
+           </property>
+          </widget>
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label">
+         <widget class="QLabel" name="invisible2">
           <property name="text">
            <string/>
           </property>
@@ -612,7 +629,7 @@ QPushButton#btnBrowse:pressed {
           <property name="maximumSize">
            <size>
             <width>250</width>
-            <height>245</height>
+            <height>225</height>
            </size>
           </property>
           <widget class="QLabel" name="lbPin1">
@@ -673,7 +690,7 @@ QPushButton#btnBrowse:pressed {
            <property name="geometry">
             <rect>
              <x>20</x>
-             <y>20</y>
+             <y>40</y>
              <width>201</width>
              <height>16</height>
             </rect>
@@ -803,7 +820,7 @@ QPushButton#btnBrowse:pressed {
            <property name="geometry">
             <rect>
              <x>20</x>
-             <y>40</y>
+             <y>60</y>
              <width>201</width>
              <height>21</height>
             </rect>

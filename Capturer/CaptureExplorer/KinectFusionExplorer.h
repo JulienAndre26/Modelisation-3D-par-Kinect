@@ -88,6 +88,8 @@ public:
 	void						StopAutoCaptureThread();
 	void						AutoCaptureThread();
 
+	void						DisplayDimensions(NUI_FUSION_RECONSTRUCTION_PARAMETERS params);
+
 private:
     HWND                        m_hWnd;
     NuiSensorChooserUI*         m_pSensorChooserUI;
