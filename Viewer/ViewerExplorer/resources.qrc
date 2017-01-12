@@ -20,6 +20,7 @@
         <file alias="3d">resources/icons/3d.png</file>
         <file alias="exit_fs">resources/icons/exit_fs.png</file>
         <file alias="fs">resources/icons/fs.png</file>
+        <file alias="app">resources/icons/app.ico</file>
     </qresource>
     <qresource prefix="/gifs">
         <file alias="init">resources/gifs/init.gif</file>

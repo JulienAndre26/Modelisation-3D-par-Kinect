@@ -11,6 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+	setWindowIcon(QIcon(":/icons/app"));
+
 	setWindowFlags(windowFlags() | Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowTitleHint /*| Qt::Window | Qt::FramelessWindowHint*/);
 
 	/* Manual init of UI */

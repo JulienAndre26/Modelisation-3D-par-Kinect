@@ -468,10 +468,19 @@ public:
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "Kinect 3D Modelling", 0));
         lbLoadedFile->setText(QApplication::translate("MainWindow", "Please browse a capture and open a file", 0));
+#ifndef QT_NO_TOOLTIP
+        btnExitFS->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Fullscreen Mode</span></p><p>It will enlarge the central view.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
         btnExitFS->setText(QString());
+#ifndef QT_NO_TOOLTIP
+        btnHelpM->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Handling 3D model</span></p><p>Clic + Move Mouse : Rotates the model</p><p>Shift + Move Mouse : Moves the model in X, Y or Z axis</p><p>Ctrl + Move Mouse : Rotates the model in X and Y axis</p><p>Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
         btnHelpM->setText(QString());
         gif3D->setText(QApplication::translate("MainWindow", "Loading", 0));
         lbInvisible->setText(QString());
+#ifndef QT_NO_TOOLTIP
+        btnFS->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Exit Fullscreen Mode</span></p><p>It will reduce the central view.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
         btnFS->setText(QString());
 #ifndef QT_NO_TOOLTIP
         btnHelpR->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Handling 3D model</span></p><p>Clic + Move Mouse : Rotates the model</p><p>Shift + Move Mouse : Moves the model in X, Y or Z axis</p><p>Ctrl + Move Mouse : Rotates the model in X and Y axis</p><p>Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)</p></body></html>", 0));
