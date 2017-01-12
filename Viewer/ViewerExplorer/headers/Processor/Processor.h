@@ -3,6 +3,10 @@
 #include "./core/ICore.h"
 #include "IProcessor.h"
 
+#include <pcl/point_types.h>
+#include <pcl/ModelCoefficients.h>
+#include <pcl/filters/project_inliers.h>
+
 class Processor : public IProcessor {
 private :
 	int someField;
@@ -13,5 +17,5 @@ public:
 	Status merge(string path);
 	Status computeMetrics();
 	static Status computeMetrics(float x1, float y1, float z1, float x2, float y2, float z2);
-
+	static void flatten(pcl::PointCloud<pcl::PointXYZRGB>::Ptr src, pcl::PointCloud<pcl::PointXYZRGB>::Ptr src_projected, bool bPlanView);
 };

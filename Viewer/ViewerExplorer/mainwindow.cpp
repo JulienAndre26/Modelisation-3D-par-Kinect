@@ -362,33 +362,9 @@ void MainWindow::showPlane(bool bPlanView)
 	// Point cloud in 2D
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr src_projected(new pcl::PointCloud<pcl::PointXYZRGB>);
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr src(new pcl::PointCloud<pcl::PointXYZRGB>);
-	//pcl::io::loadPLYFile<pcl::PointXYZRGB>(filePath, *src);
 	IOPLY::load(filePath, src);
 
-	// Create a set of planar coefficients with X=0,Y|Z=1|0
-	pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients());
-	coefficients->values.resize(4);
-
-	if (!bPlanView)
-	{
-		// LATERAL (from frontside)
-		coefficients->values[0] = coefficients->values[1] = 0;	// X,Y = 0
-		coefficients->values[2] = 1.0;							// Z = 1
-	}
-	else
-	{
-		// PLAN (from upside)
-		coefficients->values[0] = coefficients->values[2] = 0;	// X,Z = 0
-		coefficients->values[1] = 1.0;							// Y = 1
-	}
-	coefficients->values[3] = 0;
-
-	// Create the filtering object
-	pcl::ProjectInliers<pcl::PointXYZRGB> proj;
-	proj.setModelType(pcl::SACMODEL_PLANE);
-	proj.setInputCloud(src);
-	proj.setModelCoefficients(coefficients);
-	proj.filter(*src_projected);
+	Processor::flatten(src, src_projected, bPlanView);
 
 	// Visualizer
 	MetricVisualizer * pv = new MetricVisualizer(src_projected, hasColor, this);
