@@ -27,5 +27,6 @@ public:
 	//virtual Status reduceSize(string pathToLoad, string pathToSave) = 0;
 
 	virtual void flatten() = 0;
+	//virtual void flattenMesh() = 0;
 
 };

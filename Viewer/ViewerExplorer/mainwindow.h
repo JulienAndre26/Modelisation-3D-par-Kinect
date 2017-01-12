@@ -26,13 +26,15 @@ VTK_MODULE_INIT(vtkInteractionStyle)
 #include <QtGui>
 #include <QThread.h>
 
-#include <PCLCore.h>
 #include <pcl/point_types.h>
 #include <pcl/ModelCoefficients.h>
 #include <pcl/filters/project_inliers.h>
-#include <pcl/io/ply_io.h>
 #include <pcl/visualization/pcl_visualizer.h>
+#include <pcl/io/ply_io.h>
+#include <pcl/io/vtk_io.h> 
+#include <pcl/io/vtk_lib_io.h> 
 
+#include <PCLCore.h>
 #include "IOXML.h"
 #include "IOPLY.h"
 
@@ -76,9 +78,12 @@ public:
 
 	void updateMetrics(int nPoint, float x, float y, float z);
 	void updateMetrics(double distance);
-		
+
+	void launchOpenThreads();
+
 	char *filePath;
 	vtkMutexLock *renderLock;
+	vtkMutexLock *loaderLock;
 	QMutex reduceLock;
 
 	bool modelLoading = false;
@@ -100,7 +105,7 @@ private slots:
 	
 private:
     Ui::MainWindow *ui;
-	
+
 	QMovie * movieInit;
 	QMovie * movieLoad;
 	QMovie * movieMerge;

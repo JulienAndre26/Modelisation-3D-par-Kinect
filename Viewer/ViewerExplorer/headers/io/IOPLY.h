@@ -5,6 +5,11 @@
 #include "pcl/io/ply_io.h"
 #include "custom_typedef.h"
 
+#include <pcl/io/ply_io.h>
+#include <pcl/io/vtk_io.h> 
+#include <pcl/io/vtk_lib_io.h> 
+#include <pcl/ros/conversions.h>
+
 class IOPLY /*: public IIO*/ {
 
 public:
@@ -12,6 +17,7 @@ public:
 	int load(const char  * filename, void* objectToLoad);
 	int save(const char  * filename, void* objectToSave);
 
+	static int load(const char * filename, PolygonMesh::Ptr mesh);
 	static int load(const char * filename, PointCloud::Ptr objectToLoad);
 	static int load(const char * filename, PointCloudColored::Ptr objectToLoad);
 	static int load(const char * filename, PointCloudNormals::Ptr objectToLoad);

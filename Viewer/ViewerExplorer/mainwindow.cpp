@@ -4,7 +4,6 @@
 #include "custom_qthreads.h"
 #include "metric_visualizer.h"
 
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -89,6 +88,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	// Mutex
 	renderLock = vtkMutexLock::New();
+	loaderLock = vtkMutexLock::New();
 
 	// Variables
 	setLoadedFile("");
@@ -346,6 +346,12 @@ void MainWindow::onLoad(QString path)
 	//	reduceFile(file.toStdString());
 	//}
 
+	launchOpenThreads();
+}
+
+void MainWindow::launchOpenThreads() {
+	cout << "LAUNCHING THREADS..." << endl;
+
 	thread3D = new ThreadOpen(this, VIEW_3D);
 	QObject::connect(thread3D, SIGNAL(finished()), thread3D, SLOT(onEnd()));
 	thread3D->start();
@@ -361,18 +367,23 @@ void MainWindow::onLoad(QString path)
 
 void MainWindow::showPlane(bool bPlanView)
 {
-	// Point cloud in 2D
+	MetricVisualizer * pv;
+
+	//// Point cloud in 2D
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr src_projected(new pcl::PointCloud<pcl::PointXYZRGB>);
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr src(new pcl::PointCloud<pcl::PointXYZRGB>);
+	
+	loaderLock->Lock();
 	IOPLY::load(filePath, src);
+	loaderLock->Unlock();
 
 	Processor::flatten(src, src_projected, bPlanView);
 
 	// Visualizer
-	MetricVisualizer * pv = new MetricVisualizer(src_projected, hasColor, this);
-	vtkSmartPointer<vtkRenderWindow> renderWindow = pv->getRenderWindow();
+	pv = new MetricVisualizer(src_projected, hasColor, this);
 
 	renderLock->Lock();
+	vtkSmartPointer<vtkRenderWindow> renderWindow = pv->getRenderWindow();
 	// Set camera position if plan view
 	if (bPlanView)
 	{
@@ -394,9 +405,8 @@ void MainWindow::showPlane(bool bPlanView)
 /*
 * Show the 3D Model selected (filePath) - Handling Colors
 */
-#include <pcl/io/vtk_io.h> 
-#include <pcl/io/vtk_lib_io.h> 
-#include <pcl/io/ply_io.h>
+
+#include <pcl/ros/conversions.h>
 void MainWindow::showPLY() {
 	
 	MetricVisualizer * pv;
@@ -404,13 +414,21 @@ void MainWindow::showPLY() {
 	if (isMeshMode)
 	{
 		pcl::PolygonMesh::Ptr mesh(new pcl::PolygonMesh);
-		pcl::io::loadPolygonFile(filePath, *mesh);
+		
+		loaderLock->Lock();
+		IOPLY::load(filePath, mesh);
+		loaderLock->Unlock();
+		
 		pv = new MetricVisualizer(mesh, this);
 	}
 	else 
 	{
 		pcl::PointCloud<pcl::PointXYZRGB>::Ptr src(new pcl::PointCloud<pcl::PointXYZRGB>);
+
+		loaderLock->Lock();
 		IOPLY::load(filePath, src);
+		loaderLock->Unlock();
+
 		pv = new MetricVisualizer(src, hasColor, this);
 	}
 
@@ -567,17 +585,14 @@ QLabel * MainWindow::getLabel(int nView)
 	switch (nView)
 	{
 	case VIEW_3D:
-		//qw = this->ui->qvtkWidget3D;
 		ql = this->ui->gif3D;
 		break;
 
 	case VIEW_LATERAL:
-		//qw = this->ui->qvtkWidgetLateral;
 		ql = this->ui->gifLateral;
 		break;
 
 	case VIEW_PLAN:
-		//qw = this->ui->qvtkWidgetPlan;
 		ql = this->ui->gifPlan;
 		break;
 

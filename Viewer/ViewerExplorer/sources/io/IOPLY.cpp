@@ -7,23 +7,45 @@ int load(const char * filename, void* objectToLoad) {
 	return -1;
 }
 
+int IOPLY::load(const char * filename, PolygonMesh::Ptr mesh)
+{
+	pcl::io::loadPolygonFile(filename, *mesh);
+	return 0;
+}
+
 int IOPLY::load(const char * filename, PointCloud::Ptr objectToLoad) {
-	pcl::io::loadPLYFile<PointT>(filename, *objectToLoad);
+	pcl::PolygonMesh::Ptr mesh(new pcl::PolygonMesh);
+	pcl::io::loadPolygonFile(filename, *mesh);
+
+	pcl::PCLPointCloud2 mesh_cloud2 = mesh->cloud;
+	pcl::fromROSMsg(mesh_cloud2, *objectToLoad);
 	return 0;
 }
 
 int IOPLY::load(const char * filename, PointCloudColored::Ptr objectToLoad) {
-	pcl::io::loadPLYFile<PointColorT>(filename, *objectToLoad);
+	pcl::PolygonMesh::Ptr mesh(new pcl::PolygonMesh);
+	pcl::io::loadPolygonFile(filename, *mesh);
+
+	pcl::PCLPointCloud2 mesh_cloud2 = mesh->cloud;
+	pcl::fromROSMsg(mesh_cloud2, *objectToLoad);
 	return 0;
 }
 
 int IOPLY::load(const char * filename, PointCloudNormals::Ptr objectToLoad) {
-	pcl::io::loadPLYFile<PointNormalT>(filename, *objectToLoad);
+	pcl::PolygonMesh::Ptr mesh(new pcl::PolygonMesh);
+	pcl::io::loadPolygonFile(filename, *mesh);
+
+	pcl::PCLPointCloud2 mesh_cloud2 = mesh->cloud;
+	pcl::fromROSMsg(mesh_cloud2, *objectToLoad);
 	return 0;
 }
 
 int IOPLY::load(const char * filename, PointCloudFPFH::Ptr  objectToLoad) {
-	pcl::io::loadPLYFile<FPFHSignature33T>(filename, *objectToLoad);
+	pcl::PolygonMesh::Ptr mesh(new pcl::PolygonMesh);
+	pcl::io::loadPolygonFile(filename, *mesh);
+
+	pcl::PCLPointCloud2 mesh_cloud2 = mesh->cloud;
+	pcl::fromROSMsg(mesh_cloud2, *objectToLoad);
 	return 0;
 }
 
