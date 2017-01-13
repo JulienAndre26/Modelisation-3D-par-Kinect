@@ -75,8 +75,8 @@ void _callback(const pcl::visualization::PointPickingEvent& event, void* args)
 
 class MetricVisualizer : public Visualizer  {
 private:
-	int v;
 	struct callback_args args;
+
 public:
 
 	MetricVisualizer(PointCloudColored::Ptr src, bool bColored, MainWindow * mw) {
@@ -92,12 +92,12 @@ public:
 				src_custom->push_back(PointT(src->at(i).x, src->at(i).y, src->at(i).z));
 
 			pcl::visualization::PointCloudColorHandlerCustom<PointT> src_rgb(src_custom, 50, 210, 210);
-			this->addPointCloud<PointT>(src_custom, src_rgb, "v1_source", v);
+			this->addPointCloud<PointT>(src_custom, src_rgb, "v1_source", 0);
 		} 
 		else // Already colored
 		{
 			pcl::visualization::PointCloudColorHandlerRGBField<pcl::PointXYZRGB> src_rgb(src);
-			this->addPointCloud<PointColorT>(src, src_rgb, "v1_source", v);
+			this->addPointCloud<PointColorT>(src, src_rgb, "v1_source", 0);
 		}
 	}
 
@@ -121,8 +121,8 @@ public:
 		this->registerPointPickingCallback(_callback, (void*)&args);
 
 		// Prepare Point Cloud
-		v = 123;
-		this->createViewPort(0.0, 0.0, 1.0, 1.0, v);
+		/*v = 123;
+		this->createViewPort(0.0, 0.0, 1.0, 1.0, v);*/
 	}
 
 	~MetricVisualizer() {};

@@ -110,8 +110,14 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 
 	ui->qvtkWidgetLateral->setMaximumWidth(value);
 	ui->qvtkWidgetPlan->setMaximumWidth(value);
+
+	ui->qvtkWidget3D->setMaximumWidth(3*value);
+
 	ui->gifLateral->setMaximumWidth(value);
 	ui->gifPlan->setMaximumWidth(value);
+
+	ui->gifLateral->setMinimumHeight(value-10);
+	ui->gifPlan->setMinimumHeight(value - 10);
 
 	setWidgetBorderRadius(ui->qvtkWidget3D, 6);
 	setWidgetBorderRadius(ui->qvtkWidgetLateral, 6);
@@ -538,10 +544,11 @@ QMovie * MainWindow::getMovie(int nStatus)
 		qm = movieInit;
 		break;
 	case MOVIE_LOAD:
-		qm = movieLoad;
+		//qm = movieLoad;
+		qm = new QMovie(":/gifs/load");
 		break;
 	case MOVIE_MERGE:
-		qm = movieMerge;
+		qm = new QMovie(":/gifs/load");
 		break;
 	default:
 		qm = nullptr;
