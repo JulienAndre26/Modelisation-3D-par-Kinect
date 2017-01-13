@@ -106,18 +106,15 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 {
 	QMainWindow::resizeEvent(event);
 
-	int value = rect().width() / 4;
+	int nWidthValue = rect().width() / 4;
 
-	ui->qvtkWidgetLateral->setMaximumWidth(value);
-	ui->qvtkWidgetPlan->setMaximumWidth(value);
+	int nHeightValue = rect().height() - 20 / 2;
 
-	ui->qvtkWidget3D->setMaximumWidth(3*value);
-
-	ui->gifLateral->setMaximumWidth(value);
-	ui->gifPlan->setMaximumWidth(value);
-
-	ui->gifLateral->setMinimumHeight(value-10);
-	ui->gifPlan->setMinimumHeight(value - 10);
+	ui->qvtkWidgetLateral->setMaximumWidth(nWidthValue);
+	ui->qvtkWidgetPlan->setMaximumWidth(nWidthValue);
+	
+	ui->gifLateral->setMaximumWidth(nWidthValue);
+	ui->gifPlan->setMaximumWidth(nWidthValue);
 
 	setWidgetBorderRadius(ui->qvtkWidget3D, 6);
 	setWidgetBorderRadius(ui->qvtkWidgetLateral, 6);
@@ -140,8 +137,7 @@ void MainWindow::on_btnBrowse_clicked()
     QString importName = QFileDialog::getOpenFileName(this, tr("Open File"), QDir::homePath(), tr("Import files (*.import)"));
 
 	if (!importName.isEmpty())
-		importFileOpened(importName);
-	    
+		importFileOpened(importName);	    
 }
 
 void MainWindow::importFileOpened(QString fileName)
