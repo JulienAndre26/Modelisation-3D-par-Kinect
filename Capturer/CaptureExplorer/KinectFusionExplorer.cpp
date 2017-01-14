@@ -73,7 +73,8 @@ CKinectFusionExplorer::CKinectFusionExplorer() :
 	m_nMeshCount(0),
 	m_lDirPath(nullptr),
 	m_bIsAutoMode(false),
-	m_nDelay(5)
+	m_nDelay(5),
+	m_bIsCapturing(false)
 {
 }
 
@@ -377,9 +378,19 @@ void CKinectFusionExplorer::HandleCompletedFrame()
     m_processor.UnlockFrame();
 
 	// We allow the capture
-	SetEnableCaptureUI(TRUE);
-	SetEnableConfUI(TRUE);
-	SetEnableKinectTilt(TRUE);
+	if (m_bIsCapturing)
+	{
+		SetEnableCaptureUI(TRUE);
+		SetEnableConfUI(FALSE);
+		SetEnableKinectTilt(TRUE);
+	}
+	else 
+	{
+		SetEnableCaptureUI(TRUE);
+		SetEnableConfUI(TRUE);
+		SetEnableKinectTilt(TRUE);
+	}
+	
 }
 
 /// <summary>
@@ -430,18 +441,14 @@ void CKinectFusionExplorer::InitializeUIControls()
 */
 	// Set Quality Radio Buttons
 	// MEDIUM
-	if ((int)m_params.m_reconstructionParams.voxelsPerMeter == 128
-		&& (int)m_params.m_reconstructionParams.voxelCountX == 640
-		&& (int)m_params.m_reconstructionParams.voxelCountY == 512)
+	if ((int)m_params.m_reconstructionParams.voxelsPerMeter == mVPM)
 	{
 		CheckDlgButton(m_hWnd, IDC_CAPTURE_TYPE_LOW, BST_UNCHECKED);
 		CheckDlgButton(m_hWnd, IDC_CAPTURE_TYPE_MEDIUM, BST_CHECKED);
 		CheckDlgButton(m_hWnd, IDC_CAPTURE_TYPE_HIGH, BST_UNCHECKED);
 	}
 	// HIGH
-	else if ((int)m_params.m_reconstructionParams.voxelsPerMeter == 256
-		&& (int)m_params.m_reconstructionParams.voxelCountX == 1280
-		&& (int)m_params.m_reconstructionParams.voxelCountY == 1024)
+	else if ((int)m_params.m_reconstructionParams.voxelsPerMeter == hVPM)
 	{
 		CheckDlgButton(m_hWnd, IDC_CAPTURE_TYPE_LOW, BST_UNCHECKED);
 		CheckDlgButton(m_hWnd, IDC_CAPTURE_TYPE_MEDIUM, BST_UNCHECKED);
@@ -1045,12 +1052,6 @@ void CKinectFusionExplorer::SetEnableConfUI(int nEnable)
 	EnableWindow(hElem, nEnable);
 	hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_TYPE_LOW);
 	EnableWindow(hElem, nEnable);
-	/*hElem = GetDlgItem(m_hWnd, IDC_MESH_FORMAT_OBJ_RADIO);
-	EnableWindow(hElem, nEnable);
-	hElem = GetDlgItem(m_hWnd, IDC_MESH_FORMAT_PLY_RADIO);
-	EnableWindow(hElem, nEnable);
-	hElem = GetDlgItem(m_hWnd, IDC_MESH_FORMAT_STL_RADIO);
-	EnableWindow(hElem, nEnable);*/
 }
 
 void CKinectFusionExplorer::SetEnableKinectTilt(int nEnable)
@@ -1236,6 +1237,7 @@ void CKinectFusionExplorer::LoadProject()
 
 	// Disable Conf in UI
 	SetEnableConfUI(FALSE);
+	m_bIsCapturing = true;
 
 	SetStatusMessage(L"Capture imported successfully.");
 }
@@ -1323,6 +1325,7 @@ void CKinectFusionExplorer::OnNewCapture()
 
 		// Disable Conf in UI
 		SetEnableConfUI(FALSE);
+		m_bIsCapturing = true;
 
 		// Reset
 		//m_nMeshCount = 0;
@@ -1349,6 +1352,7 @@ void CKinectFusionExplorer::OnEndCapture()
 
 	// Disable Conf Radio Buttons
 	SetEnableConfUI(TRUE);
+	m_bIsCapturing = false;
 
 	// Set flag
 	m_bDirNameSet = false;

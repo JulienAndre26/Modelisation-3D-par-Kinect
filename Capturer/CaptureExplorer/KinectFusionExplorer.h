@@ -183,4 +183,6 @@ private:
 	bool						m_bIsAutoMode;
 	int							m_nDelay;
 	LPOLESTR					m_lDirPath;
+
+	bool						m_bIsCapturing;
 };

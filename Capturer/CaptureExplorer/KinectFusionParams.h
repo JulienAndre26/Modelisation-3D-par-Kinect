@@ -21,7 +21,7 @@ enum KinectFusionQualityLow
 	lVPM = 32,
 	lX = 320,
 	lY = 160,
-	lZ = 512
+	lZ = 320
 };
 
 enum KinectFusionQualityMedium
@@ -34,9 +34,9 @@ enum KinectFusionQualityMedium
 
 enum KinectFusionQualityHigh
 {
-	hVPM = 128,
-	hX = 1280,
-	hY = 640,
+	hVPM = 96,
+	hX = 960,
+	hY = 480,
 	hZ = 640
 };
 
