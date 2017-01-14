@@ -74,7 +74,8 @@ CKinectFusionExplorer::CKinectFusionExplorer() :
 	m_lDirPath(nullptr),
 	m_bIsAutoMode(false),
 	m_nDelay(5),
-	m_bIsCapturing(false)
+	m_bIsCapturing(false),
+	m_bIsAbleToHigh(true)
 {
 }
 
@@ -331,43 +332,59 @@ LRESULT CALLBACK CKinectFusionExplorer::DlgProc(
 /// <returns>S_OK on success, otherwise failure code</returns>
 void CKinectFusionExplorer::HandleCompletedFrame()
 {
-	
-    KinectFusionProcessorFrame const* pFrame = nullptr;
 
-    // Flush any extra WM_FRAMEREADY messages from the queue
-    MSG msg;
-    while (PeekMessage(&msg, m_hWnd, WM_FRAMEREADY, WM_FRAMEREADY, PM_REMOVE)) {}
+	KinectFusionProcessorFrame const* pFrame = nullptr;
 
-    m_processor.LockFrame(&pFrame);
+	// Flush any extra WM_FRAMEREADY messages from the queue
+	MSG msg;
+	while (PeekMessage(&msg, m_hWnd, WM_FRAMEREADY, WM_FRAMEREADY, PM_REMOVE)) {}
 
-    if (!m_bSavingMesh) // don't render while a mesh is being saved
-    {
-		
-        if (m_processor.IsVolumeInitialized())
-        {
-            // Update reconstruction image
+	m_processor.LockFrame(&pFrame);
+
+	if (!m_bSavingMesh) // don't render while a mesh is being saved
+	{
+
+		if (m_processor.IsVolumeInitialized())
+		{
+			// Update reconstruction image
 			m_pDrawReconstruction->Draw(pFrame->m_pReconstructionRGBX, pFrame->m_cbImageSize);
 			//m_pDrawTrackingResiduals->Draw(pFrame->m_pTrackingDataRGBX, pFrame->m_cbImageSize);
 			//m_pDrawDepth->Draw(pFrame->m_pDepthRGBX, pFrame->m_cbImageSize);
-        }
+		}
 
 		// Update status message
-        SetStatusMessage(pFrame->m_statusMessage);
+		SetStatusMessage(pFrame->m_statusMessage);
 
 		// Update FPS
-        SetFramesPerSecond(pFrame->m_fFramesPerSecond);
-    }
+		SetFramesPerSecond(pFrame->m_fFramesPerSecond);
+	}
 
 	if (pFrame->m_bIntegrationResumed)
 	{
 		m_params.m_bPauseIntegration = false;
 		m_processor.SetParams(m_params);
 	}
-    else if (m_processor.IsCameraPoseFinderAvailable() && !m_params.m_bPauseIntegration)
-    {
-        m_params.m_bPauseIntegration = true;
-        m_processor.SetParams(m_params);
-    }
+	else if (m_processor.IsCameraPoseFinderAvailable() && !m_params.m_bPauseIntegration)
+	{
+		m_params.m_bPauseIntegration = true;
+		m_processor.SetParams(m_params);
+	}
+
+	if (!m_bUIUpdated && m_processor.IsVolumeInitialized())
+	{
+		const int Mebi = 1024 * 1024;
+
+		// We now create both a color and depth volume, doubling the required memory, so we restrict
+		// which resolution settings the user can choose when the graphics card is limited in memory.
+		
+		m_bIsAbleToHigh = pFrame->m_deviceMemory > Mebi;
+		if (m_bIsAbleToHigh)  // 1GB
+		{
+			// Disable 640 voxel resolution in all axes - cards with only 1GB cannot handle this
+			HWND hButton = GetDlgItem(m_hWnd, IDC_CAPTURE_TYPE_HIGH);
+			EnableWindow(hButton, FALSE);
+		}
+	}
 
 	// UI is now updated
     m_bUIUpdated = true;
@@ -1046,8 +1063,9 @@ void CKinectFusionExplorer::SetEnableConfUI(int nEnable)
 	EnableWindow(hElem, nEnable);
 	hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_COLOR_NO);
 	EnableWindow(hElem, nEnable);
+
 	hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_TYPE_HIGH);
-	EnableWindow(hElem, nEnable);
+	EnableWindow(hElem, nEnable && m_bIsAbleToHigh);
 	hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_TYPE_MEDIUM);
 	EnableWindow(hElem, nEnable);
 	hElem = GetDlgItem(m_hWnd, IDC_CAPTURE_TYPE_LOW);
@@ -1280,7 +1298,16 @@ bool CKinectFusionExplorer::RetrieveProjectConf()
 		free(sConf);
 		return false;
 	}
-	else {
+	else if (sConf->nVPM == hVPM && !m_bIsAbleToHigh)
+	{
+		CString cMsg;
+		cMsg.Format(L"Your GPU does not support HIGH quality.");
+		MessageBoxW(NULL, cMsg, _T("Quality Error"), MB_OK | MB_ICONWARNING);
+		free(sConf);
+		return false;
+	}
+	else 
+	{
 		// VALIDATE
 		m_nMeshCount = sConf->nMeshCount;			// Count
 		m_saveMeshFormat = (KinectFusionMeshTypes) sConf->nFormat;			// Format

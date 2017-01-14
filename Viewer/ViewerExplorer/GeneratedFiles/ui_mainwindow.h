@@ -13,7 +13,6 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
-#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
@@ -45,6 +44,7 @@ public:
     QHBoxLayout *horizontalLayout;
     QLabel *lbInvisible;
     QPushButton *btnFS;
+    QPushButton *btnResetCamera;
     QPushButton *btnHelpR;
     QVTKWidget *qvtkWidgetLateral;
     QLabel *gifLateral;
@@ -59,7 +59,6 @@ public:
     QPushButton *btnDelete;
     QLabel *lbCaptureName;
     QPushButton *btnBrowse;
-    QCheckBox *cbDisplayMesh;
     QLabel *invisible2;
     QWidget *wdgLeftBottom;
     QLabel *lbPin1;
@@ -79,7 +78,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(800, 600);
+        MainWindow->resize(800, 632);
         MainWindow->setMaximumSize(QSize(10000, 10000));
         QIcon icon;
         icon.addFile(QStringLiteral("app.ico"), QSize(), QIcon::Normal, QIcon::Off);
@@ -119,7 +118,7 @@ public:
 "}\n"
 "\n"
 "QPushButton#btnExitFS:hover {\n"
-"	padding: 2px;\n"
+"	padding: 1px;\n"
 "}"));
 
         horizontalLayout_2->addWidget(btnExitFS);
@@ -133,7 +132,7 @@ public:
 "}\n"
 "\n"
 "QPushButton#btnHelpM:hover {\n"
-"	padding: 2px;\n"
+"	padding: 1px;\n"
 "}"));
 
         horizontalLayout_2->addWidget(btnHelpM);
@@ -189,10 +188,24 @@ public:
 "}\n"
 "\n"
 "QPushButton#btnFS:hover {\n"
-"	padding: 2px;\n"
+"	padding: 1px;\n"
 "}"));
 
         horizontalLayout->addWidget(btnFS);
+
+        btnResetCamera = new QPushButton(centralWidget);
+        btnResetCamera->setObjectName(QStringLiteral("btnResetCamera"));
+        btnResetCamera->setMinimumSize(QSize(20, 20));
+        btnResetCamera->setMaximumSize(QSize(20, 20));
+        btnResetCamera->setStyleSheet(QLatin1String("QPushButton#btnResetCamera {\n"
+"	border: none;\n"
+"}\n"
+"\n"
+"QPushButton#btnResetCamera:hover {\n"
+"	padding: 1px;\n"
+"}"));
+
+        horizontalLayout->addWidget(btnResetCamera);
 
         btnHelpR = new QPushButton(centralWidget);
         btnHelpR->setObjectName(QStringLiteral("btnHelpR"));
@@ -203,7 +216,7 @@ public:
 "}\n"
 "\n"
 "QPushButton#btnHelpR:hover {\n"
-"	padding: 2px;\n"
+"	padding: 1px;\n"
 "}"));
 
         horizontalLayout->addWidget(btnHelpR);
@@ -380,11 +393,6 @@ public:
 "\n"
 "\n"
 ""));
-        cbDisplayMesh = new QCheckBox(wdgLeftTop);
-        cbDisplayMesh->setObjectName(QStringLiteral("cbDisplayMesh"));
-        cbDisplayMesh->setGeometry(QRect(20, 300, 131, 31));
-        cbDisplayMesh->setStyleSheet(QLatin1String("font: 10pt \"Nirmala UI\";\n"
-""));
 
         vlLeft->addWidget(wdgLeftTop);
 
@@ -489,6 +497,7 @@ public:
         btnFS->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Exit Fullscreen Mode</span></p><p>It will reduce the central view.</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
         btnFS->setText(QString());
+        btnResetCamera->setText(QString());
 #ifndef QT_NO_TOOLTIP
         btnHelpR->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Handling 3D model</span></p><p>Clic + Move Mouse : Rotates the model</p><p>Shift + Move Mouse : Moves the model in X, Y or Z axis</p><p>Ctrl + Move Mouse : Rotates the model in X and Y axis</p><p>Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
@@ -507,7 +516,6 @@ public:
         btnDelete->setText(QString());
         lbCaptureName->setText(QString());
         btnBrowse->setText(QApplication::translate("MainWindow", "Browse", 0));
-        cbDisplayMesh->setText(QApplication::translate("MainWindow", "Display as mesh", 0));
         invisible2->setText(QString());
         lbPin1->setText(QString());
         lbP2y->setText(QApplication::translate("MainWindow", "Y2", 0));

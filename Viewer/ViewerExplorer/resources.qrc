@@ -21,6 +21,7 @@
         <file alias="exit_fs">resources/icons/exit_fs.png</file>
         <file alias="fs">resources/icons/fs.png</file>
         <file alias="app">resources/icons/app.ico</file>
+        <file alias="reset_cam">resources/icons/reset_cam.png</file>
     </qresource>
     <qresource prefix="/gifs">
         <file alias="init">resources/gifs/init.gif</file>

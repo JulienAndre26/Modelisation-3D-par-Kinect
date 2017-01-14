@@ -69,17 +69,29 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->btnHelpM->setIcon(iconHelp);
 	ui->btnHelpM->setIconSize(pixHelp.rect().size());
 
+	QPixmap pixFS(":/icons/fs");
+	QIcon iconFS(pixFS);
+	ui->btnFS->setIcon(iconFS);
+	ui->btnFS->setIconSize(pixFS.rect().size());
+
+	QPixmap pixEFS(":/icons/exit_fs");
+	QIcon iconEFS(pixEFS);
+	ui->btnExitFS->setIcon(iconEFS);
+	ui->btnExitFS->setIconSize(pixEFS.rect().size());
+
+	QPixmap pixResCam(":/icons/reset_cam");
+	QIcon iconResCam(pixResCam);
+	ui->btnResetCamera->setIcon(iconResCam);
+	ui->btnResetCamera->setIconSize(pixResCam.rect().size());
+
 	ui->btnBrowse->setIcon(QIcon(":/icons/browse"));
 	ui->btnShow->setIcon(QIcon(":/icons/show"));
 	ui->btnMerge->setIcon(QIcon(":/icons/merge"));
 
-	ui->btnFS->setIcon(QIcon(":/icons/fs"));
-	ui->btnExitFS->setIcon(QIcon(":/icons/exit_fs"));
-
 	// Gifs
 	movieInit = new QMovie(":/gifs/init");
-	movieLoad = new QMovie(":/gifs/load");
-	movieMerge = new QMovie(":/gifs/merge");
+	/*movieLoad = new QMovie(":/gifs/load"); These gifs must not be a single instance
+	movieMerge = new QMovie(":/gifs/merge");*/
 
 	ui->gif3D->setMovie(movieInit);
 	ui->gifLateral->setMovie(movieInit);
@@ -130,6 +142,15 @@ void MainWindow::on_btnHelpR_clicked()
 void MainWindow::on_btnHelpM_clicked()
 {
 	showHelp();
+}
+
+void MainWindow::on_btnResetCamera_clicked()
+{
+	if (isWidgetActive)
+	{
+		resetWidgetCamera(ui->qvtkWidgetPlan, 0, 10, 0, 1, 0, 0);
+		resetWidgetCamera(ui->qvtkWidgetLateral, 0, 0, 10);
+	}
 }
 
 void MainWindow::on_btnBrowse_clicked()
@@ -335,7 +356,6 @@ void MainWindow::onLoad(QString path)
 
 	setAllViewDisplay(false, MOVIE_LOAD);
 
-	isMeshMode = ui->cbDisplayMesh->isChecked();
 	modelLoading = true;
 	
 	//PCLCore* core(new PCLCore);
@@ -348,41 +368,58 @@ void MainWindow::onLoad(QString path)
 	//	reduceFile(file.toStdString());
 	//}
 
-	launchOpenThreads();
+	ThreadLoad * threadLoad = new ThreadLoad(this);
+	QObject::connect(threadLoad, SIGNAL(finished()), threadLoad, SLOT(onEnd()));
+	threadLoad->start();
 }
 
-void MainWindow::launchOpenThreads() {
-	cout << "LAUNCHING THREADS..." << endl;
+void MainWindow::processLoadThread(MainWindow * mw)
+{
+	cout << "LOADING MESH..." << endl;
+	pcl::PolygonMesh::Ptr mesh(new PolygonMesh());
+	IOPLY::load(filePath, mesh);
 
-	thread3D = new ThreadOpen(this, VIEW_3D);
+	launchOpenThreads(mesh, mw);
+
+	thread3D->wait();
+	threadLateral->wait();
+	threadPlan->wait();
+}
+
+void MainWindow::launchOpenThreads(pcl::PolygonMesh::Ptr mesh, MainWindow * mw) {
+	thread3D = new ThreadOpen(mw, mesh, VIEW_3D);
 	QObject::connect(thread3D, SIGNAL(finished()), thread3D, SLOT(onEnd()));
 	thread3D->start();
 
-	threadLateral = new ThreadOpen(this, VIEW_LATERAL);
+	threadLateral = new ThreadOpen(mw, mesh, VIEW_LATERAL);
 	QObject::connect(threadLateral, SIGNAL(finished()), threadLateral, SLOT(onEnd()));
 	threadLateral->start();
 
-	threadPlan = new ThreadOpen(this, VIEW_PLAN);
+	threadPlan = new ThreadOpen(mw, mesh, VIEW_PLAN);
 	QObject::connect(threadPlan, SIGNAL(finished()), threadPlan, SLOT(onEnd()));
 	threadPlan->start();
 }
 
-void MainWindow::showPlane(bool bPlanView)
+void MainWindow::showPlane(pcl::PolygonMesh::Ptr mesh, bool bPlanView)
 {
 	MetricVisualizer * pv;
 
 	//// Point cloud in 2D
-	pcl::PointCloud<pcl::PointXYZRGB>::Ptr src_projected(new pcl::PointCloud<pcl::PointXYZRGB>);
-	pcl::PointCloud<pcl::PointXYZRGB>::Ptr src(new pcl::PointCloud<pcl::PointXYZRGB>);
+	//pcl::PointCloud<pcl::PointXYZRGB>::Ptr src_projected(new pcl::PointCloud<pcl::PointXYZRGB>);
+	//pcl::PointCloud<pcl::PointXYZRGB>::Ptr src(new pcl::PointCloud<pcl::PointXYZRGB>);
 	
-	loaderLock->Lock();
-	IOPLY::load(filePath, src);
-	loaderLock->Unlock();
+	//loaderLock->Lock();
+	//IOPLY::load(filePath, src);
+	//loaderLock->Unlock();
 
-	Processor::flatten(src, src_projected, bPlanView);
+	//Processor::flatten(src, src_projected, bPlanView);
 
 	// Visualizer
-	pv = new MetricVisualizer(src_projected, hasColor, this);
+	//pv = new MetricVisualizer(src_projected, hasColor, this);
+
+	pv = new MetricVisualizer(mesh, this);
+
+	cout << "showPlane - MetricVisulizer ready" << endl;
 
 	renderLock->Lock();
 	vtkSmartPointer<vtkRenderWindow> renderWindow = pv->getRenderWindow();
@@ -390,16 +427,11 @@ void MainWindow::showPlane(bool bPlanView)
 	if (bPlanView)
 	{
 		ui->qvtkWidgetPlan->SetRenderWindow(renderWindow);
-		vtkSmartPointer<vtkCamera> tmpCam = ui->qvtkWidgetPlan->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->GetActiveCamera();
-		tmpCam->SetPosition(0, 5, 0);
-		tmpCam->SetViewUp(1, 0, 0);
-		ui->qvtkWidgetPlan->update();
+		resetWidgetCamera(ui->qvtkWidgetPlan, 0, 10, 0, 1, 0, 0);
 	}
 	else {
 		ui->qvtkWidgetLateral->SetRenderWindow(renderWindow);
-		vtkSmartPointer<vtkCamera> tmpCam = ui->qvtkWidgetLateral->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->GetActiveCamera();
-		tmpCam->SetPosition(0, 0, 5);
-		ui->qvtkWidgetLateral->update();
+		resetWidgetCamera(ui->qvtkWidgetLateral, 0, 0, 10);
 	}
 	renderLock->Unlock();
 }
@@ -409,30 +441,33 @@ void MainWindow::showPlane(bool bPlanView)
 */
 
 #include <pcl/ros/conversions.h>
-void MainWindow::showPLY() {
+void MainWindow::showPLY(pcl::PolygonMesh::Ptr mesh) {
 	
 	MetricVisualizer * pv;
 
-	if (isMeshMode)
-	{
-		pcl::PolygonMesh::Ptr mesh(new pcl::PolygonMesh);
-		
-		loaderLock->Lock();
-		IOPLY::load(filePath, mesh);
-		loaderLock->Unlock();
-		
-		pv = new MetricVisualizer(mesh, this);
-	}
-	else 
-	{
-		pcl::PointCloud<pcl::PointXYZRGB>::Ptr src(new pcl::PointCloud<pcl::PointXYZRGB>);
+	//if (isMeshMode)
+	//{
+	//	pcl::PolygonMesh::Ptr mesh(new pcl::PolygonMesh);
+	//	loaderLock->Lock();
+	//	IOPLY::load(filePath, mesh);
+	//	loaderLock->Unlock();
+	//	
+	//	pv = new MetricVisualizer(mesh, this);
+	//}
+	//else 
+	//{
+	//	pcl::PointCloud<pcl::PointXYZRGB>::Ptr src(new pcl::PointCloud<pcl::PointXYZRGB>);
 
-		loaderLock->Lock();
-		IOPLY::load(filePath, src);
-		loaderLock->Unlock();
+	//	loaderLock->Lock();
+	//	IOPLY::load(filePath, src);
+	//	loaderLock->Unlock();
 
-		pv = new MetricVisualizer(src, hasColor, this);
-	}
+	//	pv = new MetricVisualizer(src, hasColor, this);
+	//}
+
+	pv = new MetricVisualizer(mesh, this);
+	
+	cout << "showPly - MetricVisulizer ready" << endl;
 
 	renderLock->Lock();
 	vtkSmartPointer<vtkRenderWindow> renderWindow = pv->getRenderWindow();
@@ -615,20 +650,20 @@ void MainWindow::setAllViewDisplay(bool bShowWidget, int nStatus)
 	setViewDisplay(VIEW_PLAN, bShowWidget, nStatus);
 }
 
-void MainWindow::processView(int nView)
+void MainWindow::processView(pcl::PolygonMesh::Ptr mesh, int nView)
 {
 	isWidgetActive = false;
 
 	switch (nView)
 	{
 	case VIEW_3D:
-		showPLY();
+		showPLY(mesh);
 		break;
 	case VIEW_LATERAL:
-		showPlane(false);
+		showPlane(mesh, false);
 		break;
 	case VIEW_PLAN:
-		showPlane(true); 
+		showPlane(mesh, true); 
 		break;
 	default:
 		cout << "MainWindow::processView : Invalid view number " + nView << endl;
@@ -784,6 +819,7 @@ void MainWindow::setFullscreenActive(bool bFullscreen)
 	ui->btnFS->setVisible(!bFullscreen);
 	ui->lbInvisible->setVisible(!bFullscreen);
 	ui->btnHelpR->setVisible(!bFullscreen);
+	ui->btnResetCamera->setVisible(!bFullscreen);
 
 	bool bDisplayGifs = !isWidgetActive && !bFullscreen;
 	ui->gifLateral->setVisible(bDisplayGifs);
@@ -810,4 +846,19 @@ void MainWindow::showHelp()
 {
 	QMessageBox::information(this, "Handling 3D model", "<p><b>Handling 3D model</b></p><p><img src = ':/icons/m_left'> + <img src = ':/icons/m_move'> : Rotates the model</p><p><img src = ':/icons/k_shift'> + <img src = ':/icons/m_left'> + <img src = ':/icons/m_move'> : Moves the model in X, Y or Z axis</p><p><img src = ':/icons/k_ctrl'> + <img src = ':/icons/m_left'> + <img src = ':/icons/m_move'> : Rotates the model in X and Y axis</p><p><img src = ':/icons/k_shift'> + <img src = ':/icons/m_left'> : Puts a pin for measurement (place two pins to get the distance between pins)</p>",
 		QMessageBox::Close);
+}
+
+void MainWindow::resetWidgetCamera(QVTKWidget * qw, int posX, int posY, int posZ, int viewX, int viewY, int viewZ)
+{
+	vtkSmartPointer<vtkCamera> tmpCam = qw->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->GetActiveCamera();
+	tmpCam->SetPosition(posX, posY, posZ);
+	tmpCam->SetViewUp(viewX, viewY, viewZ);
+	qw->update();
+}
+
+void MainWindow::resetWidgetCamera(QVTKWidget * qw, int posX, int posY, int posZ)
+{
+	vtkSmartPointer<vtkCamera> tmpCam = qw->GetRenderWindow()->GetRenderers()->GetFirstRenderer()->GetActiveCamera();
+	tmpCam->SetPosition(posX, posY, posZ);
+	qw->update();
 }

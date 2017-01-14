@@ -67,19 +67,20 @@ public:
 	void setViewDisplay(int nView, bool bShowWidget, int nStatus);
 	void setAllViewDisplay(bool bShowWidget, int nStatus);
 	
-	void processView(int nView);
+	void processLoadThread(MainWindow * mw);
+	void processView(pcl::PolygonMesh::Ptr mesh, int nView);
 	void processMerge();
 
 	void onMerge();
 	void onMergeEnd();
 
-	void showPLY();
-	void showPlane(bool bPlanView);
+	void showPLY(pcl::PolygonMesh::Ptr mesh);
+	void showPlane(pcl::PolygonMesh::Ptr mesh, bool bPlanView);
 
 	void updateMetrics(int nPoint, float x, float y, float z);
 	void updateMetrics(double distance);
 
-	void launchOpenThreads();
+	void launchOpenThreads(pcl::PolygonMesh::Ptr mesh, MainWindow * mw);
 
 	char *filePath;
 	vtkMutexLock *renderLock;
@@ -98,6 +99,7 @@ private slots:
 	void on_btnDelete_clicked();
 	void on_btnFS_clicked();
 	void on_btnExitFS_clicked();
+	void on_btnResetCamera_clicked();
 
 	void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
 	void on_listWidget_itemClicked(QListWidgetItem *item);
@@ -107,13 +109,10 @@ private:
     Ui::MainWindow *ui;
 
 	QMovie * movieInit;
-	QMovie * movieLoad;
-	QMovie * movieMerge;
 
 	bool hasColor = false;
 	bool isFullscreenActive = false;
 	bool isWidgetActive = false;
-	bool isMeshMode = false;
 
 	QDir captureDirectory;
 	QString selectedFile;
@@ -147,6 +146,8 @@ private:
 	void stopThread(QThread * qThread);
 
 	void setFullscreenActive(bool bFullscreen);
+	void resetWidgetCamera(QVTKWidget * qw, int posX, int posY, int posZ, int viewX, int viewY, int viewZ);
+	void resetWidgetCamera(QVTKWidget * qw, int posX, int posY, int posZ);
 
 	void showHelp();
 };

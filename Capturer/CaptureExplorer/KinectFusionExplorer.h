@@ -185,4 +185,5 @@ private:
 	LPOLESTR					m_lDirPath;
 
 	bool						m_bIsCapturing;
+	bool						m_bIsAbleToHigh;
 };

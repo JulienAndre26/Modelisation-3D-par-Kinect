@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>600</height>
+    <height>632</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -83,7 +83,7 @@
 }
 
 QPushButton#btnExitFS:hover {
-	padding: 2px;
+	padding: 1px;
 }</string>
             </property>
             <property name="text">
@@ -114,7 +114,7 @@ QPushButton#btnExitFS:hover {
 }
 
 QPushButton#btnHelpM:hover {
-	padding: 2px;
+	padding: 1px;
 }</string>
             </property>
             <property name="text">
@@ -216,7 +216,35 @@ padding: 6px;</string>
 }
 
 QPushButton#btnFS:hover {
-	padding: 2px;
+	padding: 1px;
+}</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnResetCamera">
+            <property name="minimumSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton#btnResetCamera {
+	border: none;
+}
+
+QPushButton#btnResetCamera:hover {
+	padding: 1px;
 }</string>
             </property>
             <property name="text">
@@ -247,7 +275,7 @@ QPushButton#btnFS:hover {
 }
 
 QPushButton#btnHelpR:hover {
-	padding: 2px;
+	padding: 1px;
 }</string>
             </property>
             <property name="text">
@@ -590,23 +618,6 @@ QPushButton#btnBrowse:pressed {
            </property>
            <property name="text">
             <string>Browse</string>
-           </property>
-          </widget>
-          <widget class="QCheckBox" name="cbDisplayMesh">
-           <property name="geometry">
-            <rect>
-             <x>20</x>
-             <y>300</y>
-             <width>131</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">font: 10pt &quot;Nirmala UI&quot;;
-</string>
-           </property>
-           <property name="text">
-            <string>Display as mesh</string>
            </property>
           </widget>
          </widget>

@@ -7,28 +7,52 @@
 
 #include "mainwindow.h"
 
+class ThreadLoad : public QThread
+{
+	Q_OBJECT
+
+public:
+	ThreadLoad(MainWindow * mw) { this->mw = mw; }
+
+	public slots :
+		void onEnd()
+	{
+		mw->setAllViewDisplay(true, NULL);
+		cout << "Thread Load finished" << endl;
+	}
+
+private:
+	MainWindow * mw;
+
+	void run()
+	{
+		cout << "Thread Load launched..." << endl;
+		mw->processLoadThread(mw);
+	}
+};
+
 class ThreadOpen : public QThread
 {
 	Q_OBJECT
 
 public:
-	ThreadOpen(MainWindow * mw, int n) { this->mw = mw;  this->nView = n; }
+	ThreadOpen(MainWindow * mw, pcl::PolygonMesh::Ptr mesh, int n) { this->mw = mw;  this->mesh = mesh;  this->nView = n; }
 
 	public slots :
 		void onEnd()
 	{
-		mw->setViewDisplay(nView, true, NULL);
 		cout << "Thread " << nView << " finished" << endl;
 	}
 
 private:
 	MainWindow * mw;
+	pcl::PolygonMesh::Ptr mesh;
 	int nView;
 
 	void run()
 	{
 		cout << "Thread " << nView << " launched..." << endl;
-		mw->processView(nView);
+		mw->processView(mesh, nView);
 	}
 };
 
