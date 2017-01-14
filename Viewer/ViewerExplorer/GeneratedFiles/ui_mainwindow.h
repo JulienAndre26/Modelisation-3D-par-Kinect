@@ -81,7 +81,7 @@ public:
         MainWindow->resize(800, 632);
         MainWindow->setMaximumSize(QSize(10000, 10000));
         QIcon icon;
-        icon.addFile(QStringLiteral("app.ico"), QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(QStringLiteral("../../../../../.designer/backup/app.ico"), QSize(), QIcon::Normal, QIcon::Off);
         MainWindow->setWindowIcon(icon);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
@@ -100,8 +100,8 @@ public:
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
         lbLoadedFile = new QLabel(centralWidget);
         lbLoadedFile->setObjectName(QStringLiteral("lbLoadedFile"));
-        lbLoadedFile->setMinimumSize(QSize(0, 20));
-        lbLoadedFile->setMaximumSize(QSize(16777215, 20));
+        lbLoadedFile->setMinimumSize(QSize(0, 21));
+        lbLoadedFile->setMaximumSize(QSize(16777215, 21));
         lbLoadedFile->setStyleSheet(QLatin1String("font: 11pt \"Nirmala UI\";\n"
 ""));
         lbLoadedFile->setTextFormat(Qt::AutoText);
@@ -111,8 +111,8 @@ public:
 
         btnExitFS = new QPushButton(centralWidget);
         btnExitFS->setObjectName(QStringLiteral("btnExitFS"));
-        btnExitFS->setMinimumSize(QSize(20, 20));
-        btnExitFS->setMaximumSize(QSize(20, 20));
+        btnExitFS->setMinimumSize(QSize(21, 21));
+        btnExitFS->setMaximumSize(QSize(21, 21));
         btnExitFS->setStyleSheet(QLatin1String("QPushButton#btnExitFS {\n"
 "	border: none;\n"
 "}\n"
@@ -125,8 +125,8 @@ public:
 
         btnHelpM = new QPushButton(centralWidget);
         btnHelpM->setObjectName(QStringLiteral("btnHelpM"));
-        btnHelpM->setMinimumSize(QSize(20, 20));
-        btnHelpM->setMaximumSize(QSize(20, 20));
+        btnHelpM->setMinimumSize(QSize(21, 21));
+        btnHelpM->setMaximumSize(QSize(21, 21));
         btnHelpM->setStyleSheet(QLatin1String("QPushButton#btnHelpM {\n"
 "	border: none;\n"
 "}\n"
@@ -174,15 +174,15 @@ public:
         horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
         lbInvisible = new QLabel(centralWidget);
         lbInvisible->setObjectName(QStringLiteral("lbInvisible"));
-        lbInvisible->setMinimumSize(QSize(0, 20));
-        lbInvisible->setMaximumSize(QSize(16777215, 20));
+        lbInvisible->setMinimumSize(QSize(0, 21));
+        lbInvisible->setMaximumSize(QSize(16777215, 21));
 
         horizontalLayout->addWidget(lbInvisible);
 
         btnFS = new QPushButton(centralWidget);
         btnFS->setObjectName(QStringLiteral("btnFS"));
-        btnFS->setMinimumSize(QSize(20, 20));
-        btnFS->setMaximumSize(QSize(20, 20));
+        btnFS->setMinimumSize(QSize(21, 21));
+        btnFS->setMaximumSize(QSize(21, 21));
         btnFS->setStyleSheet(QLatin1String("QPushButton#btnFS {\n"
 "	border: none;\n"
 "}\n"
@@ -195,8 +195,9 @@ public:
 
         btnResetCamera = new QPushButton(centralWidget);
         btnResetCamera->setObjectName(QStringLiteral("btnResetCamera"));
-        btnResetCamera->setMinimumSize(QSize(20, 20));
-        btnResetCamera->setMaximumSize(QSize(20, 20));
+        btnResetCamera->setEnabled(false);
+        btnResetCamera->setMinimumSize(QSize(21, 21));
+        btnResetCamera->setMaximumSize(QSize(21, 21));
         btnResetCamera->setStyleSheet(QLatin1String("QPushButton#btnResetCamera {\n"
 "	border: none;\n"
 "}\n"
@@ -209,8 +210,8 @@ public:
 
         btnHelpR = new QPushButton(centralWidget);
         btnHelpR->setObjectName(QStringLiteral("btnHelpR"));
-        btnHelpR->setMinimumSize(QSize(20, 20));
-        btnHelpR->setMaximumSize(QSize(20, 20));
+        btnHelpR->setMinimumSize(QSize(21, 21));
+        btnHelpR->setMaximumSize(QSize(21, 21));
         btnHelpR->setStyleSheet(QLatin1String("QPushButton#btnHelpR {\n"
 "	border: none;\n"
 "}\n"
@@ -488,7 +489,7 @@ public:
 #endif // QT_NO_TOOLTIP
         btnExitFS->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        btnHelpM->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Handling 3D model</span></p><p>Clic + Move Mouse : Rotates the model</p><p>Shift + Move Mouse : Moves the model in X, Y or Z axis</p><p>Ctrl + Move Mouse : Rotates the model in X and Y axis</p><p>Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)</p></body></html>", 0));
+        btnHelpM->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Handling 3D model</span></p><p>Mouse Scroll : Zoom or unzoom the model</p><p>Clic + Move Mouse : Rotates the model</p><p>Shift + Move Mouse : Moves the model</p><p>Ctrl + Move Mouse : Rotates the model</p><p>Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
         btnHelpM->setText(QString());
         gif3D->setText(QApplication::translate("MainWindow", "Loading", 0));
@@ -499,7 +500,7 @@ public:
         btnFS->setText(QString());
         btnResetCamera->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        btnHelpR->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Handling 3D model</span></p><p>Clic + Move Mouse : Rotates the model</p><p>Shift + Move Mouse : Moves the model in X, Y or Z axis</p><p>Ctrl + Move Mouse : Rotates the model in X and Y axis</p><p>Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)</p></body></html>", 0));
+        btnHelpR->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Handling 3D model</span></p><p>Mouse Scroll : Zoom or unzoom the model</p><p>Clic + Move Mouse : Rotates the model</p><p>Shift + Move Mouse : Moves the model</p><p>Ctrl + Move Mouse : Rotates the model</p><p>Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
         btnHelpR->setText(QString());
         gifLateral->setText(QApplication::translate("MainWindow", "Loading", 0));

@@ -21,7 +21,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>app.ico</normaloff>app.ico</iconset>
+    <normaloff>../../../../../.designer/backup/app.ico</normaloff>../../../../../.designer/backup/app.ico</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_2">
@@ -36,13 +36,13 @@
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>20</height>
+              <height>21</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>20</height>
+              <height>21</height>
              </size>
             </property>
             <property name="styleSheet">
@@ -64,14 +64,14 @@
            <widget class="QPushButton" name="btnExitFS">
             <property name="minimumSize">
              <size>
-              <width>20</width>
-              <height>20</height>
+              <width>21</width>
+              <height>21</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>20</width>
-              <height>20</height>
+              <width>21</width>
+              <height>21</height>
              </size>
             </property>
             <property name="toolTip">
@@ -95,18 +95,18 @@ QPushButton#btnExitFS:hover {
            <widget class="QPushButton" name="btnHelpM">
             <property name="minimumSize">
              <size>
-              <width>20</width>
-              <height>20</height>
+              <width>21</width>
+              <height>21</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>20</width>
-              <height>20</height>
+              <width>21</width>
+              <height>21</height>
              </size>
             </property>
             <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Handling 3D model&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Clic + Move Mouse : Rotates the model&lt;/p&gt;&lt;p&gt;Shift + Move Mouse : Moves the model in X, Y or Z axis&lt;/p&gt;&lt;p&gt;Ctrl + Move Mouse : Rotates the model in X and Y axis&lt;/p&gt;&lt;p&gt;Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Handling 3D model&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Mouse Scroll : Zoom or unzoom the model&lt;/p&gt;&lt;p&gt;Clic + Move Mouse : Rotates the model&lt;/p&gt;&lt;p&gt;Shift + Move Mouse : Moves the model&lt;/p&gt;&lt;p&gt;Ctrl + Move Mouse : Rotates the model&lt;/p&gt;&lt;p&gt;Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="styleSheet">
              <string notr="true">QPushButton#btnHelpM {
@@ -179,13 +179,13 @@ padding: 6px;</string>
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>20</height>
+              <height>21</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>20</height>
+              <height>21</height>
              </size>
             </property>
             <property name="text">
@@ -197,14 +197,14 @@ padding: 6px;</string>
            <widget class="QPushButton" name="btnFS">
             <property name="minimumSize">
              <size>
-              <width>20</width>
-              <height>20</height>
+              <width>21</width>
+              <height>21</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>20</width>
-              <height>20</height>
+              <width>21</width>
+              <height>21</height>
              </size>
             </property>
             <property name="toolTip">
@@ -226,16 +226,19 @@ QPushButton#btnFS:hover {
           </item>
           <item>
            <widget class="QPushButton" name="btnResetCamera">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="minimumSize">
              <size>
-              <width>20</width>
-              <height>20</height>
+              <width>21</width>
+              <height>21</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>20</width>
-              <height>20</height>
+              <width>21</width>
+              <height>21</height>
              </size>
             </property>
             <property name="styleSheet">
@@ -256,18 +259,18 @@ QPushButton#btnResetCamera:hover {
            <widget class="QPushButton" name="btnHelpR">
             <property name="minimumSize">
              <size>
-              <width>20</width>
-              <height>20</height>
+              <width>21</width>
+              <height>21</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>20</width>
-              <height>20</height>
+              <width>21</width>
+              <height>21</height>
              </size>
             </property>
             <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Handling 3D model&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Clic + Move Mouse : Rotates the model&lt;/p&gt;&lt;p&gt;Shift + Move Mouse : Moves the model in X, Y or Z axis&lt;/p&gt;&lt;p&gt;Ctrl + Move Mouse : Rotates the model in X and Y axis&lt;/p&gt;&lt;p&gt;Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Handling 3D model&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Mouse Scroll : Zoom or unzoom the model&lt;/p&gt;&lt;p&gt;Clic + Move Mouse : Rotates the model&lt;/p&gt;&lt;p&gt;Shift + Move Mouse : Moves the model&lt;/p&gt;&lt;p&gt;Ctrl + Move Mouse : Rotates the model&lt;/p&gt;&lt;p&gt;Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="styleSheet">
              <string notr="true">QPushButton#btnHelpR {

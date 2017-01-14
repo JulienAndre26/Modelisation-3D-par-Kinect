@@ -151,3 +151,15 @@ private:
 
 	void showHelp();
 };
+
+enum CameraPositionPlan {
+	xPlan = 0,
+	yPlan = 10,
+	zPlan = 0
+};
+
+enum CameraPositionLateral {
+	xLateral = 0,
+	yLateral = 0,
+	zLateral = 10
+};

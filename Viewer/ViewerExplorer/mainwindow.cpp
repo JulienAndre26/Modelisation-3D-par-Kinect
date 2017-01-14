@@ -120,8 +120,6 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 
 	int nWidthValue = rect().width() / 4;
 
-	int nHeightValue = rect().height() - 20 / 2;
-
 	ui->qvtkWidgetLateral->setMaximumWidth(nWidthValue);
 	ui->qvtkWidgetPlan->setMaximumWidth(nWidthValue);
 	
@@ -148,8 +146,8 @@ void MainWindow::on_btnResetCamera_clicked()
 {
 	if (isWidgetActive)
 	{
-		resetWidgetCamera(ui->qvtkWidgetPlan, 0, 10, 0, 1, 0, 0);
-		resetWidgetCamera(ui->qvtkWidgetLateral, 0, 0, 10);
+		resetWidgetCamera(ui->qvtkWidgetPlan, xPlan, yPlan, zPlan, 1, 0, 0);
+		resetWidgetCamera(ui->qvtkWidgetLateral, xLateral, yLateral, zLateral);
 	}
 }
 
@@ -176,6 +174,7 @@ void MainWindow::importFileOpened(QString fileName)
 		
 		setLoadedFile("");
 		ui->lbLoadedFile->setText("Please open a file");
+		ui->btnResetCamera->setEnabled(false);
 
 		isWidgetActive = false;
 		setFullscreenActive(this->isFullscreenActive);
@@ -349,6 +348,7 @@ void MainWindow::onLoad(QString path)
 
 	stopOpenThreads();
 	setLoadedFile(path);
+	ui->btnResetCamera->setEnabled(true);
 
 	filePath = new char[path.size() + 1];
 	filePath[path.size()] = '\0';
@@ -427,11 +427,11 @@ void MainWindow::showPlane(pcl::PolygonMesh::Ptr mesh, bool bPlanView)
 	if (bPlanView)
 	{
 		ui->qvtkWidgetPlan->SetRenderWindow(renderWindow);
-		resetWidgetCamera(ui->qvtkWidgetPlan, 0, 10, 0, 1, 0, 0);
+		resetWidgetCamera(ui->qvtkWidgetPlan, xPlan, yPlan, zPlan, 1, 0, 0);
 	}
 	else {
 		ui->qvtkWidgetLateral->SetRenderWindow(renderWindow);
-		resetWidgetCamera(ui->qvtkWidgetLateral, 0, 0, 10);
+		resetWidgetCamera(ui->qvtkWidgetLateral, xLateral, yLateral, zLateral);
 	}
 	renderLock->Unlock();
 }
@@ -844,8 +844,7 @@ void MainWindow::setFullscreenActive(bool bFullscreen)
 
 void MainWindow::showHelp()
 {
-	QMessageBox::information(this, "Handling 3D model", "<p><b>Handling 3D model</b></p><p><img src = ':/icons/m_left'> + <img src = ':/icons/m_move'> : Rotates the model</p><p><img src = ':/icons/k_shift'> + <img src = ':/icons/m_left'> + <img src = ':/icons/m_move'> : Moves the model in X, Y or Z axis</p><p><img src = ':/icons/k_ctrl'> + <img src = ':/icons/m_left'> + <img src = ':/icons/m_move'> : Rotates the model in X and Y axis</p><p><img src = ':/icons/k_shift'> + <img src = ':/icons/m_left'> : Puts a pin for measurement (place two pins to get the distance between pins)</p>",
-		QMessageBox::Close);
+	QMessageBox::about(this, "Handling 3D model", "<p><b>Handling 3D model</b></p><p><img src = ':/icons/m_scroll'> : Zoom or unzoom the model</p><p><img src = ':/icons/m_left'> + <img src = ':/icons/m_move'> : Rotates the model</p><p><img src = ':/icons/k_shift'> + <img src = ':/icons/m_left'> + <img src = ':/icons/m_move'> : Moves the model</p><p><img src = ':/icons/k_ctrl'> + <img src = ':/icons/m_left'> + <img src = ':/icons/m_move'> : Rotates the model</p><p><img src = ':/icons/k_shift'> + <img src = ':/icons/m_left'> : Puts a pin for measurement (place two pins to get the distance between pins)</p>");
 }
 
 void MainWindow::resetWidgetCamera(QVTKWidget * qw, int posX, int posY, int posZ, int viewX, int viewY, int viewZ)
