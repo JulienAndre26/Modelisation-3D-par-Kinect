@@ -74,20 +74,17 @@ public:
 	void onMerge();
 	void onMergeEnd();
 
-	void showPLY(pcl::PolygonMesh::Ptr mesh);
-	void showPlane(pcl::PolygonMesh::Ptr mesh, bool bPlanView);
+	void show3D(pcl::PolygonMesh::Ptr mesh);
+	void show2D(pcl::PolygonMesh::Ptr mesh, bool bPlanView);
 
 	void updateMetrics(int nPoint, float x, float y, float z);
 	void updateMetrics(double distance);
 
 	void launchOpenThreads(pcl::PolygonMesh::Ptr mesh, MainWindow * mw);
 
-	char *filePath;
-	vtkMutexLock *renderLock;
-	vtkMutexLock *loaderLock;
-	QMutex reduceLock;
-
-	bool modelLoading = false;
+	char * szFilePath;
+	vtkMutexLock * vmuRenderLock;
+	QMutex qmuReduceLock;
 
 private slots:
     void on_btnBrowse_clicked();
@@ -108,22 +105,24 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
-	QMovie * movieInit;
+	QMovie * qmInit;
 
-	bool hasColor = false;
-	bool isFullscreenActive = false;
-	bool isWidgetActive = false;
+	bool bIsMeshColorized = false;
+	bool bIsFullscreenActive = false;
+	bool bIsWidgetActive = false;
+	bool bIsModelLoading = false;
 
-	QDir captureDirectory;
-	QString selectedFile;
-	QString loadedFile;
-	QStringList list;
-	QHash<QString, QString> listContent;
+	QDir qdCaptureDirectory;
+	QString qsSelectedFile;
+	QString qsLoadedFile;
+	QStringList qlsFilenameList;
+	QHash<QString, QString> qhFileMap;
 
-	QThread * thread3D = nullptr;
-	QThread * threadLateral = nullptr;
-	QThread * threadPlan = nullptr;
-	QThread * threadMerge = nullptr;
+	QThread * qth3D = nullptr;
+	QThread * qthLateral = nullptr;
+	QThread * qthPlan = nullptr;
+	QThread * qthMerge = nullptr;
+	QThread * qthLoad = nullptr;
 
 	void dropEvent(QDropEvent *e);
 	void resizeEvent(QResizeEvent* event);
