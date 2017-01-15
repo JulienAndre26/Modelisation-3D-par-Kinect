@@ -89,19 +89,18 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->btnMerge->setIcon(QIcon(":/icons/merge"));
 
 	// Gifs
-	movieInit = new QMovie(":/gifs/init");
+	qmInit = new QMovie(":/gifs/init");
 	/*movieLoad = new QMovie(":/gifs/load"); These gifs must not be a single instance
 	movieMerge = new QMovie(":/gifs/merge");*/
 
-	ui->gif3D->setMovie(movieInit);
-	ui->gifLateral->setMovie(movieInit);
-	ui->gifPlan->setMovie(movieInit);
-	movieInit->start();
+	ui->gif3D->setMovie(qmInit);
+	ui->gifLateral->setMovie(qmInit);
+	ui->gifPlan->setMovie(qmInit);
+	qmInit->start();
 
 	// Mutex
-	renderLock = vtkMutexLock::New();
-	loaderLock = vtkMutexLock::New();
-
+	vmuRenderLock = vtkMutexLock::New();
+	
 	// Variables
 	setLoadedFile("");
 	ui->lbLoadedFile->setText("Please browse a capture and open a file");
@@ -144,7 +143,7 @@ void MainWindow::on_btnHelpM_clicked()
 
 void MainWindow::on_btnResetCamera_clicked()
 {
-	if (isWidgetActive)
+	if (bIsWidgetActive)
 	{
 		resetWidgetCamera(ui->qvtkWidgetPlan, xPlan, yPlan, zPlan, 1, 0, 0);
 		resetWidgetCamera(ui->qvtkWidgetLateral, xLateral, yLateral, zLateral);
@@ -167,8 +166,8 @@ void MainWindow::importFileOpened(QString fileName)
 		stopOpenThreads();
 		stopMergeThread();
 
-		captureDirectory = importFileInfo.absoluteDir();
-		ui->lbCaptureName->setText("<b>" + captureDirectory.dirName() + "</b>");
+		qdCaptureDirectory = importFileInfo.absoluteDir();
+		ui->lbCaptureName->setText("<b>" + qdCaptureDirectory.dirName() + "</b>");
 
 		updateFileList();
 		
@@ -176,19 +175,19 @@ void MainWindow::importFileOpened(QString fileName)
 		ui->lbLoadedFile->setText("Please open a file");
 		ui->btnResetCamera->setEnabled(false);
 
-		isWidgetActive = false;
-		setFullscreenActive(this->isFullscreenActive);
+		bIsWidgetActive = false;
+		setFullscreenActive(this->bIsFullscreenActive);
 	}
 }
 
 void MainWindow::updateFileList()
 {
-	list.clear();
-	listContent.clear();
+	qlsFilenameList.clear();
+	qhFileMap.clear();
 
-	list = detectPlyFiles(captureDirectory);
+	qlsFilenameList = detectPlyFiles(qdCaptureDirectory);
 	ui->listWidget->clear();
-	ui->listWidget->addItems(listContent.keys());
+	ui->listWidget->addItems(qhFileMap.keys());
 
 	QFont font("Nirmala UI");
 	font.setStyleHint(QFont::Monospace);
@@ -209,13 +208,13 @@ void MainWindow::updateFileList()
 	ui->progressBar->setVisible(false);
 	ui->lbCurrentMerge->setText("");
 
-	ui->btnMerge->setEnabled(list.size() > 1);
+	ui->btnMerge->setEnabled(qlsFilenameList.size() > 1);
 	ui->btnShow->setEnabled(false);
 
 	setAllViewDisplay(false, MOVIE_INIT);
 
-	modelLoading = false;
-	selectedFile = "";
+	bIsModelLoading = false;
+	qsSelectedFile = "";
 }
 
 QStringList MainWindow::detectPlyFiles(QDir dirToImport)
@@ -227,7 +226,7 @@ QStringList MainWindow::detectPlyFiles(QDir dirToImport)
 
     for (int i = 0; i < listInfo.size(); i++)
     {
-		listContent.insert(listInfo.at(i).fileName(), listInfo.at(i).absoluteFilePath());
+		qhFileMap.insert(listInfo.at(i).fileName(), listInfo.at(i).absoluteFilePath());
         res.append(listInfo.at(i).fileName());
     }
 
@@ -241,7 +240,7 @@ void MainWindow::on_btnMerge_clicked()
 
 void MainWindow::onMerge()
 {
-	if (list.size() < 2)
+	if (qlsFilenameList.size() < 2)
 	{
 		QMessageBox::warning(this, "Empty list", "Please select .import file with at least 2 models");
 	}
@@ -253,22 +252,22 @@ void MainWindow::onMerge()
 		ui->progressBar->setMaximum(0);
 		ui->progressBar->setMinimum(0);
 
-		if (!modelLoading)
+		if (!bIsModelLoading)
 		{
 			setAllViewDisplay(false, MOVIE_MERGE);
 		}
 		
 
-		threadMerge = new ThreadMerge(this);
-		QObject::connect(threadMerge, SIGNAL(finished()), threadMerge, SLOT(onEnd()));
-		threadMerge->start();
+		qthMerge = new ThreadMerge(this);
+		QObject::connect(qthMerge, SIGNAL(finished()), qthMerge, SLOT(onEnd()));
+		qthMerge->start();
 	}
 }
 
 void MainWindow::processMerge()
 {
-	QString sTotal = QString::number(list.size() - 1);
-	for (int i = 0; i < list.size() - 1; i++)
+	QString sTotal = QString::number(qlsFilenameList.size() - 1);
+	for (int i = 0; i < qlsFilenameList.size() - 1; i++)
 	{
 		QString sCurrent = QString::number(i + 1);
 		ui->lbCurrentMerge->setText("Merging... (" + sCurrent + "/" + (sTotal) + ")");
@@ -285,7 +284,7 @@ void MainWindow::onMergeEnd()
 	ui->progressBar->setValue(100);
 	ui->lbCurrentMerge->setText("Finished");
 
-	if (!modelLoading)
+	if (!bIsModelLoading)
 	{
 		setAllViewDisplay(false, MOVIE_INIT);
 	}
@@ -295,10 +294,10 @@ void MainWindow::onMergeEnd()
 void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
 {
 	ui->btnShow->setEnabled(true);
-	selectedFile = listContent.find(item->data(Qt::DisplayRole).toString()).value();
-	cout << selectedFile.toLocal8Bit().data() << endl;
+	qsSelectedFile = qhFileMap.find(item->data(Qt::DisplayRole).toString()).value();
+	cout << qsSelectedFile.toLocal8Bit().data() << endl;
 
-	if (QString::compare(selectedFile, loadedFile, Qt::CaseInsensitive) == 0)
+	if (QString::compare(qsSelectedFile, qsLoadedFile, Qt::CaseInsensitive) == 0)
 		ui->btnShow->setEnabled(false);
 	else
 		ui->btnShow->setEnabled(true);
@@ -306,12 +305,11 @@ void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
 
 void MainWindow::on_btnShow_clicked()
 {
-	onLoad(selectedFile);
+	onLoad(qsSelectedFile);
 }
 
 bool MainWindow::readImportFile(QString import)
 {
-
     QFile importFile(import);
     
 	if (!importFile.exists()) {
@@ -327,7 +325,7 @@ bool MainWindow::readImportFile(QString import)
 		return false;
 	}
 
-	hasColor = (parser->get("color").compare("true") == 0);
+	bIsMeshColorized = (parser->get("color").compare("true") == 0);
 
 	return true;
 }
@@ -335,7 +333,7 @@ bool MainWindow::readImportFile(QString import)
 
 void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
 {
-    QString path = listContent.find(item->data(Qt::DisplayRole).toString()).value();
+    QString path = qhFileMap.find(item->data(Qt::DisplayRole).toString()).value();
 	cout << path.toLocal8Bit().data() << endl;
 	
 	onLoad(path);
@@ -343,20 +341,20 @@ void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
 
 void MainWindow::onLoad(QString path)
 {
-	if (QString::compare(path, loadedFile, Qt::CaseInsensitive) == 0)
+	if (QString::compare(path, qsLoadedFile, Qt::CaseInsensitive) == 0)
 		return;
 
 	stopOpenThreads();
 	setLoadedFile(path);
 	ui->btnResetCamera->setEnabled(true);
 
-	filePath = new char[path.size() + 1];
-	filePath[path.size()] = '\0';
-	strcpy(filePath, path.toLocal8Bit().data());
+	szFilePath = new char[path.size() + 1];
+	szFilePath[path.size()] = '\0';
+	strcpy(szFilePath, path.toLocal8Bit().data());
 
 	setAllViewDisplay(false, MOVIE_LOAD);
 
-	modelLoading = true;
+	bIsModelLoading = true;
 	
 	//PCLCore* core(new PCLCore);
 	//core->compress(new std::string(filePath));
@@ -368,39 +366,39 @@ void MainWindow::onLoad(QString path)
 	//	reduceFile(file.toStdString());
 	//}
 
-	ThreadLoad * threadLoad = new ThreadLoad(this);
-	QObject::connect(threadLoad, SIGNAL(finished()), threadLoad, SLOT(onEnd()));
-	threadLoad->start();
+	qthLoad = new ThreadLoad(this);
+	QObject::connect(qthLoad, SIGNAL(finished()), qthLoad, SLOT(onEnd()));
+	qthLoad->start();
 }
 
 void MainWindow::processLoadThread(MainWindow * mw)
 {
 	cout << "LOADING MESH..." << endl;
 	pcl::PolygonMesh::Ptr mesh(new PolygonMesh());
-	IOPLY::load(filePath, mesh);
+	IOPLY::load(szFilePath, mesh);
 
 	launchOpenThreads(mesh, mw);
 
-	thread3D->wait();
-	threadLateral->wait();
-	threadPlan->wait();
+	qth3D->wait();
+	qthLateral->wait();
+	qthPlan->wait();
 }
 
 void MainWindow::launchOpenThreads(pcl::PolygonMesh::Ptr mesh, MainWindow * mw) {
-	thread3D = new ThreadOpen(mw, mesh, VIEW_3D);
-	QObject::connect(thread3D, SIGNAL(finished()), thread3D, SLOT(onEnd()));
-	thread3D->start();
+	qth3D = new ThreadOpen(mw, mesh, VIEW_3D);
+	QObject::connect(qth3D, SIGNAL(finished()), qth3D, SLOT(onEnd()));
+	qth3D->start();
 
-	threadLateral = new ThreadOpen(mw, mesh, VIEW_LATERAL);
-	QObject::connect(threadLateral, SIGNAL(finished()), threadLateral, SLOT(onEnd()));
-	threadLateral->start();
+	qthLateral = new ThreadOpen(mw, mesh, VIEW_LATERAL);
+	QObject::connect(qthLateral, SIGNAL(finished()), qthLateral, SLOT(onEnd()));
+	qthLateral->start();
 
-	threadPlan = new ThreadOpen(mw, mesh, VIEW_PLAN);
-	QObject::connect(threadPlan, SIGNAL(finished()), threadPlan, SLOT(onEnd()));
-	threadPlan->start();
+	qthPlan = new ThreadOpen(mw, mesh, VIEW_PLAN);
+	QObject::connect(qthPlan, SIGNAL(finished()), qthPlan, SLOT(onEnd()));
+	qthPlan->start();
 }
 
-void MainWindow::showPlane(pcl::PolygonMesh::Ptr mesh, bool bPlanView)
+void MainWindow::show2D(pcl::PolygonMesh::Ptr mesh, bool bPlanView)
 {
 	MetricVisualizer * pv;
 
@@ -421,7 +419,7 @@ void MainWindow::showPlane(pcl::PolygonMesh::Ptr mesh, bool bPlanView)
 
 	cout << "showPlane - MetricVisulizer ready" << endl;
 
-	renderLock->Lock();
+	vmuRenderLock->Lock();
 	vtkSmartPointer<vtkRenderWindow> renderWindow = pv->getRenderWindow();
 	// Set camera position if plan view
 	if (bPlanView)
@@ -433,7 +431,7 @@ void MainWindow::showPlane(pcl::PolygonMesh::Ptr mesh, bool bPlanView)
 		ui->qvtkWidgetLateral->SetRenderWindow(renderWindow);
 		resetWidgetCamera(ui->qvtkWidgetLateral, xLateral, yLateral, zLateral);
 	}
-	renderLock->Unlock();
+	vmuRenderLock->Unlock();
 }
 
 /*
@@ -441,7 +439,7 @@ void MainWindow::showPlane(pcl::PolygonMesh::Ptr mesh, bool bPlanView)
 */
 
 #include <pcl/ros/conversions.h>
-void MainWindow::showPLY(pcl::PolygonMesh::Ptr mesh) {
+void MainWindow::show3D(pcl::PolygonMesh::Ptr mesh) {
 	
 	MetricVisualizer * pv;
 
@@ -469,10 +467,10 @@ void MainWindow::showPLY(pcl::PolygonMesh::Ptr mesh) {
 	
 	cout << "showPly - MetricVisulizer ready" << endl;
 
-	renderLock->Lock();
+	vmuRenderLock->Lock();
 	vtkSmartPointer<vtkRenderWindow> renderWindow = pv->getRenderWindow();
 	ui->qvtkWidget3D->SetRenderWindow(renderWindow);
-	renderLock->Unlock();
+	vmuRenderLock->Unlock();
 }
 
 void MainWindow::dragEnterEvent(QDragEnterEvent *e)
@@ -550,14 +548,14 @@ void MainWindow::setViewDisplay(int nView, bool bShowWidget, int nStatus)
 		qm->start();
 	}
 
-	bool bDisplay = nView == VIEW_3D || ((nView == VIEW_LATERAL || nView == VIEW_PLAN) && !this->isFullscreenActive);
+	bool bDisplay = nView == VIEW_3D || ((nView == VIEW_LATERAL || nView == VIEW_PLAN) && !this->bIsFullscreenActive);
 	if (ql != nullptr && bDisplay)
 	{
 		ql->setVisible(!bShowWidget);
 		ql->repaint();
 	}
 
-	if (qw != nullptr && isWidgetActive && bDisplay)
+	if (qw != nullptr && bIsWidgetActive && bDisplay)
 	{
 		qw->setVisible(bShowWidget);
 		if (bShowWidget)
@@ -572,7 +570,7 @@ QMovie * MainWindow::getMovie(int nStatus)
 	// Set the new movie
 	switch (nStatus) {
 	case MOVIE_INIT:
-		qm = movieInit;
+		qm = qmInit;
 		break;
 	case MOVIE_LOAD:
 		//qm = movieLoad;
@@ -652,24 +650,24 @@ void MainWindow::setAllViewDisplay(bool bShowWidget, int nStatus)
 
 void MainWindow::processView(pcl::PolygonMesh::Ptr mesh, int nView)
 {
-	isWidgetActive = false;
+	bIsWidgetActive = false;
 
 	switch (nView)
 	{
 	case VIEW_3D:
-		showPLY(mesh);
+		show3D(mesh);
 		break;
 	case VIEW_LATERAL:
-		showPlane(mesh, false);
+		show2D(mesh, false);
 		break;
 	case VIEW_PLAN:
-		showPlane(mesh, true); 
+		show2D(mesh, true); 
 		break;
 	default:
 		cout << "MainWindow::processView : Invalid view number " + nView << endl;
 	}
 
-	isWidgetActive = true;
+	bIsWidgetActive = true;
 }
 
 void MainWindow::on_btnAdd_clicked()
@@ -677,7 +675,7 @@ void MainWindow::on_btnAdd_clicked()
 	QString fileToAdd = QFileDialog::getOpenFileName(this, tr("Add 3D File"), QDir::homePath(), tr("3D files (*.ply)"));
 
 	QFileInfo infoToAdd(fileToAdd);
-	QFileInfo infoDir(captureDirectory.absolutePath());
+	QFileInfo infoDir(qdCaptureDirectory.absolutePath());
 
 	cout << "Selected : " << infoToAdd.absoluteFilePath().toLocal8Bit().data() << endl;
 	
@@ -692,16 +690,16 @@ void MainWindow::on_btnAdd_clicked()
 
 void MainWindow::on_btnDelete_clicked()
 {
-	if (!selectedFile.isEmpty())
+	if (!qsSelectedFile.isEmpty())
 	{
-		QFileInfo infoToDel(selectedFile);
+		QFileInfo infoToDel(qsSelectedFile);
 		QMessageBox::StandardButton reply;
 		reply = QMessageBox::warning(this, "Warning", "Are you sure you want to delete " + infoToDel.baseName() + " ?",
 			QMessageBox::Yes | QMessageBox::No);
 		
 		if (reply == QMessageBox::Yes) {
-			QFile::remove(selectedFile);
-			selectedFile = "";
+			QFile::remove(qsSelectedFile);
+			qsSelectedFile = "";
 			updateFileList();
 		}		
 	}
@@ -765,21 +763,22 @@ void MainWindow::updateMetrics(double distance)
 
 void MainWindow::setLoadedFile(QString newValue)
 {
-	loadedFile = newValue;
+	qsLoadedFile = newValue;
 	QFileInfo qfi(newValue);
 	ui->lbLoadedFile->setText(qfi.baseName());
 }
 
 void MainWindow::stopOpenThreads()
 {
-	stopThread(thread3D);
-	stopThread(threadLateral);
-	stopThread(threadPlan);
+	stopThread(qthLoad);
+	stopThread(qth3D);
+	stopThread(qthLateral);
+	stopThread(qthPlan);
 }
 
 void MainWindow::stopMergeThread()
 {
-	stopThread(threadMerge);
+	stopThread(qthMerge);
 }
 
 void MainWindow::stopThread(QThread * qThread)
@@ -797,7 +796,7 @@ void MainWindow::stopThread(QThread * qThread)
 
 void MainWindow::reduceFile(std::string file)
 {
-	ThreadReduce * threadReduce = new ThreadReduce(file, &reduceLock);
+	ThreadReduce * threadReduce = new ThreadReduce(file, &qmuReduceLock);
 	QObject::connect(threadReduce, SIGNAL(finished()), threadReduce, SLOT(onEnd()));
 	threadReduce->start();
 }
@@ -814,18 +813,18 @@ void MainWindow::on_btnExitFS_clicked()
 
 void MainWindow::setFullscreenActive(bool bFullscreen)
 {
-	cout << "setFullscreen(" << bFullscreen << ") isWidgetActive = " << isWidgetActive << endl;
+	cout << "setFullscreen(" << bFullscreen << ") isWidgetActive = " << bIsWidgetActive << endl;
 
 	ui->btnFS->setVisible(!bFullscreen);
 	ui->lbInvisible->setVisible(!bFullscreen);
 	ui->btnHelpR->setVisible(!bFullscreen);
 	ui->btnResetCamera->setVisible(!bFullscreen);
 
-	bool bDisplayGifs = !isWidgetActive && !bFullscreen;
+	bool bDisplayGifs = !bIsWidgetActive && !bFullscreen;
 	ui->gifLateral->setVisible(bDisplayGifs);
 	ui->gifPlan->setVisible(bDisplayGifs);
 
-	bool bDisplayWidgets = isWidgetActive && !bFullscreen;
+	bool bDisplayWidgets = bIsWidgetActive && !bFullscreen;
 	ui->qvtkWidgetLateral->setVisible(bDisplayWidgets);
 	ui->qvtkWidgetPlan->setVisible(bDisplayWidgets);
 	
@@ -839,7 +838,7 @@ void MainWindow::setFullscreenActive(bool bFullscreen)
 	}
 	setWidgetBorderRadius(ui->qvtkWidget3D, 6);
 
-	this->isFullscreenActive = bFullscreen;
+	this->bIsFullscreenActive = bFullscreen;
 }
 
 void MainWindow::showHelp()
