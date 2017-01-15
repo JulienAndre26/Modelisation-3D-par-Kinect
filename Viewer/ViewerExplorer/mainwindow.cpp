@@ -377,10 +377,6 @@ void MainWindow::processLoadThread(MainWindow * mw)
 	pcl::PolygonMesh::Ptr mesh(new PolygonMesh());
 	IOPLY::load(szFilePath, mesh);
 
-	cout << "Width: " << mesh->cloud.width
-		<< " - Height: " << mesh->cloud.height
-		<< endl;
-
 	launchOpenThreads(mesh, mw);
 
 	qth3D->wait();

@@ -119,11 +119,8 @@ public:
 		sprintf(args.distance, "%f", 0);
 
 		// Event Listener
+		this->createInteractor();
 		this->registerPointPickingCallback(_callback, (void*)&args);
-
-		// Prepare Point Cloud
-		/*v = 123;
-		this->createViewPort(0.0, 0.0, 1.0, 1.0, v);*/
 	}
 
 	~MetricVisualizer() {};
