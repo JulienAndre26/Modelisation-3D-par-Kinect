@@ -11,6 +11,7 @@ struct callback_args {
 	PointCloud::Ptr clicked_points_3d;
 	Visualizer::Ptr viewerPtr;
 	char * distance;
+	MainWindow * ui;
 };
 
 
@@ -55,13 +56,13 @@ void _callback(const pcl::visualization::PointPickingEvent& event, void* args)
 		// debug it
 		//std::cout << "DISTANCE : " << data->distance << std::endl;
 
-		GUI->updateMetrics(METRIC_P2, point2.x, point2.y, point2.z);
-		GUI->updateMetrics(dist);
+		data->ui->updateMetrics(METRIC_P2, point2.x, point2.y, point2.z);
+		data->ui->updateMetrics(dist);
 	}
 	else
 	{
 		PointT point1 = data->clicked_points_3d->points.at(0);
-		GUI->updateMetrics(METRIC_P1, point1.x, point1.y, point1.z);
+		data->ui->updateMetrics(METRIC_P1, point1.x, point1.y, point1.z);
 	}
 
 	// Draw clicked points in red:
@@ -79,10 +80,10 @@ private:
 
 public:
 
-	MetricVisualizer(PointCloudColored::Ptr src, bool bColored, MainWindow * mw) {
-		GUI = mw;
-
-		init();
+	MetricVisualizer(PointCloudColored::Ptr src, bool bColored, MainWindow * mw) 
+		: Visualizer("", false) 
+	{
+		init(mw);
 
 		if (!bColored) // Add custom color if the point cloud is not colored
 		{
@@ -101,20 +102,20 @@ public:
 		}
 	}
 
-	MetricVisualizer(PolygonMesh::Ptr src, MainWindow * mw) {
-		GUI = mw; // Dégoutant
-
-		init();
-		
+	MetricVisualizer(PolygonMesh::Ptr src, MainWindow * mw)
+		: Visualizer("", false) 
+	{
+		init(mw);	
 		this->addPolygonMesh(*src);
 	}
 
-	void init() {
+	void init(MainWindow * mw) {
 		// Data Structure
 		PointCloud::Ptr clicked_points_3d(new PointCloud);
 		args.clicked_points_3d = clicked_points_3d;
 		args.viewerPtr = Visualizer::Ptr(this);
 		args.distance = new char[128];
+		args.ui = mw;
 		sprintf(args.distance, "%f", 0);
 
 		// Event Listener
