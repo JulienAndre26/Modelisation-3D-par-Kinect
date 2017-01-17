@@ -45,6 +45,16 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->gifPlan->setAlignment(Qt::AlignCenter);
 
 	// Icons
+	QPixmap pixLeftArrow(":/icons/leftarrow");
+	QIcon iconLeftArrow(pixLeftArrow);
+	ui->btnLeftPlan->setIcon(iconLeftArrow);
+	ui->btnLeftPlan->setIconSize(pixLeftArrow.rect().size());
+
+	QPixmap pixRightArrow(":/icons/rightarrow");
+	QIcon iconRightArrow(pixRightArrow);
+	ui->btnRightPlan->setIcon(iconRightArrow);
+	ui->btnRightPlan->setIconSize(pixRightArrow.rect().size());
+
 	QPixmap pixAdd(":/icons/add");
 	QIcon iconAdd(pixAdd);
 	ui->btnAdd->setIcon(iconAdd);
@@ -131,6 +141,33 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 }
 
 
+void MainWindow::on_btnLeftPlan_clicked()
+{
+	int index = qslFilenameList.indexOf(ui->lbLoadedFile->text() + ".ply");
+	QString path;
+	if (index == 0) {
+		path = qslFilenameList.at(qslFilenameList.size()-1);
+	}
+	else {
+		path = qslFilenameList.at(index - 1);
+	}
+	onLoad(qmFileMap.value(path));
+}
+
+void MainWindow::on_btnRightPlan_clicked()
+{
+	cout << qsLoadedFile.toLocal8Bit().data() << endl;
+	int index = qslFilenameList.indexOf(ui->lbLoadedFile->text() + ".ply");
+	QString path;
+	if ((index + 1) == qslFilenameList.size()) {
+		path = qslFilenameList.at(0);
+	}
+	else {
+		path = qslFilenameList.at(index + 1);
+	}
+	onLoad(qmFileMap.value(path));
+}
+
 void MainWindow::on_btnHelpR_clicked()
 {
 	showHelp();
@@ -182,12 +219,12 @@ void MainWindow::importFileOpened(QString fileName)
 
 void MainWindow::updateFileList()
 {
-	qlsFilenameList.clear();
-	qhFileMap.clear();
+	qslFilenameList.clear();
+	qmFileMap.clear();
 
-	qlsFilenameList = detectPlyFiles(qdCaptureDirectory);
+	qslFilenameList = detectPlyFiles(qdCaptureDirectory);
 	ui->listWidget->clear();
-	ui->listWidget->addItems(qhFileMap.keys());
+	ui->listWidget->addItems(qmFileMap.keys());
 
 	QFont font("Nirmala UI");
 	font.setStyleHint(QFont::Monospace);
@@ -208,7 +245,7 @@ void MainWindow::updateFileList()
 	ui->progressBar->setVisible(false);
 	ui->lbCurrentMerge->setText("");
 
-	ui->btnMerge->setEnabled(qlsFilenameList.size() > 1);
+	ui->btnMerge->setEnabled(qslFilenameList.size() > 1);
 	ui->btnShow->setEnabled(false);
 
 	setAllViewDisplay(false, MOVIE_INIT);
@@ -226,7 +263,7 @@ QStringList MainWindow::detectPlyFiles(QDir dirToImport)
 
     for (int i = 0; i < listInfo.size(); i++)
     {
-		qhFileMap.insert(listInfo.at(i).fileName(), listInfo.at(i).absoluteFilePath());
+		qmFileMap.insert(listInfo.at(i).fileName(), listInfo.at(i).absoluteFilePath());
         res.append(listInfo.at(i).fileName());
     }
 
@@ -240,7 +277,7 @@ void MainWindow::on_btnMerge_clicked()
 
 void MainWindow::onMerge()
 {
-	if (qlsFilenameList.size() < 2)
+	if (qslFilenameList.size() < 2)
 	{
 		QMessageBox::warning(this, "Empty list", "Please select .import file with at least 2 models");
 	}
@@ -266,8 +303,8 @@ void MainWindow::onMerge()
 
 void MainWindow::processMerge()
 {
-	QString sTotal = QString::number(qlsFilenameList.size() - 1);
-	for (int i = 0; i < qlsFilenameList.size() - 1; i++)
+	QString sTotal = QString::number(qslFilenameList.size() - 1);
+	for (int i = 0; i < qslFilenameList.size() - 1; i++)
 	{
 		QString sCurrent = QString::number(i + 1);
 		ui->lbCurrentMerge->setText("Merging... (" + sCurrent + "/" + (sTotal) + ")");
@@ -294,7 +331,7 @@ void MainWindow::onMergeEnd()
 void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
 {
 	ui->btnShow->setEnabled(true);
-	qsSelectedFile = qhFileMap.find(item->data(Qt::DisplayRole).toString()).value();
+	qsSelectedFile = qmFileMap.find(item->data(Qt::DisplayRole).toString()).value();
 	cout << qsSelectedFile.toLocal8Bit().data() << endl;
 
 	if (QString::compare(qsSelectedFile, qsLoadedFile, Qt::CaseInsensitive) == 0)
@@ -333,7 +370,7 @@ bool MainWindow::readImportFile(QString import)
 
 void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
 {
-    QString path = qhFileMap.find(item->data(Qt::DisplayRole).toString()).value();
+    QString path = qmFileMap.find(item->data(Qt::DisplayRole).toString()).value();
 	cout << path.toLocal8Bit().data() << endl;
 	
 	onLoad(path);
@@ -341,6 +378,11 @@ void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
 
 void MainWindow::onLoad(QString path)
 {
+	if (ui->lbLoadedFile->text().compare("Please open a file", Qt::CaseInsensitive) == 0) {
+		ui->btnLeftPlan->setEnabled(qslFilenameList.size() > 1);
+		ui->btnRightPlan->setEnabled(qslFilenameList.size() > 1);
+	}
+
 	if (QString::compare(path, qsLoadedFile, Qt::CaseInsensitive) == 0)
 		return;
 
@@ -438,7 +480,6 @@ void MainWindow::show2D(pcl::PolygonMesh::Ptr mesh, bool bPlanView)
 * Show the 3D Model selected (filePath) - Handling Colors
 */
 
-#include <pcl/ros/conversions.h>
 void MainWindow::show3D(pcl::PolygonMesh::Ptr mesh) {
 	
 	MetricVisualizer * pv;

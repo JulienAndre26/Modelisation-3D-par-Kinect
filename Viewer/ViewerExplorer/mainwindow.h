@@ -97,6 +97,8 @@ private slots:
 	void on_btnFS_clicked();
 	void on_btnExitFS_clicked();
 	void on_btnResetCamera_clicked();
+	void on_btnLeftPlan_clicked();
+	void on_btnRightPlan_clicked();
 
 	void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
 	void on_listWidget_itemClicked(QListWidgetItem *item);
@@ -115,8 +117,8 @@ private:
 	QDir qdCaptureDirectory;
 	QString qsSelectedFile;
 	QString qsLoadedFile;
-	QStringList qlsFilenameList;
-	QHash<QString, QString> qhFileMap;
+	QStringList qslFilenameList;
+	QMap<QString, QString> qmFileMap;
 
 	QThread * qth3D = nullptr;
 	QThread * qthLateral = nullptr;

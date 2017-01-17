@@ -35,7 +35,9 @@ public:
     QGridLayout *gridLayout;
     QVBoxLayout *vlMid;
     QHBoxLayout *horizontalLayout_2;
+    QPushButton *btnLeftPlan;
     QLabel *lbLoadedFile;
+    QPushButton *btnRightPlan;
     QPushButton *btnExitFS;
     QPushButton *btnHelpM;
     QVTKWidget *qvtkWidget3D;
@@ -78,7 +80,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(800, 632);
+        MainWindow->resize(952, 632);
         MainWindow->setMaximumSize(QSize(10000, 10000));
         QIcon icon;
         icon.addFile(QStringLiteral("../../../../../.designer/backup/app.ico"), QSize(), QIcon::Normal, QIcon::Off);
@@ -98,6 +100,21 @@ public:
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setSpacing(6);
         horizontalLayout_2->setObjectName(QStringLiteral("horizontalLayout_2"));
+        btnLeftPlan = new QPushButton(centralWidget);
+        btnLeftPlan->setObjectName(QStringLiteral("btnLeftPlan"));
+        btnLeftPlan->setEnabled(false);
+        btnLeftPlan->setMinimumSize(QSize(21, 21));
+        btnLeftPlan->setMaximumSize(QSize(21, 21));
+        btnLeftPlan->setStyleSheet(QLatin1String("QPushButton#btnLeftPlan {\n"
+"	border: none;\n"
+"}\n"
+"\n"
+"QPushButton#btnLeftPlan:hover {\n"
+"	padding: 1px;\n"
+"}"));
+
+        horizontalLayout_2->addWidget(btnLeftPlan);
+
         lbLoadedFile = new QLabel(centralWidget);
         lbLoadedFile->setObjectName(QStringLiteral("lbLoadedFile"));
         lbLoadedFile->setMinimumSize(QSize(0, 21));
@@ -108,6 +125,21 @@ public:
         lbLoadedFile->setAlignment(Qt::AlignCenter);
 
         horizontalLayout_2->addWidget(lbLoadedFile);
+
+        btnRightPlan = new QPushButton(centralWidget);
+        btnRightPlan->setObjectName(QStringLiteral("btnRightPlan"));
+        btnRightPlan->setEnabled(false);
+        btnRightPlan->setMinimumSize(QSize(21, 21));
+        btnRightPlan->setMaximumSize(QSize(21, 21));
+        btnRightPlan->setStyleSheet(QLatin1String("QPushButton#btnRightPlan {\n"
+"	border: none;\n"
+"}\n"
+"\n"
+"QPushButton#btnRightPlan:hover {\n"
+"	padding: 1px;\n"
+"}"));
+
+        horizontalLayout_2->addWidget(btnRightPlan);
 
         btnExitFS = new QPushButton(centralWidget);
         btnExitFS->setObjectName(QStringLiteral("btnExitFS"));
@@ -483,7 +515,9 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "Kinect 3D Modelling", 0));
+        btnLeftPlan->setText(QString());
         lbLoadedFile->setText(QApplication::translate("MainWindow", "Please browse a capture and open a file", 0));
+        btnRightPlan->setText(QString());
 #ifndef QT_NO_TOOLTIP
         btnExitFS->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Fullscreen Mode</span></p><p>It will enlarge the central view.</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
