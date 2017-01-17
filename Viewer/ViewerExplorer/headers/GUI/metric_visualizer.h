@@ -99,7 +99,7 @@ public:
 		{
 			pcl::visualization::PointCloudColorHandlerRGBField<pcl::PointXYZRGB> src_rgb(src);
 			this->addPointCloud<PointColorT>(src, src_rgb, "v1_source", 0);
-		}
+		} 
 	}
 
 	MetricVisualizer(PolygonMesh::Ptr src, MainWindow * mw)

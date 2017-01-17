@@ -143,28 +143,16 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 
 void MainWindow::on_btnLeftPlan_clicked()
 {
-	int index = qslFilenameList.indexOf(ui->lbLoadedFile->text() + ".ply");
-	QString path;
-	if (index == 0) {
-		path = qslFilenameList.at(qslFilenameList.size()-1);
-	}
-	else {
-		path = qslFilenameList.at(index - 1);
-	}
+	int index = qslFilenameList.indexOf(ui->lbLoadedFile->text() + ".ply") -1;	
+	index = (index < 0) ? qslFilenameList.size()-1 : index;
+	QString path = qslFilenameList.at(index);
 	onLoad(qmFileMap.value(path));
 }
 
 void MainWindow::on_btnRightPlan_clicked()
 {
-	cout << qsLoadedFile.toLocal8Bit().data() << endl;
-	int index = qslFilenameList.indexOf(ui->lbLoadedFile->text() + ".ply");
-	QString path;
-	if ((index + 1) == qslFilenameList.size()) {
-		path = qslFilenameList.at(0);
-	}
-	else {
-		path = qslFilenameList.at(index + 1);
-	}
+	int index = (qslFilenameList.indexOf(ui->lbLoadedFile->text() + ".ply")+1)% qslFilenameList.size();
+	QString path = qslFilenameList.at(index);
 	onLoad(qmFileMap.value(path));
 }
 
@@ -330,14 +318,10 @@ void MainWindow::onMergeEnd()
 
 void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
 {
-	ui->btnShow->setEnabled(true);
 	qsSelectedFile = qmFileMap.find(item->data(Qt::DisplayRole).toString()).value();
 	cout << qsSelectedFile.toLocal8Bit().data() << endl;
 
-	if (QString::compare(qsSelectedFile, qsLoadedFile, Qt::CaseInsensitive) == 0)
-		ui->btnShow->setEnabled(false);
-	else
-		ui->btnShow->setEnabled(true);
+	ui->btnShow->setEnabled(!(QString::compare(qsSelectedFile, qsLoadedFile, Qt::CaseInsensitive) == 0));
 }
 
 void MainWindow::on_btnShow_clicked()
@@ -386,7 +370,6 @@ void MainWindow::onLoad(QString path)
 	if (QString::compare(path, qsLoadedFile, Qt::CaseInsensitive) == 0)
 		return;
 
-	stopOpenThreads();
 	setLoadedFile(path);
 	ui->btnResetCamera->setEnabled(true);
 
@@ -397,16 +380,8 @@ void MainWindow::onLoad(QString path)
 	setAllViewDisplay(false, MOVIE_LOAD);
 
 	bIsModelLoading = true;
-	
-	//PCLCore* core(new PCLCore);
-	//core->compress(new std::string(filePath));
 
-	//list = detectPlyFiles(captureDirectory);
-	//for (QString file : list) {
-	//	// TODO CHECK IF FILE IS REDUCED
-	//	// IF NOT MARK IT AFTER REDUCTION
-	//	reduceFile(file.toStdString());
-	//}
+	stopOpenThreads();
 
 	qthLoad = new ThreadLoad(this);
 	QObject::connect(qthLoad, SIGNAL(finished()), qthLoad, SLOT(onEnd()));
@@ -422,8 +397,11 @@ void MainWindow::processLoadThread(MainWindow * mw)
 	launchOpenThreads(mesh, mw);
 
 	qth3D->wait();
+	qth3D = nullptr;
 	qthLateral->wait();
+	qthLateral = nullptr;
 	qthPlan->wait();
+	qthPlan = nullptr;
 }
 
 void MainWindow::launchOpenThreads(pcl::PolygonMesh::Ptr mesh, MainWindow * mw) {
@@ -442,22 +420,7 @@ void MainWindow::launchOpenThreads(pcl::PolygonMesh::Ptr mesh, MainWindow * mw) 
 
 void MainWindow::show2D(pcl::PolygonMesh::Ptr mesh, bool bPlanView)
 {
-	MetricVisualizer * pv;
-
-	//// Point cloud in 2D
-	//pcl::PointCloud<pcl::PointXYZRGB>::Ptr src_projected(new pcl::PointCloud<pcl::PointXYZRGB>);
-	//pcl::PointCloud<pcl::PointXYZRGB>::Ptr src(new pcl::PointCloud<pcl::PointXYZRGB>);
-	
-	//loaderLock->Lock();
-	//IOPLY::load(filePath, src);
-	//loaderLock->Unlock();
-
-	//Processor::flatten(src, src_projected, bPlanView);
-
-	// Visualizer
-	//pv = new MetricVisualizer(src_projected, hasColor, this);
-
-	pv = new MetricVisualizer(mesh, this);
+	MetricVisualizer * pv = new MetricVisualizer(mesh, this);
 
 	cout << "showPlane - MetricVisulizer ready" << endl;
 
@@ -482,29 +445,7 @@ void MainWindow::show2D(pcl::PolygonMesh::Ptr mesh, bool bPlanView)
 
 void MainWindow::show3D(pcl::PolygonMesh::Ptr mesh) {
 	
-	MetricVisualizer * pv;
-
-	//if (isMeshMode)
-	//{
-	//	pcl::PolygonMesh::Ptr mesh(new pcl::PolygonMesh);
-	//	loaderLock->Lock();
-	//	IOPLY::load(filePath, mesh);
-	//	loaderLock->Unlock();
-	//	
-	//	pv = new MetricVisualizer(mesh, this);
-	//}
-	//else 
-	//{
-	//	pcl::PointCloud<pcl::PointXYZRGB>::Ptr src(new pcl::PointCloud<pcl::PointXYZRGB>);
-
-	//	loaderLock->Lock();
-	//	IOPLY::load(filePath, src);
-	//	loaderLock->Unlock();
-
-	//	pv = new MetricVisualizer(src, hasColor, this);
-	//}
-
-	pv = new MetricVisualizer(mesh, this);
+	MetricVisualizer * pv = new MetricVisualizer(mesh, this);
 	
 	cout << "showPly - MetricVisulizer ready" << endl;
 
@@ -811,10 +752,10 @@ void MainWindow::setLoadedFile(QString newValue)
 
 void MainWindow::stopOpenThreads()
 {
-	stopThread(qthLoad);
 	stopThread(qth3D);
 	stopThread(qthLateral);
 	stopThread(qthPlan);
+	stopThread(qthLoad);
 }
 
 void MainWindow::stopMergeThread()
