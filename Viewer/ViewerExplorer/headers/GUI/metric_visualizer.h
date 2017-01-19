@@ -4,8 +4,6 @@
 #include "Processor.h"
 #include "mainwindow.h"
 
-MainWindow * GUI;
-
 struct callback_args {
 	// structure used to pass arguments to the callback function
 	PointCloud::Ptr clicked_points_3d;
@@ -13,7 +11,6 @@ struct callback_args {
 	char * distance;
 	MainWindow * ui;
 };
-
 
 void _callback(const pcl::visualization::PointPickingEvent& event, void* args)
 {
@@ -58,11 +55,15 @@ void _callback(const pcl::visualization::PointPickingEvent& event, void* args)
 
 		data->ui->updateMetrics(METRIC_P2, point2.x, point2.y, point2.z);
 		data->ui->updateMetrics(dist);
+		
+		data->viewerPtr->addLine<PointT>(point1, point2, "line");
 	}
 	else
 	{
 		PointT point1 = data->clicked_points_3d->points.at(0);
 		data->ui->updateMetrics(METRIC_P1, point1.x, point1.y, point1.z);
+
+		data->viewerPtr->removeShape("line");
 	}
 
 	// Draw clicked points in red:
@@ -70,6 +71,7 @@ void _callback(const pcl::visualization::PointPickingEvent& event, void* args)
 	data->viewerPtr->removePointCloud("clicked_points");
 	data->viewerPtr->addPointCloud(data->clicked_points_3d, red, "clicked_points");
 	data->viewerPtr->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 10, "clicked_points");
+
 	// debug 
 	//std::cout << current_point.x << " " << current_point.y << " " << current_point.z << std::endl;
 }
