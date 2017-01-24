@@ -143,7 +143,8 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 
 void MainWindow::on_btnLeftPlan_clicked()
 {
-	int index = qslFilenameList.indexOf(ui->lbLoadedFile->text() + ".ply") -1;	
+	QFileInfo qfi(qsLoadedFile);
+	int index = qslFilenameList.indexOf(qfi.baseName() + ".ply") -1;	
 	index = (index < 0) ? qslFilenameList.size()-1 : index;
 	QString path = qslFilenameList.at(index);
 	onLoad(qmFileMap.value(path));
@@ -151,7 +152,8 @@ void MainWindow::on_btnLeftPlan_clicked()
 
 void MainWindow::on_btnRightPlan_clicked()
 {
-	int index = (qslFilenameList.indexOf(ui->lbLoadedFile->text() + ".ply")+1)% qslFilenameList.size();
+	QFileInfo qfi(qsLoadedFile);
+	int index = (qslFilenameList.indexOf(qfi.baseName() + ".ply")+1)% qslFilenameList.size();
 	QString path = qslFilenameList.at(index);
 	onLoad(qmFileMap.value(path));
 }
@@ -369,7 +371,7 @@ void MainWindow::onLoad(QString path)
 
 	if (QString::compare(path, qsLoadedFile, Qt::CaseInsensitive) == 0)
 		return;
-
+	cout << "la variable path :" << path.toLocal8Bit().data() << endl;
 	setLoadedFile(path);
 	ui->btnResetCamera->setEnabled(true);
 
