@@ -396,12 +396,23 @@ void MainWindow::processLoadThread(MainWindow * mw)
 
 	launchOpenThreads(mesh, mw);
 
-	qth3D->wait();
-	qth3D = nullptr;
-	qthLateral->wait();
-	qthLateral = nullptr;
-	qthPlan->wait();
-	qthPlan = nullptr;
+	if (qth3D->isRunning())
+	{
+		qth3D->wait();
+		qth3D = nullptr;
+	}
+
+	if (qthLateral->isRunning())
+	{
+		qthLateral->wait();
+		qthLateral = nullptr;
+	}
+
+	if (qthPlan->isRunning())
+	{
+		qthPlan->wait();
+		qthPlan = nullptr;
+	}
 }
 
 void MainWindow::launchOpenThreads(pcl::PolygonMesh::Ptr mesh, MainWindow * mw) {
