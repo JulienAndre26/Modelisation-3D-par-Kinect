@@ -3,22 +3,25 @@
 
 #include "IOPLY.h"
 
-#include <iostream>
-#include <fstream>  
-#include <string>
-
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace TestViewer
 {		
-	TEST_CLASS(IOTest)
+	TEST_CLASS(IOPLYTest)
 	{
 	public:
 		
-		TEST_METHOD(LoadOK1)
+		TEST_METHOD(LoadOK)
 		{
-			//pcl::PolygonMesh::Ptr mesh(new PolygonMesh());
-			//IOPLY::load("toTest.ply", mesh);		
+			pcl::PolygonMesh::Ptr mesh(new PolygonMesh());
+			Assert::IsTrue(IOPLY::load("../../../TestViewer/toTest.ply", mesh));
+			Assert::IsTrue(mesh->polygons.size() > 0);
+		}
+
+		TEST_METHOD(LoadKO)
+		{
+			pcl::PolygonMesh::Ptr mesh(new PolygonMesh());
+			Assert::IsFalse(IOPLY::load("notexist.ply", mesh));
 		}
 	};
 }

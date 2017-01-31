@@ -155,5 +155,8 @@
     <ClInclude Include="headers\io\IOXML.h">
       <Filter>Header Files\IO</Filter>
     </ClInclude>
+    <ClInclude Include="headers\io\IOUtils.h">
+      <Filter>Header Files\IO</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -44,5 +44,8 @@
     <ClCompile Include="IOPLYTest.cpp">
       <Filter>Fichiers sources\IO</Filter>
     </ClCompile>
+    <ClCompile Include="IOUtilsTest.cpp">
+      <Filter>Fichiers sources\IO</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

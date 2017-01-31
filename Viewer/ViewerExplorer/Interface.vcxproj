@@ -190,6 +190,7 @@
     <ClInclude Include="headers\custom_typedef.h" />
     <ClInclude Include="headers\GUI\metric_visualizer.h" />
     <ClInclude Include="headers\io\IIO.h" />
+    <ClInclude Include="headers\io\IOUtils.h" />
     <ClInclude Include="headers\io\IOPLY.h" />
     <ClInclude Include="headers\io\IOXML.h" />
     <ClInclude Include="headers\Processor\core\ICore.h" />

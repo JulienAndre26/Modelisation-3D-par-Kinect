@@ -1,52 +1,67 @@
 #include "IOPLY.h"
 
+#include "IOUtils.h"
 
 // inherited method
-int load(const char * filename, void* objectToLoad) {
-
-	return -1;
+bool load(const char * filename, void* objectToLoad) {
+	return false;
 }
 
-int IOPLY::load(const char * filename, PolygonMesh::Ptr mesh)
+bool IOPLY::load(const char * filename, PolygonMesh::Ptr mesh)
 {
+	if (!IOUtils::fileExists(std::string(filename)))
+		return false;
+
 	pcl::io::loadPolygonFile(filename, *mesh);
-	return 0;
+	return true;
 }
 
-int IOPLY::load(const char * filename, PointCloud::Ptr objectToLoad) {
+bool IOPLY::load(const char * filename, PointCloud::Ptr objectToLoad) {
+	if (!IOUtils::fileExists(std::string(filename)))
+		return false;
+	
 	pcl::PolygonMesh::Ptr mesh(new pcl::PolygonMesh);
 	pcl::io::loadPolygonFile(filename, *mesh);
 
 	pcl::PCLPointCloud2 mesh_cloud2 = mesh->cloud;
 	pcl::fromROSMsg(mesh_cloud2, *objectToLoad);
-	return 0;
+	return true;
 }
 
-int IOPLY::load(const char * filename, PointCloudColored::Ptr objectToLoad) {
+bool IOPLY::load(const char * filename, PointCloudColored::Ptr objectToLoad) {
+	if (!IOUtils::fileExists(std::string(filename)))
+		return false;
+
 	pcl::PolygonMesh::Ptr mesh(new pcl::PolygonMesh);
 	pcl::io::loadPolygonFile(filename, *mesh);
 
 	pcl::PCLPointCloud2 mesh_cloud2 = mesh->cloud;
 	pcl::fromROSMsg(mesh_cloud2, *objectToLoad);
-	return 0;
+	return true;
 }
 
-int IOPLY::load(const char * filename, PointCloudNormals::Ptr objectToLoad) {
+bool IOPLY::load(const char * filename, PointCloudNormals::Ptr objectToLoad) {
+	if (!IOUtils::fileExists(std::string(filename)))
+		return false;
+
 	pcl::PolygonMesh::Ptr mesh(new pcl::PolygonMesh);
 	pcl::io::loadPolygonFile(filename, *mesh);
 
 	pcl::PCLPointCloud2 mesh_cloud2 = mesh->cloud;
 	pcl::fromROSMsg(mesh_cloud2, *objectToLoad);
-	return 0;
+	return true;
 }
 
-int IOPLY::load(const char * filename, PointCloudFPFH::Ptr  objectToLoad) {
+bool IOPLY::load(const char * filename, PointCloudFPFH::Ptr  objectToLoad) {
+	if (!IOUtils::fileExists(std::string(filename)))
+		return false;
+
 	pcl::PolygonMesh::Ptr mesh(new pcl::PolygonMesh);
 	pcl::io::loadPolygonFile(filename, *mesh);
 
 	pcl::PCLPointCloud2 mesh_cloud2 = mesh->cloud;
 	pcl::fromROSMsg(mesh_cloud2, *objectToLoad);
-	return 0;
+	return true;
 }
 
 // inherited method

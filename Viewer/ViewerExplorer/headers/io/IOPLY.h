@@ -17,11 +17,11 @@ public:
 	int load(const char  * filename, void* objectToLoad);
 	int save(const char  * filename, void* objectToSave);
 
-	static int load(const char * filename, PolygonMesh::Ptr mesh);
-	static int load(const char * filename, PointCloud::Ptr objectToLoad);
-	static int load(const char * filename, PointCloudColored::Ptr objectToLoad);
-	static int load(const char * filename, PointCloudNormals::Ptr objectToLoad);
-	static int load(const char * filename, PointCloudFPFH::Ptr  objectToLoad);
+	static bool load(const char * filename, PolygonMesh::Ptr mesh);
+	static bool load(const char * filename, PointCloud::Ptr objectToLoad);
+	static bool load(const char * filename, PointCloudColored::Ptr objectToLoad);
+	static bool load(const char * filename, PointCloudNormals::Ptr objectToLoad);
+	static bool load(const char * filename, PointCloudFPFH::Ptr  objectToLoad);
 
 	static int save(const char * filename, PolygonMesh::Ptr mesh);
 	static int save(const char * filename, PointCloud::Ptr objectToSave);
