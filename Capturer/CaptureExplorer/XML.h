@@ -17,7 +17,7 @@ using namespace tinyxml2;
 class XML {
 private:
 	// constructor
-	XML(){}
+	//XML(){}
 	// singleton reference
 	static XML * instance;
 
@@ -27,6 +27,8 @@ private:
 	tinyxml2::XMLElement * element;
 
 public:
+	// constructor
+	XML() {}
 
 	static XML * XML::Instance() {
 		return instance;
@@ -56,30 +58,36 @@ public:
 	* Allows to add a STRING element, taking the
 	* first parameter as tag name.
 	*/
-	void add(std::string name, std::string value) {
+	bool add(std::string name, std::string value) {
 		element = document.NewElement(name.c_str());
 		element->SetText(value.c_str());
-		root->InsertEndChild(element);
+		return (root->InsertEndChild(element) != 0);
 	}
 
 	/*
 	* Allows to add a INT element, taking the
 	* first parameter as tag name.
 	*/
-	void add(std::string name, int value) {
+	bool add(std::string name, int value) {
+		if (value == NULL)
+			return false;
+
 		element = document.NewElement(name.c_str());
 		element->SetText(value);
-		root->InsertEndChild(element);
+		return (root->InsertEndChild(element) != 0);
 	}
 
 	/*
 	* Allows to add a FLOAT element, taking the
 	* first parameter as tag name.
 	*/
-	void add(std::string name, float value) {
+	bool add(std::string name, float value) {
+		if (value == NULL)
+			return false;
+
 		element = document.NewElement(name.c_str());
 		element->SetText(value);
-		root->InsertEndChild(element);
+		return (root->InsertEndChild(element) != 0);
 	}
 
 	/*
