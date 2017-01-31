@@ -154,7 +154,7 @@ private:
 };
 
 enum CameraPositionPlan {
-	xPlan = 0,
+	xPlan = -10,
 	yPlan = 10,
 	zPlan = 0
 };

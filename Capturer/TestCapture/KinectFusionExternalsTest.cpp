@@ -236,6 +236,36 @@ namespace TestCapture
 			free(sConfR);
 			free(sConfW);
 		}
+
+		TEST_METHOD(CheckOK1)
+		{
+			Assert::IsTrue(KinectFusionExternals::check("EOP"));
+		}
+
+		TEST_METHOD(CheckOK2)
+		{
+			Assert::IsTrue(KinectFusionExternals::check("EOP", "ERROR"));
+		}
+
+		TEST_METHOD(CheckOK3)
+		{
+			Assert::IsTrue(KinectFusionExternals::check("NOT ERROR"));
+		}
+
+		TEST_METHOD(CheckOK4)
+		{
+			Assert::IsTrue(KinectFusionExternals::check(""));
+		}
+
+		TEST_METHOD(CheckKO1)
+		{
+			Assert::IsFalse(KinectFusionExternals::check("ERROR", "EOP"));
+		}
+
+		TEST_METHOD(CheckKO2)
+		{
+			Assert::IsFalse(KinectFusionExternals::check("ERROR"));
+		}
 	};
 
 }
