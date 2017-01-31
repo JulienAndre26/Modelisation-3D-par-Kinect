@@ -112,6 +112,9 @@
     <ClCompile Include="sources\io\IOXML.cpp">
       <Filter>Source Files\IO</Filter>
     </ClCompile>
+    <ClCompile Include="Pairwise.cpp">
+      <Filter>Source Files\Processor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">

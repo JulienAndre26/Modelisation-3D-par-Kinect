@@ -11,6 +11,7 @@ private:
 	int someattribute;
 
 public:
+	static Eigen::Matrix4f*  getMatrix(std::string path);
 	void* merge(std::string* file_path_from, std::string* file_path_to);
 	int compress(std::string* file_path);
 	void* other(std::string* file_path);

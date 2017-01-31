@@ -1,4 +1,7 @@
+#include <unordered_map>
+
 #include "PCLCore.h"
+#include "IOXML.h"
 
 char * TOTO1() {
 	return strdup("lit_mur1.ply");
@@ -1131,3 +1134,33 @@ int PCLCore::compress(std::string* file_path) {
 void* PCLCore::other(std::string* file_path) {
 	return (void*)0;
 }
+
+
+Eigen::Matrix4f * PCLCore::getMatrix(std::string path) {
+	IOXML * parser = IOXML::Instance();
+	parser->init(path);
+	std::unordered_map<std::string, float> * representation = parser->getMatrix();
+
+	Eigen::Matrix4f * result = new Eigen::Matrix4f();
+	*result << representation->at(std::string("m11")),
+				representation->at(std::string("m21")),
+				representation->at(std::string("m31")),
+				representation->at(std::string("m41")),
+
+				representation->at(std::string("m12")),
+				representation->at(std::string("m22")),
+				representation->at(std::string("m32")),
+				representation->at(std::string("m42")),
+
+				representation->at(std::string("m13")),
+				representation->at(std::string("m23")),
+				representation->at(std::string("m33")),
+				representation->at(std::string("m43")),
+
+				representation->at(std::string("m14")),
+				representation->at(std::string("m24")),
+				representation->at(std::string("m34")),
+				representation->at(std::string("m44"));
+
+	return result;
+} 

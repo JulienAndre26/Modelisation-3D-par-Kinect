@@ -1,4 +1,5 @@
 #include "IOXML.h"
+
 #include <iostream>
 
 IOXML * IOXML::instance = new IOXML();
@@ -41,13 +42,39 @@ QDomElement * IOXML::findElement(std::string name) {
 * Method that returns the first occurence
 * of an element according to its tag name.
 */
-std::string IOXML::get(std::string name) {
+template<typename T>
+T IOXML::get(std::string name) {
 	QDomElement * elt = findElement(name);
 	if (!elt->isNull()) 
-		return elt->text().toLocal8Bit().constData();
+		return dynamic_cast<T>(elt->text().toLocal8Bit().constData());
 	else
 		return std::string("ERROR");
 }
+
+std::string IOXML::getString(std::string name) {
+	QDomElement * elt = findElement(name);
+	if (!elt->isNull())
+		return (std::string)(elt->text().toLocal8Bit().constData());
+	else
+		return std::string("ERROR");
+}
+
+float IOXML::getFloat(std::string name) {
+	QDomElement * elt = findElement(name);
+	if (!elt->isNull())
+		return std::stof(elt->text().toLocal8Bit().constData());
+	else
+		return M_PI;
+}
+
+int IOXML::getInt(std::string name) {
+	QDomElement * elt = findElement(name);
+	if (!elt->isNull())
+		return std::stof(elt->text().toLocal8Bit().constData());
+	else
+		return -1;
+}
+
 
 void IOXML::add(std::string name, std::string value) {
 
@@ -104,4 +131,29 @@ bool IOXML::save(std::string filename) {
 	}
 	
 	return false;
+}
+
+std::unordered_map <std::string, float> * IOXML::getMatrix() {
+	std::unordered_map <std::string, float> *result = new std::unordered_map <std::string, float>();
+	(*result)[std::string("m11")] = getFloat(std::string("m11"));
+	(*result)[std::string("m12")] = getFloat(std::string("m12"));
+	(*result)[std::string("m13")] = getFloat(std::string("m13"));
+	(*result)[std::string("m14")] = getFloat(std::string("m14"));
+	
+	(*result)[std::string("m21")] = getFloat(std::string("m21"));
+	(*result)[std::string("m22")] = getFloat(std::string("m22"));
+	(*result)[std::string("m23")] = getFloat(std::string("m23"));
+	(*result)[std::string("m24")] = getFloat(std::string("m24"));
+
+	(*result)[std::string("m31")] = getFloat(std::string("m31"));
+	(*result)[std::string("m32")] = getFloat(std::string("m32"));
+	(*result)[std::string("m33")] = getFloat(std::string("m33"));
+	(*result)[std::string("m34")] = getFloat(std::string("m34"));
+
+	(*result)[std::string("m41")] = getFloat(std::string("m41"));
+	(*result)[std::string("m42")] = getFloat(std::string("m42"));
+	(*result)[std::string("m43")] = getFloat(std::string("m43"));
+	(*result)[std::string("m44")] = getFloat(std::string("m44"));
+
+	return result;
 }

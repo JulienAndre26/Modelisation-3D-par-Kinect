@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QtXml>
+#include <unordered_map >
 #include "IIO.h"
 
 #define XML_IMPORT_ERROR 2
@@ -25,13 +26,22 @@ public:
 	int init();
 	int init(std::string filename);
 
-	std::string get(std::string name);
+	template<typename T>
+	T get(std::string name);
+
+	std::string getString(std::string name);
+	int getInt(std::string name);
+	float getFloat(std::string name);
+	std::unordered_map <std::string, float> * getMatrix();
+
 	void add(std::string name, std::string value);
 	void add(std::string name, int value);
 	void add(std::string name, float value);
+
 	bool edit(std::string name, std::string newValue);
 	bool edit(std::string name, int newValue);
 	bool edit(std::string name, float newValue);
+
 	bool save(std::string filename);
 
 	// inherited method

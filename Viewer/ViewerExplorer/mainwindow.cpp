@@ -3,6 +3,7 @@
 
 #include "custom_qthreads.h"
 #include "metric_visualizer.h"
+#include <string>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -357,12 +358,12 @@ bool MainWindow::readImportFile(QString import)
 	IOXML * parser = IOXML::Instance();
 	parser->init(import.toLocal8Bit().data());
 
-	if (parser->get("color").compare("ERROR") == 0) {
+	if (parser->getString("color").compare("ERROR") == 0) {
 		QMessageBox::critical(this, "Bad file import", "Please select a correct import file");
 		return false;
 	}
 
-	bIsMeshColorized = (parser->get("color").compare("true") == 0);
+	bIsMeshColorized = (parser->getString("color").compare("true") == 0);
 
 	return true;
 }
