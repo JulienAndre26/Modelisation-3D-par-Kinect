@@ -101,6 +101,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	// Gifs
 	qmInit = new QMovie(":/gifs/init");
+	//qmInit = new QMovie("./resources/gifs/init.gif");
 	/*movieLoad = new QMovie(":/gifs/load"); These gifs must not be a single instance
 	movieMerge = new QMovie(":/gifs/merge");*/
 

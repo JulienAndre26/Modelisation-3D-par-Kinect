@@ -106,6 +106,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_custom_qthreads.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+	<ClCompile Include="GeneratedFiles\qrc_resources.cpp">		
+      <Filter>Generated Files</Filter>		
+    </ClCompile>
     <ClCompile Include="sources\io\IOXML.cpp">
       <Filter>Source Files\IO</Filter>
     </ClCompile>
@@ -114,6 +117,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <CustomBuild Include="mainwindow.ui">		
+      <Filter>Form Files</Filter>		
+    </CustomBuild>
     <CustomBuild Include="mainwindow.h">
       <Filter>Header Files\GUI</Filter>
     </CustomBuild>
@@ -123,11 +129,11 @@
     <CustomBuild Include="resources.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="mainwindow.ui">
-      <Filter>Form Files</Filter>
-    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GeneratedFiles\ui_mainwindow.h">		
+      <Filter>Generated Files</Filter>		
+    </ClInclude>
     <ClInclude Include="headers\custom_typedef.h">
       <Filter>Header Files</Filter>
     </ClInclude>
