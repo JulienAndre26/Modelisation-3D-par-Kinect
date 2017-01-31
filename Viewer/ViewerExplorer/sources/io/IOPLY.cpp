@@ -54,7 +54,11 @@ int IOPLY::save(const char * filename, void* objectToSave) {
 	return -1;
 }
 
-
+int IOPLY::save(const char * filename, PolygonMesh::Ptr mesh)
+{
+	pcl::io::savePolygonFile(filename, *mesh);
+	return 0;
+}
 
 int IOPLY::save(const char* filename, PointCloud::Ptr objectToSave) {
 	pcl::io::savePLYFile<PointT>(filename, *objectToSave);

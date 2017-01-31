@@ -106,11 +106,11 @@
     <ClCompile Include="GeneratedFiles\Release\moc_custom_qthreads.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_resources.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="sources\io\IOXML.cpp">
       <Filter>Source Files\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Pairwise.cpp">
+      <Filter>Source Files\Processor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

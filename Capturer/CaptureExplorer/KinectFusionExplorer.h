@@ -90,6 +90,8 @@ public:
 
 	void						DisplayDimensions(NUI_FUSION_RECONSTRUCTION_PARAMETERS params);
 
+
+	void						saveMatrix();
 private:
     HWND                        m_hWnd;
     NuiSensorChooserUI*         m_pSensorChooserUI;

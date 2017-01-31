@@ -108,6 +108,20 @@ public:
     /// </summary>
     bool                        IsCameraPoseFinderAvailable();
 
+	// 
+	// ADDED BY NICO
+	//
+	Matrix4 getMatrix(){
+		if (NULL == &m_worldToCameraTransform) {
+			Matrix4 m_computedCamera;
+			m_pVolume->GetCurrentWorldToCameraTransform(&m_computedCamera);
+			return m_computedCamera;
+		}
+		else {
+			return m_worldToCameraTransform;
+		}
+	}
+
 private:
     KinectFusionParams          m_paramsNext;
     KinectFusionParams          m_paramsCurrent;
