@@ -7,8 +7,7 @@ bool load(const char * filename, void* objectToLoad) {
 	return false;
 }
 
-bool IOPLY::load(const char * filename, PolygonMesh::Ptr mesh)
-{
+bool IOPLY::load(const char * filename, PolygonMesh::Ptr mesh) {
 	if (!IOUtils::fileExists(std::string(filename)))
 		return false;
 

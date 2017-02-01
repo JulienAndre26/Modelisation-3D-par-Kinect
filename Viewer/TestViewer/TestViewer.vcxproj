@@ -159,7 +159,6 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CoreTest.cpp" />
     <ClCompile Include="IOPLYTest.cpp" />
     <ClCompile Include="IOUtilsTest.cpp" />
     <ClCompile Include="stdafx.cpp">

@@ -16,9 +16,6 @@
     <Filter Include="Fichiers sources\Processor">
       <UniqueIdentifier>{d55fbbe1-2d9b-40c9-855a-21191cb3df8e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fichiers sources\Processor\Core">
-      <UniqueIdentifier>{a747fc7c-c5e4-4c17-81b9-b4552136e3f8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Fichiers sources\IO">
       <UniqueIdentifier>{1376bc0b-7bb5-409c-b144-0d34ee4d0ca9}</UniqueIdentifier>
     </Filter>
@@ -37,9 +34,6 @@
     </ClCompile>
     <ClCompile Include="ProcessorTest.cpp">
       <Filter>Fichiers sources\Processor</Filter>
-    </ClCompile>
-    <ClCompile Include="CoreTest.cpp">
-      <Filter>Fichiers sources\Processor\Core</Filter>
     </ClCompile>
     <ClCompile Include="IOPLYTest.cpp">
       <Filter>Fichiers sources\IO</Filter>
