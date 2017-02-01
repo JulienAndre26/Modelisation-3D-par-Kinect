@@ -1,14 +1,12 @@
 #include "IOPLY.h"
 
-#include "IOUtils.h"
-
 // inherited method
 bool load(const char * filename, void* objectToLoad) {
 	return false;
 }
 
 bool IOPLY::load(const char * filename, PolygonMesh::Ptr mesh) {
-	if (!IOUtils::fileExists(std::string(filename)))
+	if (!IIO::fileExists(std::string(filename)))
 		return false;
 
 	pcl::io::loadPolygonFile(filename, *mesh);
@@ -16,7 +14,7 @@ bool IOPLY::load(const char * filename, PolygonMesh::Ptr mesh) {
 }
 
 bool IOPLY::load(const char * filename, PointCloud::Ptr objectToLoad) {
-	if (!IOUtils::fileExists(std::string(filename)))
+	if (!IIO::fileExists(std::string(filename)))
 		return false;
 	
 	pcl::PolygonMesh::Ptr mesh(new pcl::PolygonMesh);
@@ -28,7 +26,7 @@ bool IOPLY::load(const char * filename, PointCloud::Ptr objectToLoad) {
 }
 
 bool IOPLY::load(const char * filename, PointCloudColored::Ptr objectToLoad) {
-	if (!IOUtils::fileExists(std::string(filename)))
+	if (!IIO::fileExists(std::string(filename)))
 		return false;
 
 	pcl::PolygonMesh::Ptr mesh(new pcl::PolygonMesh);
@@ -40,7 +38,7 @@ bool IOPLY::load(const char * filename, PointCloudColored::Ptr objectToLoad) {
 }
 
 bool IOPLY::load(const char * filename, PointCloudNormals::Ptr objectToLoad) {
-	if (!IOUtils::fileExists(std::string(filename)))
+	if (!IIO::fileExists(std::string(filename)))
 		return false;
 
 	pcl::PolygonMesh::Ptr mesh(new pcl::PolygonMesh);
@@ -52,7 +50,7 @@ bool IOPLY::load(const char * filename, PointCloudNormals::Ptr objectToLoad) {
 }
 
 bool IOPLY::load(const char * filename, PointCloudFPFH::Ptr  objectToLoad) {
-	if (!IOUtils::fileExists(std::string(filename)))
+	if (!IIO::fileExists(std::string(filename)))
 		return false;
 
 	pcl::PolygonMesh::Ptr mesh(new pcl::PolygonMesh);

@@ -38,7 +38,10 @@
     <ClCompile Include="IOPLYTest.cpp">
       <Filter>Fichiers sources\IO</Filter>
     </ClCompile>
-    <ClCompile Include="IOUtilsTest.cpp">
+    <ClCompile Include="IOXMLTest.cpp">
+      <Filter>Fichiers sources\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="IIOTest.cpp">
       <Filter>Fichiers sources\IO</Filter>
     </ClCompile>
   </ItemGroup>

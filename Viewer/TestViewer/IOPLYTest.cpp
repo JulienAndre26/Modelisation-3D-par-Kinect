@@ -10,18 +10,26 @@ namespace TestViewer
 	TEST_CLASS(IOPLYTest)
 	{
 	public:
-		
+		/* LOAD */
+
 		TEST_METHOD(LoadPolygonMeshOK)
 		{
 			pcl::PolygonMesh::Ptr mesh(new PolygonMesh());
-			//Assert::IsTrue(IOPLY::load("../../../TestViewer/toTest.ply", mesh));
-			//Assert::IsTrue(mesh->polygons.size() > 0);
+			
+			Assert::IsFalse(mesh->cloud.height > 0);
+			Assert::IsFalse(mesh->cloud.width > 0);
+
+			/*Assert::IsTrue(IOPLY::load("../../../TestViewer/toTest.ply", mesh));
+
+			Assert::IsTrue(mesh->cloud.height > 0);
+			Assert::IsTrue(mesh->cloud.width > 0);*/
 		}
 
 		TEST_METHOD(LoadPointCloudOK)
 		{
-			PointCloud::Ptr mesh(new PointCloud());
-			//Assert::IsTrue(IOPLY::load("../../../TestViewer/toTest.ply", mesh));
+			PointCloud::Ptr cloud(new PointCloud());
+			//Assert::IsTrue(IOPLY::load("../../../TestViewer/toTest.ply", cloud));
+			//Assert::IsTrue(cloud->points.size() > 0);
 		}
 
 		TEST_METHOD(LoadPointCloudColoredOK)

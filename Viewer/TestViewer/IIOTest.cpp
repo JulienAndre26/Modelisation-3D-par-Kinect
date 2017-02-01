@@ -1,24 +1,24 @@
 //#include "stdafx.h"
 #include "CppUnitTest.h"
 
-#include "IOUtils.h"
+#include "IIO.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace TestViewer
 {		
-	TEST_CLASS(IOUtilsTest)
+	TEST_CLASS(IIOTest)
 	{
 	public:
 		
 		TEST_METHOD(FileExistsOK)
 		{
-			Assert::IsTrue(IOUtils::fileExists(std::string("../../../TestViewer/toTest.ply")));
+			Assert::IsTrue(IIO::fileExists(std::string("../../../TestViewer/toTest.ply")));
 		}
 
 		TEST_METHOD(FileExistsKO)
 		{
-			Assert::IsFalse(IOUtils::fileExists(std::string("notexist.ply")));
+			Assert::IsFalse(IIO::fileExists(std::string("notexist.ply")));
 		}
 	};
 }

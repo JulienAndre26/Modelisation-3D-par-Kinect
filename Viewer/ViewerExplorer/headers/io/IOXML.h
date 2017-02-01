@@ -1,11 +1,29 @@
 #pragma once
 
 #include <QtXml>
-#include <unordered_map >
+#include <unordered_map>
 #include "IIO.h"
 
+#ifndef XML_IMPORT_ERROR
 #define XML_IMPORT_ERROR 2
+#endif // !XML_IMPORT_ERROR
+
+#ifndef XML_OK
 #define XML_OK 1
+#endif // !XML_OK
+
+#ifndef XML_GET_STR_ERROR
+#define XML_GET_STR_ERROR "ERROR"
+#endif // !XML_GET_STR_ERROR
+
+#ifndef XML_GET_INT_ERROR
+#define XML_GET_INT_ERROR -1
+#endif // !XML_GET_INT_ERROR
+
+#ifndef XML_GET_FLOAT_ERROR
+#define XML_GET_FLOAT_ERROR M_PI
+#endif // !XML_GET_FLOAT_ERROR
+
 
 class IOXML : public IIO {
 private:

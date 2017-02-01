@@ -1,6 +1,7 @@
 #include "IOXML.h"
 
 #include <iostream>
+#include <stdexcept>
 
 IOXML * IOXML::instance = new IOXML();
 
@@ -48,7 +49,7 @@ T IOXML::get(std::string name) {
 	if (!elt->isNull()) 
 		return dynamic_cast<T>(elt->text().toLocal8Bit().constData());
 	else
-		return std::string("ERROR");
+		return std::string(XML_GET_STR_ERROR);
 }
 
 std::string IOXML::getString(std::string name) {
@@ -56,21 +57,38 @@ std::string IOXML::getString(std::string name) {
 	if (!elt->isNull())
 		return (std::string)(elt->text().toLocal8Bit().constData());
 	else
-		return std::string("ERROR");
+		return std::string(XML_GET_STR_ERROR);
 }
 
 float IOXML::getFloat(std::string name) {
 	QDomElement * elt = findElement(name);
 	if (!elt->isNull())
-		return std::stof(elt->text().toLocal8Bit().constData());
+	{	
+		try {
+			return std::stof(elt->text().toLocal8Bit().constData());
+		} catch (std::invalid_argument& e)
+		{
+			std::cerr << e.what();
+			return XML_GET_FLOAT_ERROR;
+		}
+	}
 	else
-		return M_PI;
+		return XML_GET_FLOAT_ERROR;
 }
 
 int IOXML::getInt(std::string name) {
 	QDomElement * elt = findElement(name);
 	if (!elt->isNull())
-		return std::stof(elt->text().toLocal8Bit().constData());
+	{
+		try {
+			return std::stoi(elt->text().toLocal8Bit().constData());
+		}
+		catch (std::invalid_argument& e)
+		{
+			std::cerr << e.what();
+			return -1;
+		}
+	}
 	else
 		return -1;
 }
@@ -123,8 +141,7 @@ bool IOXML::save(std::string filename) {
 			file->write(document->toString().toLocal8Bit().constData());
 			file->close();
 			return true;
-		}
-		
+		}		
 	}
 	catch (const std::exception & e){
 		std::cerr << e.what();
