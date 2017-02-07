@@ -1,3 +1,4 @@
+<<<<<<< cd35207e91adf00f735590971c22fb55e2d0a713
 ////#include "stdafx.h"
 //
 //
@@ -217,3 +218,161 @@
 //	// Finish
 //	return (0);
 //}
+=======
+#include <iostream>
+#include <pcl/visualization/pcl_visualizer.h>
+#include <pcl/point_types.h>
+#include <IOPLY.h>
+
+
+typedef struct {
+	// structure used to pass arguments to the callback function
+	const char* id;
+	PointCloud::Ptr clicked_points_3d;
+	Visualizer::Ptr viewerPtr;
+	// MainWindow * ui;
+} _args;
+
+void pointPickingEventOccurred(const pcl::visualization::PointPickingEvent &event, void* args)
+{
+	_args* data = (_args*) args;
+	pcl::console::print_info("bleh-1\n");
+
+	// Max elem reached (6) don't add any other element
+	if (data->clicked_points_3d->size() >= 6)
+		return;
+
+	pcl::PointXYZ point;
+
+	event.getPoint(point.x, point.y, point.z);
+
+	pcl::console::print_info("Added point : {x: %f, y: %f, z: %f}\n", point.x, point.y, point.z);
+
+	data->clicked_points_3d->push_back(point);
+
+	bool baseColor;
+	PointCloud::Ptr tmpCloud(new PointCloud);
+
+	// Update each colored point
+	for (int i = 0; i < data->clicked_points_3d->size(); i++) {
+		data->viewerPtr->removePointCloud(data->id + i);
+		pcl::console::print_info("bleh1 : %i\n", data->id + i);
+		baseColor = (i / 3 == 0);
+		tmpCloud->push_back(data->clicked_points_3d->at(i));
+		pcl::console::print_info("bleeeh1.5 : %b\n", baseColor);
+		pcl::console::print_info("bleeeh1.75 : %i\n", i % 3);
+		data->viewerPtr->addPointCloud(tmpCloud, pcl::visualization::PointCloudColorHandlerCustom<PointT>(data->clicked_points_3d,
+			(i % 3) == 0 ? (baseColor ? 210 : 50) : (baseColor ? 50 : 210),
+			(i % 3) == 1 ? (baseColor ? 210 : 50) : (baseColor ? 50 : 210),
+			(i % 3) == 2 ? (baseColor ? 210 : 50) : (baseColor ? 50 : 210)), data->id + i);
+		pcl::console::print_info("bleh2\n");
+		data->viewerPtr->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 13, data->id + i);
+		pcl::console::print_info("bleh3\n");
+		tmpCloud->clear();
+	}
+}
+
+int main(int argc, char** argv)
+{
+	std::cout << "ET TA MERE LA TEPU TAFFICHE QQCH OU BIEN ????" << std::endl;
+
+	const char* f1 = "test/plan1-removed-duplicated-closemerged.ply";
+	const char* f2 = "test/plan2-removed-duplicated-closemerged.ply";
+
+	pcl::PolygonMesh::Ptr src(new pcl::PolygonMesh());
+	pcl::PolygonMesh::Ptr tgt(new pcl::PolygonMesh());
+	pcl::console::print_highlight("----- Loading1 -----\n");
+	IOPLY::load(f1, src);
+	pcl::console::print_highlight("----- Loading2 -----\n");
+	IOPLY::load(f2, tgt);
+
+	pcl::console::print_highlight("----- Loaded -----\n");
+
+	pcl::PointCloud<pcl::PointXYZ>::Ptr src_pick(new pcl::PointCloud<pcl::PointXYZ>);
+	pcl::PointCloud<pcl::PointXYZ>::Ptr tgt_pick(new pcl::PointCloud<pcl::PointXYZ>);
+
+	pcl::visualization::PCLVisualizer::Ptr viewer1(new pcl::visualization::PCLVisualizer);
+	pcl::visualization::PCLVisualizer::Ptr viewer2(new pcl::visualization::PCLVisualizer);
+
+	viewer1->addPolygonMesh(*src, "src");
+	viewer2->addPolygonMesh(*tgt, "tgt");
+
+	// ----- start color stuff -----
+	// src
+	std::vector<pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ>> src_colors;
+	pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> src_light_red(src_pick, 210, 50, 50); // light red
+	pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> src_light_green(tgt_pick, 50, 210, 50); // light green
+	pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> src_light_blue(src_pick, 50, 50, 210); // light red
+	pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> src_light_cyan(tgt_pick, 50, 210, 210); // light green
+	pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> src_light_violet(src_pick, 210, 50, 210); // light red
+	pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> src_light_orange(tgt_pick, 210, 210, 50); // light green
+	src_colors.push_back(src_light_red);
+	src_colors.push_back(src_light_green);
+	src_colors.push_back(src_light_blue);
+	src_colors.push_back(src_light_cyan);
+	src_colors.push_back(src_light_violet);
+	src_colors.push_back(src_light_orange);
+	// tgt
+	std::vector<pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ>> tgt_colors;
+	pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> tgt_light_red(src_pick, 210, 50, 50); // light red
+	pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> tgt_light_green(tgt_pick, 50, 210, 50); // light green
+	pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> tgt_light_blue(src_pick, 50, 50, 210); // light red
+	pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> tgt_light_cyan(tgt_pick, 50, 210, 210); // light green
+	pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> tgt_light_violet(src_pick, 210, 50, 210); // light red
+	pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> tgt_light_orange(tgt_pick, 210, 210, 50); // light green
+	tgt_colors.push_back(tgt_light_red);
+	tgt_colors.push_back(tgt_light_green);
+	tgt_colors.push_back(tgt_light_blue);
+	tgt_colors.push_back(tgt_light_cyan);
+	tgt_colors.push_back(tgt_light_violet);
+	tgt_colors.push_back(tgt_light_orange);
+	// ----- end color stuff -----
+
+	// ----- igit -----
+	viewer1->addPointCloud(src_pick, src_colors.at(0), "src_pick0");
+	viewer1->addPointCloud(src_pick, src_colors.at(0), "src_pick1");
+	viewer1->addPointCloud(src_pick, src_colors.at(0), "src_pick2");
+	viewer1->addPointCloud(src_pick, src_colors.at(0), "src_pick3");
+	viewer1->addPointCloud(src_pick, src_colors.at(0), "src_pick4");
+	viewer1->addPointCloud(src_pick, src_colors.at(0), "src_pick5");
+	viewer1->addPointCloud(src_pick, src_colors.at(0), "src_pick6");
+	viewer2->addPointCloud(tgt_pick, tgt_colors.at(0), "tgt_pick0");
+	viewer2->addPointCloud(tgt_pick, tgt_colors.at(0), "tgt_pick1");
+	viewer2->addPointCloud(tgt_pick, tgt_colors.at(0), "tgt_pick2");
+	viewer2->addPointCloud(tgt_pick, tgt_colors.at(0), "tgt_pick3");
+	viewer2->addPointCloud(tgt_pick, tgt_colors.at(0), "tgt_pick4");
+	viewer2->addPointCloud(tgt_pick, tgt_colors.at(0), "tgt_pick5");
+	viewer2->addPointCloud(tgt_pick, tgt_colors.at(0), "tgt_pick6");
+
+	viewer1->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 13, "src_pick0");
+	viewer1->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 13, "src_pick1");
+	viewer1->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 13, "src_pick2");
+	viewer1->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 13, "src_pick3");
+	viewer1->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 13, "src_pick4");
+	viewer1->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 13, "src_pick5");
+	viewer1->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 13, "src_pick6");
+	viewer2->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 13, "tgt_pick0");
+	viewer2->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 13, "tgt_pick1");
+	viewer2->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 13, "tgt_pick2");
+	viewer2->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 13, "tgt_pick3");
+	viewer2->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 13, "tgt_pick4");
+	viewer2->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 13, "tgt_pick5");
+	viewer2->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 13, "tgt_pick6");
+	// ----- igit -----
+
+	_args src_args;
+	src_args.id = "src_pick";
+	src_args.clicked_points_3d = src_pick;
+	src_args.viewerPtr = viewer1;
+	_args tgt_args;
+	tgt_args.id = "tgt_pick";
+	tgt_args.clicked_points_3d = tgt_pick;
+	tgt_args.viewerPtr = viewer2;
+
+	viewer1->registerPointPickingCallback(pointPickingEventOccurred, (void*)&src_args);
+	viewer2->registerPointPickingCallback(pointPickingEventOccurred, (void*)&tgt_args);
+
+	viewer1->spin();
+	viewer2->spin();
+}
+>>>>>>> 2ae6e75bd1f8310b6096e42a900233730e5d8419
