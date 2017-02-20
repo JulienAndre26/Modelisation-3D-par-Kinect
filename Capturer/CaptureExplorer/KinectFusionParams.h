@@ -19,15 +19,15 @@ enum KinectFusionMeshTypes
 enum KinectFusionQualityLow
 {
 	lVPM = 32,
-	lX = 320,
+	lX = 256,
 	lY = 160,
-	lZ = 320
+	lZ = 256
 };
 
 enum KinectFusionQualityMedium
 {
 	mVPM = 64,
-	mX = 640,
+	mX = 512,
 	mY = 320,
 	mZ = 512
 };
@@ -35,7 +35,7 @@ enum KinectFusionQualityMedium
 enum KinectFusionQualityHigh
 {
 	hVPM = 96,
-	hX = 960,
+	hX = 768,
 	hY = 480,
 	hZ = 640
 };
