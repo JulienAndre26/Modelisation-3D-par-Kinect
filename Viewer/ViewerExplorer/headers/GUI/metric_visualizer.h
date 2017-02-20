@@ -105,7 +105,7 @@ public:
 	}
 
 	MetricVisualizer(PolygonMesh::Ptr src, MainWindow * mw)
-		: Visualizer("", false) 
+		: Visualizer() 
 	{
 		init(mw);	
 		this->addPolygonMesh(*src);
@@ -121,7 +121,7 @@ public:
 		sprintf(args.distance, "%f", 0);
 
 		// Event Listener
-		this->createInteractor();
+		//this->createInteractor();
 		this->registerPointPickingCallback(_callback, (void*)&args);
 	}
 

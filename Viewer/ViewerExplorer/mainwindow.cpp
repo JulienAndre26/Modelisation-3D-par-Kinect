@@ -114,6 +114,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	vmuRenderLock = vtkMutexLock::New();
 	
 	// Variables
+	szFilePath = new char[1];
 	setLoadedFile("");
 	ui->lbLoadedFile->setText("Please browse a capture and open a file");
 	
