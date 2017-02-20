@@ -515,23 +515,32 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "Kinect 3D Modelling", 0));
+#ifndef QT_NO_TOOLTIP
+        btnLeftPlan->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Load Previous File</span></p><p>It will load and display the previous file in the list.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
         btnLeftPlan->setText(QString());
         lbLoadedFile->setText(QApplication::translate("MainWindow", "Please browse a capture and open a file", 0));
+#ifndef QT_NO_TOOLTIP
+        btnRightPlan->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Load Next File</span></p><p>It will load and display the next file in the list.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
         btnRightPlan->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        btnExitFS->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Fullscreen Mode</span></p><p>It will enlarge the central view.</p></body></html>", 0));
+        btnExitFS->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Minimize 3D View</span></p><p>It will enlarge the central view.</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
         btnExitFS->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        btnHelpM->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Handling 3D model</span></p><p>Mouse Scroll : Zoom or unzoom the model</p><p>Clic + Move Mouse : Rotates the model</p><p>Shift + Move Mouse : Moves the model</p><p>Ctrl + Move Mouse : Rotates the model</p><p>Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)</p></body></html>", 0));
+        btnHelpM->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Handling 3D Model</span></p><p>Mouse Scroll : Zoom or unzoom the model</p><p>Clic + Move Mouse : Rotates the model</p><p>Shift + Move Mouse : Moves the model</p><p>Ctrl + Move Mouse : Rotates the model</p><p>Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
         btnHelpM->setText(QString());
         gif3D->setText(QApplication::translate("MainWindow", "Loading", 0));
         lbInvisible->setText(QString());
 #ifndef QT_NO_TOOLTIP
-        btnFS->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Exit Fullscreen Mode</span></p><p>It will reduce the central view.</p></body></html>", 0));
+        btnFS->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Maximize 3D View</span></p><p>It will reduce the central view.</p></body></html>", 0));
 #endif // QT_NO_TOOLTIP
         btnFS->setText(QString());
+#ifndef QT_NO_TOOLTIP
+        btnResetCamera->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Reset 2D Views</span></p><p>It will reset the camera of the 2D views.</p></body></html>", 0));
+#endif // QT_NO_TOOLTIP
         btnResetCamera->setText(QString());
 #ifndef QT_NO_TOOLTIP
         btnHelpR->setToolTip(QApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Handling 3D model</span></p><p>Mouse Scroll : Zoom or unzoom the model</p><p>Clic + Move Mouse : Rotates the model</p><p>Shift + Move Mouse : Moves the model</p><p>Ctrl + Move Mouse : Rotates the model</p><p>Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)</p></body></html>", 0));

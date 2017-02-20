@@ -120,14 +120,14 @@
     <CustomBuild Include="mainwindow.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="mainwindow.h">
-      <Filter>Header Files\GUI</Filter>
-    </CustomBuild>
     <CustomBuild Include="custom_qthreads.h">
       <Filter>Header Files\GUI</Filter>
     </CustomBuild>
     <CustomBuild Include="resources.qrc">
       <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mainwindow.h">
+      <Filter>Header Files\GUI</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

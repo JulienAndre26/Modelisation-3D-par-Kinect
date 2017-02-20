@@ -48,6 +48,9 @@
               <height>21</height>
              </size>
             </property>
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Load Previous File&lt;/span&gt;&lt;/p&gt;&lt;p&gt;It will load and display the previous file in the list.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
             <property name="styleSheet">
              <string notr="true">QPushButton#btnLeftPlan {
 	border: none;
@@ -108,6 +111,9 @@ QPushButton#btnLeftPlan:hover {
               <height>21</height>
              </size>
             </property>
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Load Next File&lt;/span&gt;&lt;/p&gt;&lt;p&gt;It will load and display the next file in the list.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
             <property name="styleSheet">
              <string notr="true">QPushButton#btnRightPlan {
 	border: none;
@@ -137,7 +143,7 @@ QPushButton#btnRightPlan:hover {
              </size>
             </property>
             <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Fullscreen Mode&lt;/span&gt;&lt;/p&gt;&lt;p&gt;It will enlarge the central view.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Minimize 3D View&lt;/span&gt;&lt;/p&gt;&lt;p&gt;It will enlarge the central view.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="styleSheet">
              <string notr="true">QPushButton#btnExitFS {
@@ -168,7 +174,7 @@ QPushButton#btnExitFS:hover {
              </size>
             </property>
             <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Handling 3D model&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Mouse Scroll : Zoom or unzoom the model&lt;/p&gt;&lt;p&gt;Clic + Move Mouse : Rotates the model&lt;/p&gt;&lt;p&gt;Shift + Move Mouse : Moves the model&lt;/p&gt;&lt;p&gt;Ctrl + Move Mouse : Rotates the model&lt;/p&gt;&lt;p&gt;Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Handling 3D Model&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Mouse Scroll : Zoom or unzoom the model&lt;/p&gt;&lt;p&gt;Clic + Move Mouse : Rotates the model&lt;/p&gt;&lt;p&gt;Shift + Move Mouse : Moves the model&lt;/p&gt;&lt;p&gt;Ctrl + Move Mouse : Rotates the model&lt;/p&gt;&lt;p&gt;Shift + Clic : Puts a pin for measurement (place two pins to get the distance between pins)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="styleSheet">
              <string notr="true">QPushButton#btnHelpM {
@@ -187,7 +193,7 @@ QPushButton#btnHelpM:hover {
          </layout>
         </item>
         <item>
-         <widget class="QVTKWidget" name="qvtkWidget3D">
+         <widget class="QVTKWidget" name="qvtkWidget3D" native="true">
           <property name="minimumSize">
            <size>
             <width>300</width>
@@ -270,7 +276,7 @@ padding: 6px;</string>
              </size>
             </property>
             <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Exit Fullscreen Mode&lt;/span&gt;&lt;/p&gt;&lt;p&gt;It will reduce the central view.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Maximize 3D View&lt;/span&gt;&lt;/p&gt;&lt;p&gt;It will reduce the central view.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="styleSheet">
              <string notr="true">QPushButton#btnFS {
@@ -302,6 +308,9 @@ QPushButton#btnFS:hover {
               <width>21</width>
               <height>21</height>
              </size>
+            </property>
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Reset 2D Views&lt;/span&gt;&lt;/p&gt;&lt;p&gt;It will reset the camera of the 2D views.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="styleSheet">
              <string notr="true">QPushButton#btnResetCamera {
@@ -351,7 +360,7 @@ QPushButton#btnHelpR:hover {
          </layout>
         </item>
         <item>
-         <widget class="QVTKWidget" name="qvtkWidgetLateral">
+         <widget class="QVTKWidget" name="qvtkWidgetLateral" native="true">
           <property name="minimumSize">
            <size>
             <width>100</width>
@@ -404,7 +413,7 @@ padding: 6px;</string>
          </widget>
         </item>
         <item>
-         <widget class="QVTKWidget" name="qvtkWidgetPlan">
+         <widget class="QVTKWidget" name="qvtkWidgetPlan" native="true">
           <property name="minimumSize">
            <size>
             <width>100</width>
