@@ -459,12 +459,12 @@ public:
         lbCurrentMerge->setAlignment(Qt::AlignCenter);
         lbDistance = new QLabel(wdgLeftBottom);
         lbDistance->setObjectName(QStringLiteral("lbDistance"));
-        lbDistance->setGeometry(QRect(50, 220, 151, 20));
+        lbDistance->setGeometry(QRect(50, 205, 210, 20));
         lbDistance->setStyleSheet(QStringLiteral("font: 9pt \"Nirmala UI\";"));
         lbDistance->setTextFormat(Qt::RichText);
         lbDistanceIcon = new QLabel(wdgLeftBottom);
         lbDistanceIcon->setObjectName(QStringLiteral("lbDistanceIcon"));
-        lbDistanceIcon->setGeometry(QRect(10, 210, 41, 31));
+        lbDistanceIcon->setGeometry(QRect(10, 198, 41, 31));
         lbDistanceIcon->setAlignment(Qt::AlignBottom|Qt::AlignHCenter);
         lbP1z = new QLabel(wdgLeftBottom);
         lbP1z->setObjectName(QStringLiteral("lbP1z"));

@@ -785,8 +785,8 @@ QPushButton#btnBrowse:pressed {
            <property name="geometry">
             <rect>
              <x>50</x>
-             <y>220</y>
-             <width>151</width>
+             <y>205</y>
+             <width>210</width>
              <height>20</height>
             </rect>
            </property>
@@ -804,7 +804,7 @@ QPushButton#btnBrowse:pressed {
            <property name="geometry">
             <rect>
              <x>10</x>
-             <y>210</y>
+             <y>198</y>
              <width>41</width>
              <height>31</height>
             </rect>
