@@ -7,7 +7,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace TestCapture
 {		
-	TEST_CLASS(UnitTest1)
+	TEST_CLASS(ExternalsTest)
 	{
 
 	private:

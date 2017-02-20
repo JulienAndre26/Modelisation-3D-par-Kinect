@@ -43,41 +43,41 @@ public:
 	KinectFusionExternals() {};
 	~KinectFusionExternals() {};
 
-	static bool createMatrixFile(string path, int fileID, KinectFusionProcessor * processor) {
-		string filename = path + string("/") + string("matrix_") + std::to_string(fileID) + string(".xml");
-		wchar_t buffer[100];
-		swprintf(buffer, 100, L"%s", filename);
-		// remove already existing file
-		if (fileExists(buffer)) {
-			DeleteFile(buffer);
-		}
-		Matrix4 m = processor->getMatrix();
-		XML  * xml = XML::Instance();
-		xml->init();
-		// first row
-		xml->add(std::string("m11"), m.M11);
-		xml->add(std::string("m12"), m.M12);
-		xml->add(std::string("m13"), m.M13);
-		xml->add(std::string("m14"), m.M14);
-		// second row
-		xml->add(std::string("m21"), m.M21);
-		xml->add(std::string("m22"), m.M22);
-		xml->add(std::string("m23"), m.M23);
-		xml->add(std::string("m24"), m.M24);
-		// third row
-		xml->add(std::string("m31"), m.M31);
-		xml->add(std::string("m32"), m.M32);
-		xml->add(std::string("m33"), m.M33);
-		xml->add(std::string("m34"), m.M34);
-		// fourth row
-		xml->add(std::string("m41"), m.M41);
-		xml->add(std::string("m42"), m.M42);
-		xml->add(std::string("m43"), m.M43);
-		xml->add(std::string("m44"), m.M44);
-		
-		// true on success, false otherwise
-		return xml->save(filename);
-	}
+	//static bool createMatrixFile(string path, int fileID, KinectFusionProcessor * processor) {
+	//	string filename = path + string("/") + string("matrix_") + std::to_string(fileID) + string(".xml");
+	//	wchar_t buffer[100];
+	//	swprintf(buffer, 100, L"%s", filename);
+	//	// remove already existing file
+	//	if (fileExists(buffer)) {
+	//		DeleteFile(buffer);
+	//	}
+	//	Matrix4 m = processor->getMatrix();
+	//	XML  * xml = XML::Instance();
+	//	xml->init();
+	//	// first row
+	//	xml->add(std::string("m11"), m.M11);
+	//	xml->add(std::string("m12"), m.M12);
+	//	xml->add(std::string("m13"), m.M13);
+	//	xml->add(std::string("m14"), m.M14);
+	//	// second row
+	//	xml->add(std::string("m21"), m.M21);
+	//	xml->add(std::string("m22"), m.M22);
+	//	xml->add(std::string("m23"), m.M23);
+	//	xml->add(std::string("m24"), m.M24);
+	//	// third row
+	//	xml->add(std::string("m31"), m.M31);
+	//	xml->add(std::string("m32"), m.M32);
+	//	xml->add(std::string("m33"), m.M33);
+	//	xml->add(std::string("m34"), m.M34);
+	//	// fourth row
+	//	xml->add(std::string("m41"), m.M41);
+	//	xml->add(std::string("m42"), m.M42);
+	//	xml->add(std::string("m43"), m.M43);
+	//	xml->add(std::string("m44"), m.M44);
+	//	
+	//	// true on success, false otherwise
+	//	return xml->save(filename);
+	//}
 	
 	static bool createConfFile(std::wstring wsConfPath, CREATE_CONF_EXT * sConf) {
 		if (sConf == nullptr)

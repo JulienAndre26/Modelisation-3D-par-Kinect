@@ -1355,26 +1355,26 @@ void CKinectFusionExplorer::OnNewCapture()
 		m_bIsCapturing = true;
 
 		// save matrix?
-		saveMatrix();
+		//saveMatrix();
 
 		// Reset
 		//m_nMeshCount = 0;
 	}
 }
 
-void CKinectFusionExplorer::saveMatrix() {
-	if (m_processor.IsCameraPoseFinderAvailable()) {
-		USES_CONVERSION;
-		std::string path = OLE2CA(m_lDirPath);
-		if (KinectFusionExternals::createMatrixFile(path, m_nMeshCount, &m_processor)) {
-			SetStatusMessage(L"Matrix successfully saved.");
-		}
-		else {
-
-			SetStatusMessage(L"Error while saving matrix.");
-		}
-	}
-}
+//void CKinectFusionExplorer::saveMatrix() {
+//	if (m_processor.IsCameraPoseFinderAvailable()) {
+//		USES_CONVERSION;
+//		std::string path = OLE2CA(m_lDirPath);
+//		if (KinectFusionExternals::createMatrixFile(path, m_nMeshCount, &m_processor)) {
+//			SetStatusMessage(L"Matrix successfully saved.");
+//		}
+//		else {
+//
+//			SetStatusMessage(L"Error while saving matrix.");
+//		}
+//	}
+//}
 
 /// <summary>
 /// When a capture needs to be stoped.
@@ -1419,7 +1419,7 @@ void CKinectFusionExplorer::OnContinueScene()
 
 	// save the matrix 
 	// todo : swap lines saveMatrix() and SaveMesh() ?
-	saveMatrix();
+	//saveMatrix();
 	// Save last file
 	SaveMesh();
 

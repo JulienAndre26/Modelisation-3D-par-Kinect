@@ -7,7 +7,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace TestCapture
 {		
-	TEST_CLASS(UnitTest2)
+	TEST_CLASS(XMLTest)
 	{
 	private:
 		XML * xmlManager;

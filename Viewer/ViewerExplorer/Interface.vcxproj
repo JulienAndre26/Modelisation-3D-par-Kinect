@@ -168,7 +168,7 @@
     <ClCompile Include="sources\io\IOXML.cpp" />
     <ClCompile Include="sources\Processor\core\PCLCore.cpp" />
     <ClCompile Include="sources\Processor\Processor.cpp" />
-    <ClCompile Include="sources\Processor\TestPCL.cpp" />
+    <ClCompile Include="sources\TestPCL.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.h">
