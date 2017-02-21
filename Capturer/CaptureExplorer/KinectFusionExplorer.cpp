@@ -809,7 +809,7 @@ int CKinectFusionExplorer::AskDirName() {
 	}
 
 	// Set the dialog title
-	hr = pSaveDlg->SetTitle(L"Set Capture Name");
+	hr = pSaveDlg->SetTitle(L"Set Project Name");
 	if (SUCCEEDED(hr))
 	{
 		// Set the button text
@@ -817,7 +817,7 @@ int CKinectFusionExplorer::AskDirName() {
 		if (SUCCEEDED(hr))
 		{
 			// Set a default filename
-			hr = pSaveDlg->SetFileName(L"Capture Name");
+			hr = pSaveDlg->SetFileName(L"Project Name");
 
 			if (SUCCEEDED(hr))
 			{
@@ -867,7 +867,7 @@ int CKinectFusionExplorer::AskDirName() {
 						CreateDirectory(m_lDirPath, NULL);
 						
 						// Display status message
-						std::wstring pMsg = L"Capture name is set to ";
+						std::wstring pMsg = L"Project name is set to ";
 						std::wstring sPwszMsg = pMsg + pName;
 
 						USES_CONVERSION;
@@ -994,7 +994,7 @@ void CKinectFusionExplorer::UpdateCaptureNameUI()
 
 	if (!m_bDirNameSet) 
 	{	// DIR NAME NOT SET
-		szDirName = L"No Capture";
+		szDirName = L"No Project";
 	}
 	else 
 	{	// DIR NAME SET
@@ -1189,7 +1189,7 @@ int CKinectFusionExplorer::AskImportFile()
 							allPossibleFileTypes);
 						
 						// Set dialog title
-						pfd->SetTitle(L"Import Capture");
+						pfd->SetTitle(L"Import Project");
 						
 						// Show the File Dialog.
 						hr = pfd->Show(NULL);
@@ -1249,8 +1249,8 @@ void CKinectFusionExplorer::LoadProject()
 	UpdateMeshCountUI();
 
 	// Set button texts
-	SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"Save Scene");
-	SetDlgItemText(m_hWnd, IDC_BUTTON_END_IMPORT_CAPTURE, L"Close Capture");
+	SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"Save Capture");
+	SetDlgItemText(m_hWnd, IDC_BUTTON_END_IMPORT_CAPTURE, L"Close Project");
 
 	EnableWindow(GetDlgItem(m_hWnd, IDC_BUTTON_AUTO_MODE), TRUE);
 
@@ -1346,8 +1346,8 @@ void CKinectFusionExplorer::OnNewCapture()
 		UpdateCaptureNameUI();
 
 		// Set button texts
-		SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"Save Scene");
-		SetDlgItemText(m_hWnd, IDC_BUTTON_END_IMPORT_CAPTURE, L"Close Capture");
+		SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"Save Capture");
+		SetDlgItemText(m_hWnd, IDC_BUTTON_END_IMPORT_CAPTURE, L"Close Project");
 
 		EnableWindow(GetDlgItem(m_hWnd, IDC_BUTTON_AUTO_MODE), TRUE);
 
@@ -1390,8 +1390,8 @@ void CKinectFusionExplorer::OnEndCapture()
 	CreateConfFile();
 
 	// Set button text
-	SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"New Capture");
-	SetDlgItemText(m_hWnd, IDC_BUTTON_END_IMPORT_CAPTURE, L"Import Capture");
+	SetDlgItemText(m_hWnd, IDC_BUTTON_NEW_CONTINUE_SCENE, L"New Project");
+	SetDlgItemText(m_hWnd, IDC_BUTTON_END_IMPORT_CAPTURE, L"Import Project");
 
 	EnableWindow(GetDlgItem(m_hWnd, IDC_BUTTON_AUTO_MODE), FALSE);
 
