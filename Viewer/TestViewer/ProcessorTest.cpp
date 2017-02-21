@@ -9,61 +9,69 @@ namespace TestViewer
 {		
 	TEST_CLASS(ProcessorTest)
 	{
+	private :
+		Processor * proc;
+
 	public:
+
+		TEST_METHOD_INITIALIZE(GetInstance)
+		{
+			proc = new Processor();
+		}
 		
 		TEST_METHOD(TestComputeMetricsOK1)
 		{
 			double expected = 0.0;
-			double actual = Processor::computeMetrics(1.0, 1.0, 1.0, 1.0, 1.0, 1.0).returnedDouble;
+			double actual = proc->computeMetrics(1.0, 1.0, 1.0, 1.0, 1.0, 1.0).returnedDouble;
 			Assert::AreEqual(expected, actual);
 		}
 
 		TEST_METHOD(TestComputeMetricsOK2)
 		{
 			double expected = 1.0;
-			double actual = Processor::computeMetrics(1.0, 0.0, 0.0, 0.0, 0.0, 0.0).returnedDouble;
+			double actual = proc->computeMetrics(1.0, 0.0, 0.0, 0.0, 0.0, 0.0).returnedDouble;
 			Assert::AreEqual(expected, actual);
 		}
 
 		TEST_METHOD(TestComputeMetricsOK3)
 		{
 			double expected = 1.0;
-			double actual = Processor::computeMetrics(0.0, 1.0, 0.0, 0.0, 0.0, 0.0).returnedDouble;
+			double actual = proc->computeMetrics(0.0, 1.0, 0.0, 0.0, 0.0, 0.0).returnedDouble;
 			Assert::AreEqual(expected, actual);
 		}
 
 		TEST_METHOD(TestComputeMetricsOK4)
 		{
 			double expected = 1.0;
-			double actual = Processor::computeMetrics(0.0, 0.0, 1.0, 0.0, 0.0, 0.0).returnedDouble;
+			double actual = proc->computeMetrics(0.0, 0.0, 1.0, 0.0, 0.0, 0.0).returnedDouble;
 			Assert::AreEqual(expected, actual);
 		}
 
 		TEST_METHOD(TestComputeMetricsOK5)
 		{
 			double expected = 1.0;
-			double actual = Processor::computeMetrics(0.0, 0.0, 0.0, 1.0, 0.0, 0.0).returnedDouble;
+			double actual = proc->computeMetrics(0.0, 0.0, 0.0, 1.0, 0.0, 0.0).returnedDouble;
 			Assert::AreEqual(expected, actual);
 		}
 
 		TEST_METHOD(TestComputeMetricsOK6)
 		{
 			double expected = 1.0;
-			double actual = Processor::computeMetrics(0.0, 0.0, 0.0, 0.0, 1.0, 0.0).returnedDouble;
+			double actual = proc->computeMetrics(0.0, 0.0, 0.0, 0.0, 1.0, 0.0).returnedDouble;
 			Assert::AreEqual(expected, actual);
 		}
 
 		TEST_METHOD(TestComputeMetricsOK7)
 		{
 			double expected = 1.0;
-			double actual = Processor::computeMetrics(0.0, 0.0, 0.0, 0.0, 0.0, 1.0).returnedDouble;
+			double actual = proc->computeMetrics(0.0, 0.0, 0.0, 0.0, 0.0, 1.0).returnedDouble;
 			Assert::AreEqual(expected, actual);
 		}
 
 		TEST_METHOD(TestComputeMetricsKO)
 		{
 			double expected = 1.0;
-			double actual = Processor::computeMetrics(0.0, 0.0, 0.0, 0.0, 0.0, 2.0).returnedDouble;
+			double actual = proc->computeMetrics(0.0, 0.0, 0.0, 0.0, 0.0, 2.0).returnedDouble;
 			Assert::AreNotEqual(expected, actual);
 		}
 	};
