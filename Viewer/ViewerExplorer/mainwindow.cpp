@@ -287,7 +287,7 @@ void MainWindow::onMerge()
 			setAllViewDisplay(false, MOVIE_MERGE);
 		}
 		
-
+		// launch merging thread
 		qthMerge = new ThreadMerge(this);
 		QObject::connect(qthMerge, SIGNAL(finished()), qthMerge, SLOT(onEnd()));
 		qthMerge->start();
@@ -297,14 +297,18 @@ void MainWindow::onMerge()
 void MainWindow::processMerge()
 {
 	QString sTotal = QString::number(qslFilenameList.size() - 1);
-	for (int i = 0; i < qslFilenameList.size() - 1; i++)
-	{
-		QString sCurrent = QString::number(i + 1);
-		ui->lbCurrentMerge->setText("Merging... (" + sCurrent + "/" + (sTotal) + ")");
-		
+	QString mergedPC = "mergedPC";
+	IProcessor* processor = new Processor();
+
+	for (int i = 1; i < qslFilenameList.size(); i++)
+	{		
+		ui->lbCurrentMerge->setText("Merging... (" + QString::number(i) + "/" + (sTotal) + ")");
+		processor->merge((i == 1) ? qmFileMap.find(qslFilenameList.at(0)).value().toLocal8Bit().data() : mergedPC.toLocal8Bit().data(),
+			qmFileMap.find(qslFilenameList.at(i)).value().toLocal8Bit().data(),
+			mergedPC.toLocal8Bit().data());
+
 		//ui->progressBar->setValue(((float)n / (list.size() - 1) * 100));
-		
-		QThread::sleep(5);
+		//QThread::sleep(5);
 	}
 }
 

@@ -9,8 +9,8 @@
 class IIO {
 
 public:
-	int load(const char * filename, void* objectToLoad);
-	int save(const char * filename, void* objectToSave);
+	virtual int load(const char * filename, void* objectToLoad) = 0;
+	virtual int save(const char * filename, void* objectToSave) = 0;
 
 	static bool fileExists(std::string sPath) {
 		std::ifstream f(sPath.c_str());

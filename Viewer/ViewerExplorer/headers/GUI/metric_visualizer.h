@@ -46,8 +46,10 @@ void _callback(const pcl::visualization::PointPickingEvent& event, void* args)
 		PointT point1 = data->clicked_points_3d->points.at(0);
 		PointT point2 = data->clicked_points_3d->points.at(1);
 
+		Processor proc;
+
 		// compute distance
-		dist = Processor::computeMetrics(point1.x, point1.y, point1.z, point2.x, point2.y, point2.z).returnedDouble;
+		dist = proc.computeMetrics(point1.x, point1.y, point1.z, point2.x, point2.y, point2.z).returnedDouble;
 		// set value
 		sprintf(data->distance, "%f", dist);
 		// debug it

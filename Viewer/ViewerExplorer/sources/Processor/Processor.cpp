@@ -27,19 +27,15 @@
 
 #include "custom_typedef.h"
 #include "IOPLY.h"
+#include "PCLCore.h"
 
 
 //#include "metric_visualizer.h"
 
-Status Processor::merge(string path) {
+Status Processor::merge(const string from, const string to) {
 	Status s;
-	// todo : for all ply in the given directory
-	// call core->merge(file1, file2);
-	return s;
-}
-
-Status Processor::computeMetrics() {
-	Status s;
+	PCLCore core;
+	core.
 	return s;
 }
 
@@ -56,33 +52,33 @@ Status Processor::computeMetrics(float x1, float y1, float z1, float x2, float y
 	return s;
 }
 
-void Processor::flatten(pcl::PointCloud<pcl::PointXYZRGB>::Ptr src, pcl::PointCloud<pcl::PointXYZRGB>::Ptr src_projected, bool isLateral)
-{
-	// Create a set of planar coefficients with X=0,Y|Z=1|0
-	pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients());
-	coefficients->values.resize(4);
-
-	if (!isLateral)
-	{
-		// LATERAL (from frontside)
-		coefficients->values[0] = coefficients->values[1] = 0;	// X,Y = 0
-		coefficients->values[2] = 1.0;							// Z = 1
-	}
-	else
-	{
-		// PLAN (from upside)
-		coefficients->values[0] = coefficients->values[2] = 0;	// X,Z = 0
-		coefficients->values[1] = 1.0;							// Y = 1
-	}
-	coefficients->values[3] = 0;
-
-	// Create the filtering object
-	pcl::ProjectInliers<pcl::PointXYZRGB> proj;
-	proj.setModelType(pcl::SACMODEL_PLANE);
-	proj.setInputCloud(src);
-	proj.setModelCoefficients(coefficients);
-	proj.filter(*src_projected);
-}
+//void Processor::flatten(pcl::PointCloud<pcl::PointXYZRGB>::Ptr src, pcl::PointCloud<pcl::PointXYZRGB>::Ptr src_projected, bool isLateral)
+//{
+//	// Create a set of planar coefficients with X=0,Y|Z=1|0
+//	pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients());
+//	coefficients->values.resize(4);
+//
+//	if (!isLateral)
+//	{
+//		// LATERAL (from frontside)
+//		coefficients->values[0] = coefficients->values[1] = 0;	// X,Y = 0
+//		coefficients->values[2] = 1.0;							// Z = 1
+//	}
+//	else
+//	{
+//		// PLAN (from upside)
+//		coefficients->values[0] = coefficients->values[2] = 0;	// X,Z = 0
+//		coefficients->values[1] = 1.0;							// Y = 1
+//	}
+//	coefficients->values[3] = 0;
+//
+//	// Create the filtering object
+//	pcl::ProjectInliers<pcl::PointXYZRGB> proj;
+//	proj.setModelType(pcl::SACMODEL_PLANE);
+//	proj.setInputCloud(src);
+//	proj.setModelCoefficients(coefficients);
+//	proj.filter(*src_projected);
+//}
 
 //void Processor::flattenMesh(PolygonMesh::Ptr src, PolygonMesh::Ptr src_projected, bool isLateral)
 //{

@@ -18,15 +18,13 @@ private:
 
 public:
 
-	virtual Status merge(string path) = 0;
+	virtual Status merge(const string& from, const string& to, const string& into) = 0;
 
-	virtual Status computeMetrics() = 0;
-
-	//static Status computeMetrics(float x1, float y1, float z1, float x2, float y2, float z2);
+	virtual Status computeMetrics(float x1, float y1, float z1, float x2, float y2, float z2) = 0;
 
 	//virtual Status reduceSize(string pathToLoad, string pathToSave) = 0;
 
-	virtual void flatten() = 0;
+	//virtual void flatten() = 0;
 	//virtual void flattenMesh() = 0;
 
 };
