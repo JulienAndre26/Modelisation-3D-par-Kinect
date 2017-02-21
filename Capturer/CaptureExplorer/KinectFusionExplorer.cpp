@@ -1242,6 +1242,7 @@ void CKinectFusionExplorer::LoadProject()
 		SetStatusMessage(L"Failed to import capture.");
 		return;
 	}
+
 	// Update UI
 	InitializeUIControls();
 	UpdateCaptureNameUI();
@@ -1310,7 +1311,7 @@ bool CKinectFusionExplorer::RetrieveProjectConf()
 	{
 		// VALIDATE
 		m_nMeshCount = sConf->nMeshCount;			// Count
-		m_saveMeshFormat = (KinectFusionMeshTypes) sConf->nFormat;			// Format
+		//m_saveMeshFormat = (KinectFusionMeshTypes) sConf->nFormat;			// Format
 		m_params.m_bCaptureColor = sConf->bColor;	// Color
 
 		// Dimensions
@@ -1420,6 +1421,8 @@ void CKinectFusionExplorer::OnContinueScene()
 	// save the matrix 
 	// todo : swap lines saveMatrix() and SaveMesh() ?
 	//saveMatrix();
+
+
 	// Save last file
 	SaveMesh();
 
