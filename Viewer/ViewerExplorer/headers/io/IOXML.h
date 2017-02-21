@@ -63,8 +63,8 @@ public:
 	bool save(std::string filename);
 
 	// inherited method
-	int load(char * filename, void* objectToLoad);
-	int save(char * filename, void* objectToSave);
+	int load(const char * filename, void* objectToLoad) { return XML_GET_INT_ERROR; }
+	int save(const char * filename, void* objectToSave) { return XML_GET_INT_ERROR; }
 
 
 };

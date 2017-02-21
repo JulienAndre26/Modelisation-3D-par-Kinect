@@ -32,10 +32,8 @@
 
 //#include "metric_visualizer.h"
 
-Status Processor::merge(const string from, const string to) {
+Status Processor::merge(const string& from, const string& to, const string& into) {
 	Status s;
-	PCLCore core;
-	core.
 	return s;
 }
 
