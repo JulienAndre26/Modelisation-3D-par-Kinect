@@ -115,19 +115,22 @@
     <ClCompile Include="sources\TestPCL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="merge_visualizer.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
       <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mainwindow.h">
+      <Filter>Header Files\GUI</Filter>
     </CustomBuild>
     <CustomBuild Include="custom_qthreads.h">
       <Filter>Header Files\GUI</Filter>
     </CustomBuild>
     <CustomBuild Include="resources.qrc">
       <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="mainwindow.h">
-      <Filter>Header Files\GUI</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -160,6 +163,9 @@
     </ClInclude>
     <ClInclude Include="headers\io\IOXML.h">
       <Filter>Header Files\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="merge_visualizer.h">
+      <Filter>Header Files\GUI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

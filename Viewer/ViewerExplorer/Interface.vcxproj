@@ -163,6 +163,7 @@
     </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
+    <ClCompile Include="merge_visualizer.cpp" />
     <ClCompile Include="Pairwise.cpp" />
     <ClCompile Include="sources\io\IOPLY.cpp" />
     <ClCompile Include="sources\io\IOXML.cpp" />
@@ -197,6 +198,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="merge_visualizer.h" />
     <CustomBuild Include="custom_qthreads.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing custom_qthreads.h...</Message>

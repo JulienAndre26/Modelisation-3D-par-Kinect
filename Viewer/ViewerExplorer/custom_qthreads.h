@@ -101,8 +101,7 @@ private:
 	void run()
 	{
 		cout << "Thread reduce " << path << " launched..." << endl;
-		PCLCore* core(new PCLCore);
-		core->compress(&path);
+		//PCLCore::compress(&path);
 		//lock->lock();
 		// MARK AS COMPRESSED
 		//lock->unlock();
