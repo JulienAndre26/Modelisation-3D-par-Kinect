@@ -5,6 +5,7 @@
 #include "PCLCore.h"
 #include <pcl/ros/conversions.h>
 #include <pcl/visualization/pcl_visualizer.h>
+//#include "Processor.h"
 
 
 
@@ -18,15 +19,13 @@ int main(int argc, char *argv[])
 
 	//std::cout << "defining point cloud" << std::endl;
 	//pcl::PolygonMesh::Ptr mesh(new PolygonMesh);	
-	//PointCloud::Ptr cloud(new PointCloud());
-	//IOPLY::load("t1.ply", mesh);
+	//pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZRGB>());
+	//IOPLY::load("mergedPC.ply", mesh);
 
 
 	//pcl::fromROSMsg(mesh->cloud, *cloud);
 	//std::cout << "file opened" << std::endl;
-	//PCLCore * core = new PCLCore();
-	//std::cout << "calling method from core" << std::endl;
-	//core->computeBoundingBoxSize(cloud);
+	//Processor::computeBoundingBox(cloud);
 	//std::string var;
 	//std::cin >> var;
 }
