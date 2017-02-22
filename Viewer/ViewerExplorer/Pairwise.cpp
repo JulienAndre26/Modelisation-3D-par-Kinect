@@ -13,21 +13,21 @@
 
 #include "IOXML.h"
 #include "PCLCore.h"
-
-bool comparePoint(pcl::PointXYZ p1, pcl::PointXYZ p2) {
-	if (p1.x != p2.x)
-		return p1.x > p2.x;
-	else if (p1.y != p2.y)
-		return  p1.y > p2.y;
-	else
-		return p1.z > p2.z;
-}
-
-bool equalPoint(pcl::PointXYZ p1, pcl::PointXYZ p2) {
-	if (p1.x == p2.x && p1.y == p2.y && p1.z == p2.z)
-		return true;
-	return false;
-}
+//
+//bool comparePoint(pcl::PointXYZ p1, pcl::PointXYZ p2) {
+//	if (p1.x != p2.x)
+//		return p1.x > p2.x;
+//	else if (p1.y != p2.y)
+//		return  p1.y > p2.y;
+//	else
+//		return p1.z > p2.z;
+//}
+//
+//bool equalPoint(pcl::PointXYZ p1, pcl::PointXYZ p2) {
+//	if (p1.x == p2.x && p1.y == p2.y && p1.z == p2.z)
+//		return true;
+//	return false;
+//}
 
 //int
 //main(int argc, char** argv)

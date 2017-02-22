@@ -1,6 +1,8 @@
 #include "merge_visualizer.h"
 
 void MergeVisualizer::loadMeshes(const std::string& from, const std::string& to) {
+	m_src = PolygonMesh::Ptr(new PolygonMesh);
+	m_tgt = PolygonMesh::Ptr(new PolygonMesh);
 	IOPLY::load(from.c_str(), m_src);
 	IOPLY::load(to.c_str(), m_tgt);
 }
@@ -68,23 +70,13 @@ void pointPickingEventOccurred(const pcl::visualization::PointPickingEvent &even
 
 // ----- keyboard events -----
 void MergeVisualizer::displayResult() {
-	PointCloud::Ptr src_dotted;
+	PointCloud::Ptr src_dotted(new PointCloud);
 	// transform point cloud
 	PCLCore::transformMesh(m_src, src_dotted, m_src_args.clicked_points_3d, m_tgt_args.clicked_points_3d);
-	// close viewers for point picking
-	m_src_args.viewerPtr->close();
-	m_tgt_args.viewerPtr->close();
-
-	// result visualizer
-	Visualizer::Ptr v(new Visualizer);
-
-	// showing target mesh
-	v->addPolygonMesh(*m_tgt);
-	// Adding empty points clouds to each viewer
-	// showing "shouldbeonthesameplacethanthetarget" source
-	v->addPointCloud(src_dotted, "src_dotted");
-
-	v->spin();
+	// Save resulting merge
+	PCLCore::saveMerge(src_dotted, m_tgt, m_saveTarget);
+	std::cout << "[Merge] Saved !" << std::endl;
+	finished = true;
 }
 
 void cancelPicks(void* args) {
@@ -123,7 +115,7 @@ void handleKeyboardEvents(const pcl::visualization::KeyboardEvent &event, void* 
 void MergeVisualizer::initVisualizer() {
 	// view meshes to pick points
 	m_src_args.viewerPtr->addPolygonMesh(*m_src, "src");
-	m_src_args.viewerPtr->addPolygonMesh(*m_src, "src");
+	m_tgt_args.viewerPtr->addPolygonMesh(*m_tgt, "tgt");
 
 	// Adding empty points clouds to each viewer
 	// Needed to avoid errors from remove point cloud
@@ -141,6 +133,12 @@ void MergeVisualizer::initVisualizer() {
 	m_tgt_args.viewerPtr->registerKeyboardCallback(handleKeyboardEvents, (void*)&m_tgt_args);
 	
 	// display viewers
-	m_src_args.viewerPtr->spin();
-	m_tgt_args.viewerPtr->spin();
+	while (! finished) {
+		m_src_args.viewerPtr->spinOnce(100);
+		m_tgt_args.viewerPtr->spinOnce(100);
+		boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+	}
+
+	m_src_args.viewerPtr->close();
+	m_tgt_args.viewerPtr->close();
 }

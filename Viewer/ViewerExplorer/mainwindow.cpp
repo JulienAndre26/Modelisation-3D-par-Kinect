@@ -297,11 +297,11 @@ void MainWindow::onMerge()
 void MainWindow::processMerge()
 {
 	QString sTotal = QString::number(qslFilenameList.size() - 1);
-	QString mergedPC = "mergedPC";
+	QString mergedPC = qdCaptureDirectory.absolutePath() + QString("/mergedPC.ply");
 	IProcessor* processor = new Processor();
 
 	for (int i = 1; i < qslFilenameList.size(); i++)
-	{		
+	{
 		ui->lbCurrentMerge->setText("Merging... (" + QString::number(i) + "/" + (sTotal) + ")");
 		processor->merge((i == 1) ? qmFileMap.find(qslFilenameList.at(0)).value().toLocal8Bit().data() : mergedPC.toLocal8Bit().data(),
 			qmFileMap.find(qslFilenameList.at(i)).value().toLocal8Bit().data(),
@@ -322,7 +322,7 @@ void MainWindow::onMergeEnd()
 	{
 		setAllViewDisplay(false, MOVIE_INIT);
 	}
-	
+	updateFileList();
 }
 
 void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
