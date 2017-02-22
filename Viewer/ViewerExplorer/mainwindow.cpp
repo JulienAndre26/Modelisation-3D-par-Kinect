@@ -397,11 +397,17 @@ void MainWindow::onLoad(QString path)
 
 void MainWindow::processLoadThread(MainWindow * mw)
 {
-	cout << "LOADING MESH..." << endl;
-	pcl::PolygonMesh::Ptr mesh(new PolygonMesh());
-	IOPLY::load(szFilePath, mesh);
+	cout << "LOADING MESH..." << szFilePath << endl;
 
-	launchOpenThreads(mesh, mw);
+	if (string(szFilePath).find("mergedPC.ply") != std::string::npos) {
+		PointCloudColored::Ptr cloud(new PointCloudColored());
+		IOPLY::load(szFilePath, cloud);
+		launchOpenThreads(cloud, mw);
+	} else {
+		pcl::PolygonMesh::Ptr mesh(new PolygonMesh());
+		IOPLY::load(szFilePath, mesh);
+		launchOpenThreads(mesh, mw);
+	}
 
 	if (qth3D->isRunning())
 	{
@@ -423,15 +429,29 @@ void MainWindow::processLoadThread(MainWindow * mw)
 }
 
 void MainWindow::launchOpenThreads(pcl::PolygonMesh::Ptr mesh, MainWindow * mw) {
-	qth3D = new ThreadOpen(mw, mesh, VIEW_3D);
+	qth3D = new ThreadOpenMesh(mw, mesh, VIEW_3D);
 	QObject::connect(qth3D, SIGNAL(finished()), qth3D, SLOT(onEnd()));
 	qth3D->start();
 
-	qthLateral = new ThreadOpen(mw, mesh, VIEW_LATERAL);
+	qthLateral = new ThreadOpenMesh(mw, mesh, VIEW_LATERAL);
 	QObject::connect(qthLateral, SIGNAL(finished()), qthLateral, SLOT(onEnd()));
 	qthLateral->start();
 
-	qthPlan = new ThreadOpen(mw, mesh, VIEW_PLAN);
+	qthPlan = new ThreadOpenMesh(mw, mesh, VIEW_PLAN);
+	QObject::connect(qthPlan, SIGNAL(finished()), qthPlan, SLOT(onEnd()));
+	qthPlan->start();
+}
+
+void MainWindow::launchOpenThreads(PointCloudColored::Ptr cloud, MainWindow * mw) {
+	qth3D = new ThreadOpenPC(mw, cloud, VIEW_3D);
+	QObject::connect(qth3D, SIGNAL(finished()), qth3D, SLOT(onEnd()));
+	qth3D->start();
+
+	qthLateral = new ThreadOpenPC(mw, cloud, VIEW_LATERAL);
+	QObject::connect(qthLateral, SIGNAL(finished()), qthLateral, SLOT(onEnd()));
+	qthLateral->start();
+
+	qthPlan = new ThreadOpenPC(mw, cloud, VIEW_PLAN);
 	QObject::connect(qthPlan, SIGNAL(finished()), qthPlan, SLOT(onEnd()));
 	qthPlan->start();
 }
@@ -457,14 +477,46 @@ void MainWindow::show2D(pcl::PolygonMesh::Ptr mesh, bool bPlanView)
 	vmuRenderLock->Unlock();
 }
 
+void MainWindow::show2D(PointCloudColored::Ptr cloud, bool bPlanView)
+{
+	MetricVisualizer * pv = new MetricVisualizer(cloud, this);
+
+	cout << "showPlane - MetricVisulizer ready" << endl;
+
+	vmuRenderLock->Lock();
+	vtkSmartPointer<vtkRenderWindow> renderWindow = pv->getRenderWindow();
+	// Set camera position if plan view
+	if (bPlanView)
+	{
+		ui->qvtkWidgetPlan->SetRenderWindow(renderWindow);
+		resetWidgetCamera(ui->qvtkWidgetPlan, xPlan, yPlan, zPlan, 1, 0, 0);
+	}
+	else {
+		ui->qvtkWidgetLateral->SetRenderWindow(renderWindow);
+		resetWidgetCamera(ui->qvtkWidgetLateral, xLateral, yLateral, zLateral);
+	}
+	vmuRenderLock->Unlock();
+}
+
 /*
 * Show the 3D Model selected (filePath) - Handling Colors
 */
-
 void MainWindow::show3D(pcl::PolygonMesh::Ptr mesh) {
 	
 	MetricVisualizer * pv = new MetricVisualizer(mesh, this);
 	
+	cout << "showPly - MetricVisulizer ready" << endl;
+
+	vmuRenderLock->Lock();
+	vtkSmartPointer<vtkRenderWindow> renderWindow = pv->getRenderWindow();
+	ui->qvtkWidget3D->SetRenderWindow(renderWindow);
+	vmuRenderLock->Unlock();
+}
+
+void MainWindow::show3D(PointCloudColored::Ptr cloud) {
+
+	MetricVisualizer * pv = new MetricVisualizer(cloud, this);
+
 	cout << "showPly - MetricVisulizer ready" << endl;
 
 	vmuRenderLock->Lock();
@@ -669,6 +721,28 @@ void MainWindow::processView(pcl::PolygonMesh::Ptr mesh, int nView)
 		break;
 	case VIEW_PLAN:
 		show2D(mesh, true); 
+		break;
+	default:
+		cout << "MainWindow::processView : Invalid view number " + nView << endl;
+	}
+
+	bIsWidgetActive = true;
+}
+
+void MainWindow::processView(PointCloudColored::Ptr cloud, int nView)
+{
+	bIsWidgetActive = false;
+
+	switch (nView)
+	{
+	case VIEW_3D:
+		show3D(cloud);
+		break;
+	case VIEW_LATERAL:
+		show2D(cloud, false);
+		break;
+	case VIEW_PLAN:
+		show2D(cloud, true);
 		break;
 	default:
 		cout << "MainWindow::processView : Invalid view number " + nView << endl;

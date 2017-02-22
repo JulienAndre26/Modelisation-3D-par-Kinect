@@ -31,12 +31,12 @@ private:
 	}
 };
 
-class ThreadOpen : public QThread
+class ThreadOpenMesh : public QThread
 {
 	Q_OBJECT
 
 public:
-	ThreadOpen(MainWindow * mw, pcl::PolygonMesh::Ptr mesh, int n) { this->mw = mw;  this->mesh = mesh;  this->nView = n; }
+	ThreadOpenMesh(MainWindow * mw, pcl::PolygonMesh::Ptr mesh, int n) { this->mw = mw;  this->mesh = mesh;  this->nView = n; }
 
 	public slots :
 		void onEnd()
@@ -53,6 +53,31 @@ private:
 	{
 		cout << "Thread " << nView << " launched..." << endl;
 		mw->processView(mesh, nView);
+	}
+};
+
+class ThreadOpenPC : public QThread
+{
+	Q_OBJECT
+
+public:
+	ThreadOpenPC(MainWindow * mw, PointCloudColored::Ptr cloud, int n) { this->mw = mw;  this->cloud = cloud;  this->nView = n; }
+
+	public slots :
+		void onEnd()
+	{
+		cout << "Thread " << nView << " finished" << endl;
+	}
+
+private:
+	MainWindow * mw;
+	PointCloudColored::Ptr cloud;
+	int nView;
+
+	void run()
+	{
+		cout << "Thread " << nView << " launched..." << endl;
+		mw->processView(cloud, nView);
 	}
 };
 

@@ -84,26 +84,18 @@ private:
 
 public:
 
-	MetricVisualizer(PointCloudColored::Ptr src, bool bColored, MainWindow * mw) 
+	MetricVisualizer(PointCloudColored::Ptr src, MainWindow * mw) 
 		: Visualizer("", false) 
 	{
 		init(mw);
 
-		if (!bColored) // Add custom color if the point cloud is not colored
-		{
-			pcl::PointCloud<PointT>::Ptr src_custom(new pcl::PointCloud<PointT>);
+		pcl::PointCloud<PointT>::Ptr src_custom(new pcl::PointCloud<PointT>);
 
-			for (int i = 0; i < src->size(); i++)
-				src_custom->push_back(PointT(src->at(i).x, src->at(i).y, src->at(i).z));
+		for (int i = 0; i < src->size(); i++)
+			src_custom->push_back(PointT(src->at(i).x, src->at(i).y, src->at(i).z));
 
-			pcl::visualization::PointCloudColorHandlerCustom<PointT> src_rgb(src_custom, 50, 210, 210);
-			this->addPointCloud<PointT>(src_custom, src_rgb, "v1_source", 0);
-		} 
-		else // Already colored
-		{
-			pcl::visualization::PointCloudColorHandlerRGBField<pcl::PointXYZRGB> src_rgb(src);
-			this->addPointCloud<PointColorT>(src, src_rgb, "v1_source", 0);
-		} 
+		pcl::visualization::PointCloudColorHandlerCustom<PointT> src_rgb(src_custom, 50, 210, 210);
+		this->addPointCloud<PointT>(src_custom, src_rgb, "v1_source", 0); 
 	}
 
 	MetricVisualizer(PolygonMesh::Ptr src, MainWindow * mw)
