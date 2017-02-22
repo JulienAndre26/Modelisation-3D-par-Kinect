@@ -322,6 +322,8 @@ void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item) {
 void MainWindow::onLoad(QString path) {
 	ui->btnLeftPlan->setEnabled(false);
 	ui->btnRightPlan->setEnabled(false);
+	ui->wdgBoxSize->setVisible(false);
+	hideMetrics();
 
 	if (QString::compare(path, qsLoadedFile, Qt::CaseInsensitive) == 0)
 		return;
@@ -721,6 +723,18 @@ void MainWindow::on_btnDelete_clicked() {
 	}
 }
 
+void MainWindow::hideMetrics() {
+	ui->lbP1x->setVisible(false);
+	ui->lbP1y->setVisible(false);
+	ui->lbP1z->setVisible(false);
+	ui->lbPin1->setVisible(false);
+	ui->lbP2x->setVisible(false);
+	ui->lbP2y->setVisible(false);
+	ui->lbP2z->setVisible(false);
+	ui->lbPin2->setVisible(false);
+	ui->lbDistance->setVisible(false);
+	ui->lbDistanceIcon->setVisible(false);
+}
 void MainWindow::updateMetrics(int nPoint, float x, float y, float z) {
 	QLabel *qlbX, *qlbY, *qlbZ, *qlPin;
 

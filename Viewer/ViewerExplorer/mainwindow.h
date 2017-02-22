@@ -145,6 +145,7 @@ private:
 	void setLoadedFile(QString newValue);
 	void setWidgetBorderRadius(QWidget* widget, int radius);
 	void reduceFile(std::string file);
+	void hideMetrics();
 
 	QLabel * getLabel(int nView);
 	QVTKWidget * getWidget(int nView);

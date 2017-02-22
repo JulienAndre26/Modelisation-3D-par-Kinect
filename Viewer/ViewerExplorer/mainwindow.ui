@@ -193,7 +193,7 @@ QPushButton#btnHelpM:hover {
          </layout>
         </item>
         <item>
-         <widget class="QVTKWidget" name="qvtkWidget3D">
+         <widget class="QVTKWidget" name="qvtkWidget3D" native="true">
           <property name="minimumSize">
            <size>
             <width>300</width>
@@ -360,7 +360,7 @@ QPushButton#btnHelpR:hover {
          </layout>
         </item>
         <item>
-         <widget class="QVTKWidget" name="qvtkWidgetLateral">
+         <widget class="QVTKWidget" name="qvtkWidgetLateral" native="true">
           <property name="minimumSize">
            <size>
             <width>100</width>
@@ -413,7 +413,7 @@ padding: 6px;</string>
          </widget>
         </item>
         <item>
-         <widget class="QVTKWidget" name="qvtkWidgetPlan">
+         <widget class="QVTKWidget" name="qvtkWidgetPlan" native="true">
           <property name="minimumSize">
            <size>
             <width>100</width>
@@ -698,6 +698,12 @@ QPushButton#btnBrowse:pressed {
         </item>
         <item>
          <widget class="QLabel" name="invisible2">
+          <property name="maximumSize">
+           <size>
+            <width>250</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="text">
            <string/>
           </property>
@@ -721,7 +727,7 @@ QPushButton#btnBrowse:pressed {
            <property name="geometry">
             <rect>
              <x>50</x>
-             <y>160</y>
+             <y>85</y>
              <width>41</width>
              <height>31</height>
             </rect>
@@ -736,8 +742,8 @@ QPushButton#btnBrowse:pressed {
           <widget class="QLabel" name="lbP2y">
            <property name="geometry">
             <rect>
-             <x>130</x>
-             <y>210</y>
+             <x>140</x>
+             <y>135</y>
              <width>81</width>
              <height>16</height>
             </rect>
@@ -755,8 +761,8 @@ QPushButton#btnBrowse:pressed {
           <widget class="QLabel" name="lbP1x">
            <property name="geometry">
             <rect>
-             <x>30</x>
-             <y>190</y>
+             <x>40</x>
+             <y>115</y>
              <width>81</width>
              <height>16</height>
             </rect>
@@ -794,8 +800,8 @@ QPushButton#btnBrowse:pressed {
            <property name="geometry">
             <rect>
              <x>60</x>
-             <y>255</y>
-             <width>210</width>
+             <y>190</y>
+             <width>191</width>
              <height>20</height>
             </rect>
            </property>
@@ -812,8 +818,8 @@ QPushButton#btnBrowse:pressed {
           <widget class="QLabel" name="lbDistanceIcon">
            <property name="geometry">
             <rect>
-             <x>10</x>
-             <y>248</y>
+             <x>20</x>
+             <y>180</y>
              <width>41</width>
              <height>31</height>
             </rect>
@@ -828,8 +834,8 @@ QPushButton#btnBrowse:pressed {
           <widget class="QLabel" name="lbP1z">
            <property name="geometry">
             <rect>
-             <x>30</x>
-             <y>230</y>
+             <x>40</x>
+             <y>155</y>
              <width>81</width>
              <height>16</height>
             </rect>
@@ -847,8 +853,8 @@ QPushButton#btnBrowse:pressed {
           <widget class="QLabel" name="lbP2z">
            <property name="geometry">
             <rect>
-             <x>130</x>
-             <y>230</y>
+             <x>140</x>
+             <y>155</y>
              <width>81</width>
              <height>16</height>
             </rect>
@@ -866,8 +872,8 @@ QPushButton#btnBrowse:pressed {
           <widget class="QLabel" name="lbP2x">
            <property name="geometry">
             <rect>
-             <x>130</x>
-             <y>190</y>
+             <x>140</x>
+             <y>115</y>
              <width>81</width>
              <height>16</height>
             </rect>
@@ -885,8 +891,8 @@ QPushButton#btnBrowse:pressed {
           <widget class="QLabel" name="lbP1y">
            <property name="geometry">
             <rect>
-             <x>30</x>
-             <y>210</y>
+             <x>40</x>
+             <y>135</y>
              <width>81</width>
              <height>16</height>
             </rect>
@@ -923,8 +929,8 @@ QPushButton#btnBrowse:pressed {
           <widget class="QLabel" name="lbPin2">
            <property name="geometry">
             <rect>
-             <x>150</x>
-             <y>160</y>
+             <x>160</x>
+             <y>85</y>
              <width>41</width>
              <height>31</height>
             </rect>
@@ -940,8 +946,8 @@ QPushButton#btnBrowse:pressed {
            <property name="geometry">
             <rect>
              <x>10</x>
-             <y>80</y>
-             <width>230</width>
+             <y>223</y>
+             <width>231</width>
              <height>70</height>
             </rect>
            </property>
@@ -961,11 +967,17 @@ QPushButton#btnBrowse:pressed {
            <widget class="QLabel" name="lbWidth">
             <property name="geometry">
              <rect>
-              <x>120</x>
+              <x>100</x>
               <y>10</y>
               <width>47</width>
               <height>13</height>
              </rect>
+            </property>
+            <property name="font">
+             <font>
+              <family>Nirmala UI</family>
+              <pointsize>9</pointsize>
+             </font>
             </property>
             <property name="text">
              <string>Width</string>
@@ -974,11 +986,17 @@ QPushButton#btnBrowse:pressed {
            <widget class="QLabel" name="lbWidthValue">
             <property name="geometry">
              <rect>
-              <x>170</x>
+              <x>150</x>
               <y>10</y>
               <width>47</width>
               <height>13</height>
              </rect>
+            </property>
+            <property name="font">
+             <font>
+              <family>Nirmala UI</family>
+              <pointsize>9</pointsize>
+             </font>
             </property>
             <property name="text">
              <string>0.000</string>
@@ -987,11 +1005,17 @@ QPushButton#btnBrowse:pressed {
            <widget class="QLabel" name="lbHeight">
             <property name="geometry">
              <rect>
-              <x>120</x>
+              <x>100</x>
               <y>30</y>
               <width>47</width>
               <height>13</height>
              </rect>
+            </property>
+            <property name="font">
+             <font>
+              <family>Nirmala UI</family>
+              <pointsize>9</pointsize>
+             </font>
             </property>
             <property name="text">
              <string>Height</string>
@@ -1000,11 +1024,17 @@ QPushButton#btnBrowse:pressed {
            <widget class="QLabel" name="lbHeightValue">
             <property name="geometry">
              <rect>
-              <x>170</x>
+              <x>150</x>
               <y>30</y>
               <width>47</width>
               <height>13</height>
              </rect>
+            </property>
+            <property name="font">
+             <font>
+              <family>Nirmala UI</family>
+              <pointsize>9</pointsize>
+             </font>
             </property>
             <property name="text">
              <string>0.000</string>
@@ -1013,11 +1043,17 @@ QPushButton#btnBrowse:pressed {
            <widget class="QLabel" name="lbDepthValue">
             <property name="geometry">
              <rect>
-              <x>170</x>
+              <x>150</x>
               <y>50</y>
               <width>47</width>
               <height>13</height>
              </rect>
+            </property>
+            <property name="font">
+             <font>
+              <family>Nirmala UI</family>
+              <pointsize>9</pointsize>
+             </font>
             </property>
             <property name="text">
              <string>0.000</string>
@@ -1026,11 +1062,17 @@ QPushButton#btnBrowse:pressed {
            <widget class="QLabel" name="lbDepth">
             <property name="geometry">
              <rect>
-              <x>120</x>
+              <x>100</x>
               <y>50</y>
               <width>47</width>
               <height>13</height>
              </rect>
+            </property>
+            <property name="font">
+             <font>
+              <family>Nirmala UI</family>
+              <pointsize>9</pointsize>
+             </font>
             </property>
             <property name="text">
              <string>Depth</string>
