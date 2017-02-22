@@ -118,13 +118,13 @@ Status Processor::computeMetrics(float x1, float y1, float z1, float x2, float y
 //	src_projected->cloud = *mesh_cloud2_projected;
 //}
 
-std::map<std::string, double> Processor::computeBoundingBox(pcl::PolygonMesh::Ptr mesh) {
+std::map<std::string, double>* Processor::computeBoundingBox(pcl::PolygonMesh::Ptr mesh) {
 	PointCloud::Ptr cloud(new PointCloud());
 	pcl::fromROSMsg(mesh->cloud, *cloud);
 	return Processor::computeBoundingBox(cloud);
 }
 
-std::map<std::string, double> Processor::computeBoundingBox(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
+std::map<std::string, double>* Processor::computeBoundingBox(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
 	std::map<std::string, double> result;
 
 	std::vector<double> resultArray = PCLCore::computeBoundingBoxSize(cloud);
@@ -138,12 +138,11 @@ std::map<std::string, double> Processor::computeBoundingBox(pcl::PointCloud<pcl:
 		result["z"] = resultArray[2];
 	}
 	
-	return result;
+	return &result;
 }
 
-std::map<std::string, double> Processor::computeBoundingBox(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud) {
-	pcl::PointCloud<pcl::PointXYZ> noColor;
-	pcl::copyPointCloud(*cloud, noColor);
-	pcl::PointCloud<pcl::PointXYZ>::Ptr ptr(&noColor);
-	return Processor::computeBoundingBox(ptr);
+std::map<std::string, double>* Processor::computeBoundingBox(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud) {
+	pcl::PointCloud<pcl::PointXYZ>::Ptr noColor(new PointCloud);
+	pcl::copyPointCloud(*cloud, *noColor);
+	return Processor::computeBoundingBox(noColor);
 }
