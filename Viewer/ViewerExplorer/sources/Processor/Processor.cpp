@@ -34,6 +34,7 @@
 
 Status Processor::merge(const string& from, const string& to, const string& into) {
 	Status s;
+	PCLCore::merge(from, to, into);
 	return s;
 }
 

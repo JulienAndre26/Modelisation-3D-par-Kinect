@@ -69,18 +69,22 @@ public:
 	
 	void processLoadThread(MainWindow * mw);
 	void processView(pcl::PolygonMesh::Ptr mesh, int nView);
+	void processView(PointCloudColored::Ptr cloud, int nView);
 	void processMerge();
 
 	void onMerge();
 	void onMergeEnd();
 
-	void show3D(pcl::PolygonMesh::Ptr mesh);
-	void show2D(pcl::PolygonMesh::Ptr mesh, bool bPlanView);
+	void show3D(PolygonMesh::Ptr mesh);
+	void show3D(PointCloudColored::Ptr cloud);
+	void show2D(PolygonMesh::Ptr mesh, bool bPlanView);
+	void show2D(PointCloudColored::Ptr mesh, bool bPlanView);
 
 	void updateMetrics(int nPoint, float x, float y, float z);
 	void updateMetrics(double distance);
 
-	void launchOpenThreads(pcl::PolygonMesh::Ptr mesh, MainWindow * mw);
+	void launchOpenThreads(PolygonMesh::Ptr mesh, MainWindow * mw);
+	void launchOpenThreads(PointCloudColored::Ptr cloud, MainWindow * mw);
 
 	char * szFilePath;
 	vtkMutexLock * vmuRenderLock;
@@ -151,6 +155,8 @@ private:
 	void resetWidgetCamera(QVTKWidget * qw, int posX, int posY, int posZ);
 
 	void showHelp();
+	void assignIcon(QPushButton* button, std::string& resource);
+	void assignIcon(QLabel * label, std::string& resource);
 };
 
 enum CameraPositionPlan {

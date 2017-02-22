@@ -45,54 +45,19 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->gifPlan->setAlignment(Qt::AlignCenter);
 
 	// Icons
-	QPixmap pixLeftArrow(":/icons/leftarrow");
-	QIcon iconLeftArrow(pixLeftArrow);
-	ui->btnLeftPlan->setIcon(iconLeftArrow);
-	ui->btnLeftPlan->setIconSize(pixLeftArrow.rect().size());
-
-	QPixmap pixRightArrow(":/icons/rightarrow");
-	QIcon iconRightArrow(pixRightArrow);
-	ui->btnRightPlan->setIcon(iconRightArrow);
-	ui->btnRightPlan->setIconSize(pixRightArrow.rect().size());
-
-	QPixmap pixAdd(":/icons/add");
-	QIcon iconAdd(pixAdd);
-	ui->btnAdd->setIcon(iconAdd);
-	ui->btnAdd->setIconSize(pixAdd.rect().size());
-
-	QPixmap pixDel(":/icons/delete");
-	QIcon iconDel(pixDel);
-	ui->btnDelete->setIcon(iconDel);
-	ui->btnDelete->setIconSize(pixDel.rect().size());
-
-	QPixmap pixPin(":/icons/pin");
-	ui->lbPin1->setPixmap(pixPin);
-	ui->lbPin2->setPixmap(pixPin);
-
-	QPixmap pixDist(":/icons/distance");
-	ui->lbDistanceIcon->setPixmap(pixDist);
-
-	QPixmap pixHelp(":/icons/help");
-	QIcon iconHelp(pixHelp);
-	ui->btnHelpR->setIcon(iconHelp);
-	ui->btnHelpR->setIconSize(pixHelp.rect().size());
-	ui->btnHelpM->setIcon(iconHelp);
-	ui->btnHelpM->setIconSize(pixHelp.rect().size());
-
-	QPixmap pixFS(":/icons/fs");
-	QIcon iconFS(pixFS);
-	ui->btnFS->setIcon(iconFS);
-	ui->btnFS->setIconSize(pixFS.rect().size());
-
-	QPixmap pixEFS(":/icons/exit_fs");
-	QIcon iconEFS(pixEFS);
-	ui->btnExitFS->setIcon(iconEFS);
-	ui->btnExitFS->setIconSize(pixEFS.rect().size());
-
-	QPixmap pixResCam(":/icons/reset_cam");
-	QIcon iconResCam(pixResCam);
-	ui->btnResetCamera->setIcon(iconResCam);
-	ui->btnResetCamera->setIconSize(pixResCam.rect().size());
+	assignIcon(ui->btnLeftPlan, std::string(":/icons/leftarrow"));
+	assignIcon(ui->btnRightPlan, std::string(":/icons/rightarrow"));
+	assignIcon(ui->btnAdd, std::string(":/icons/add"));
+	assignIcon(ui->btnDelete, std::string(":/icons/delete"));
+	assignIcon(ui->btnHelpR, std::string(":/icons/help"));
+	assignIcon(ui->btnHelpM, std::string(":/icons/help"));
+	assignIcon(ui->btnFS, std::string(":/icons/fs"));
+	assignIcon(ui->btnExitFS, std::string(":/icons/exit_fs"));
+	assignIcon(ui->btnResetCamera, std::string(":/icons/reset_cam"));
+	// Label
+	assignIcon(ui->lbPin1, std::string(":/icons/pin"));
+	assignIcon(ui->lbPin2, std::string(":/icons/pin"));
+	assignIcon(ui->lbDistanceIcon, std::string(":/icons/distance"));
 
 	ui->btnBrowse->setIcon(QIcon(":/icons/browse"));
 	ui->btnShow->setIcon(QIcon(":/icons/show"));
@@ -100,10 +65,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	// Gifs
 	qmInit = new QMovie(":/gifs/init");
-	//qmInit = new QMovie("./resources/gifs/init.gif");
-	/*movieLoad = new QMovie(":/gifs/load"); These gifs must not be a single instance
-	movieMerge = new QMovie(":/gifs/merge");*/
-
 	ui->gif3D->setMovie(qmInit);
 	ui->gifLateral->setMovie(qmInit);
 	ui->gifPlan->setMovie(qmInit);
@@ -122,6 +83,20 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow() {
 	delete ui;
+}
+
+// Method to assign an icon resource to a button
+void MainWindow::assignIcon(QPushButton * button, std::string& resource) {
+	QPixmap pixmap((&resource)->c_str());
+	QIcon icon(pixmap);
+	button->setIcon(icon);
+	button->setIconSize(pixmap.rect().size());
+}
+
+// Method to assign an icon resource to a label
+void MainWindow::assignIcon(QLabel * label, std::string& resource) {
+	QPixmap pixmap((&resource)->c_str());
+	label->setPixmap(pixmap);
 }
 
 void MainWindow::resizeEvent(QResizeEvent* event) {
@@ -275,7 +250,7 @@ void MainWindow::onMerge() {
 
 void MainWindow::processMerge() {
 	QString sTotal = QString::number(qslFilenameList.size() - 1);
-	QString mergedPC = "mergedPC";
+	QString mergedPC = qdCaptureDirectory.absolutePath() + QString("/mergedPC.ply");
 	IProcessor* processor = new Processor();
 
 	for (int i = 1; i < qslFilenameList.size(); i++) {
@@ -298,6 +273,7 @@ void MainWindow::onMergeEnd() {
 		setAllViewDisplay(false, MOVIE_INIT);
 	}
 
+	updateFileList();
 }
 
 void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item) {
@@ -341,10 +317,8 @@ void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item) {
 }
 
 void MainWindow::onLoad(QString path) {
-	if (ui->lbLoadedFile->text().compare("Please open a file", Qt::CaseInsensitive) == 0) {
-		ui->btnLeftPlan->setEnabled(qslFilenameList.size() > 1);
-		ui->btnRightPlan->setEnabled(qslFilenameList.size() > 1);
-	}
+	ui->btnLeftPlan->setEnabled(false);
+	ui->btnRightPlan->setEnabled(false);
 
 	if (QString::compare(path, qsLoadedFile, Qt::CaseInsensitive) == 0)
 		return;
@@ -367,18 +341,26 @@ void MainWindow::onLoad(QString path) {
 	qthLoad->start();
 }
 
+
 void MainWindow::processLoadThread(MainWindow * mw) {
-	cout << "LOADING MESH..." << endl;
-	pcl::PolygonMesh::Ptr mesh(new PolygonMesh());
-	IOPLY::load(szFilePath, mesh);
+	cout << "LOADING MESH..." << szFilePath << endl;
 
-	launchOpenThreads(mesh, mw);
+	if (string(szFilePath).find("mergedPC.ply") != std::string::npos) {
+		PointCloudColored::Ptr cloud(new PointCloudColored());
+		IOPLY::load(szFilePath, cloud);
+		launchOpenThreads(cloud, mw);
+	}
+	else {
+		pcl::PolygonMesh::Ptr mesh(new PolygonMesh());
+		IOPLY::load(szFilePath, mesh);
+		launchOpenThreads(mesh, mw);
+	}
 
-	std::map<std::string, double> map = Processor::computeBoundingBox(mesh);
+	//std::map<std::string, double> map = Processor::computeBoundingBox(mesh);
 
-	std::cout << map["x"] << std::endl;
-	std::cout << map["y"] << std::endl;
-	std::cout << map["z"] << std::endl;
+	//std::cout << map["x"] << std::endl;
+	//std::cout << map["y"] << std::endl;
+	//std::cout << map["z"] << std::endl;
 
 	if (qth3D->isRunning()) {
 		qth3D->wait();
@@ -397,15 +379,29 @@ void MainWindow::processLoadThread(MainWindow * mw) {
 }
 
 void MainWindow::launchOpenThreads(pcl::PolygonMesh::Ptr mesh, MainWindow * mw) {
-	qth3D = new ThreadOpen(mw, mesh, VIEW_3D);
+	qth3D = new ThreadOpenMesh(mw, mesh, VIEW_3D);
 	QObject::connect(qth3D, SIGNAL(finished()), qth3D, SLOT(onEnd()));
 	qth3D->start();
 
-	qthLateral = new ThreadOpen(mw, mesh, VIEW_LATERAL);
+	qthLateral = new ThreadOpenMesh(mw, mesh, VIEW_LATERAL);
 	QObject::connect(qthLateral, SIGNAL(finished()), qthLateral, SLOT(onEnd()));
 	qthLateral->start();
 
-	qthPlan = new ThreadOpen(mw, mesh, VIEW_PLAN);
+	qthPlan = new ThreadOpenMesh(mw, mesh, VIEW_PLAN);
+	QObject::connect(qthPlan, SIGNAL(finished()), qthPlan, SLOT(onEnd()));
+	qthPlan->start();
+}
+
+void MainWindow::launchOpenThreads(PointCloudColored::Ptr cloud, MainWindow * mw) {
+	qth3D = new ThreadOpenPC(mw, cloud, VIEW_3D);
+	QObject::connect(qth3D, SIGNAL(finished()), qth3D, SLOT(onEnd()));
+	qth3D->start();
+
+	qthLateral = new ThreadOpenPC(mw, cloud, VIEW_LATERAL);
+	QObject::connect(qthLateral, SIGNAL(finished()), qthLateral, SLOT(onEnd()));
+	qthLateral->start();
+
+	qthPlan = new ThreadOpenPC(mw, cloud, VIEW_PLAN);
 	QObject::connect(qthPlan, SIGNAL(finished()), qthPlan, SLOT(onEnd()));
 	qthPlan->start();
 }
@@ -429,13 +425,44 @@ void MainWindow::show2D(pcl::PolygonMesh::Ptr mesh, bool bPlanView) {
 	vmuRenderLock->Unlock();
 }
 
+void MainWindow::show2D(PointCloudColored::Ptr cloud, bool bPlanView) {
+	MetricVisualizer * pv = new MetricVisualizer(cloud, this);
+
+	cout << "showPlane - MetricVisulizer ready" << endl;
+
+	vmuRenderLock->Lock();
+	vtkSmartPointer<vtkRenderWindow> renderWindow = pv->getRenderWindow();
+	// Set camera position if plan view
+	if (bPlanView) {
+		ui->qvtkWidgetPlan->SetRenderWindow(renderWindow);
+		resetWidgetCamera(ui->qvtkWidgetPlan, xPlan, yPlan, zPlan, 1, 0, 0);
+	}
+	else {
+		ui->qvtkWidgetLateral->SetRenderWindow(renderWindow);
+		resetWidgetCamera(ui->qvtkWidgetLateral, xLateral, yLateral, zLateral);
+	}
+	vmuRenderLock->Unlock();
+}
+
 /*
 * Show the 3D Model selected (filePath) - Handling Colors
 */
-
 void MainWindow::show3D(pcl::PolygonMesh::Ptr mesh) {
 
 	MetricVisualizer * pv = new MetricVisualizer(mesh, this);
+
+	cout << "showPly - MetricVisulizer ready" << endl;
+
+	vmuRenderLock->Lock();
+	vtkSmartPointer<vtkRenderWindow> renderWindow = pv->getRenderWindow();
+	ui->qvtkWidget3D->SetRenderWindow(renderWindow);
+	vmuRenderLock->Unlock();
+}
+
+
+void MainWindow::show3D(PointCloudColored::Ptr cloud) {
+
+	MetricVisualizer * pv = new MetricVisualizer(cloud, this);
 
 	cout << "showPly - MetricVisulizer ready" << endl;
 
@@ -541,7 +568,7 @@ QMovie * MainWindow::getMovie(int nStatus) {
 		qm = new QMovie(":/gifs/load");
 		break;
 	case MOVIE_MERGE:
-		qm = new QMovie(":/gifs/load");
+		qm = new QMovie(":/gifs/merge");
 		break;
 	default:
 		qm = nullptr;
@@ -605,6 +632,12 @@ void MainWindow::setAllViewDisplay(bool bShowWidget, int nStatus) {
 	setViewDisplay(VIEW_3D, bShowWidget, nStatus);
 	setViewDisplay(VIEW_LATERAL, bShowWidget, nStatus);
 	setViewDisplay(VIEW_PLAN, bShowWidget, nStatus);
+
+	if (bShowWidget) {
+		ui->btnLeftPlan->setEnabled(qslFilenameList.size() > 1);
+		ui->btnRightPlan->setEnabled(qslFilenameList.size() > 1);
+	}
+
 }
 
 void MainWindow::processView(pcl::PolygonMesh::Ptr mesh, int nView) {
@@ -619,6 +652,27 @@ void MainWindow::processView(pcl::PolygonMesh::Ptr mesh, int nView) {
 		break;
 	case VIEW_PLAN:
 		show2D(mesh, true);
+		break;
+	default:
+		cout << "MainWindow::processView : Invalid view number " + nView << endl;
+	}
+
+	bIsWidgetActive = true;
+}
+
+
+void MainWindow::processView(PointCloudColored::Ptr cloud, int nView) {
+	bIsWidgetActive = false;
+
+	switch (nView) {
+	case VIEW_3D:
+		show3D(cloud);
+		break;
+	case VIEW_LATERAL:
+		show2D(cloud, false);
+		break;
+	case VIEW_PLAN:
+		show2D(cloud, true);
 		break;
 	default:
 		cout << "MainWindow::processView : Invalid view number " + nView << endl;
