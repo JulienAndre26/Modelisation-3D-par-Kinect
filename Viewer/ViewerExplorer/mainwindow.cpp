@@ -322,7 +322,7 @@ void MainWindow::onMergeEnd()
 	{
 		setAllViewDisplay(false, MOVIE_INIT);
 	}
-	
+	updateFileList();
 }
 
 void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
