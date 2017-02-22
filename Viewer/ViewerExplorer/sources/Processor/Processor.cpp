@@ -117,3 +117,22 @@ Status Processor::computeMetrics(float x1, float y1, float z1, float x2, float y
 //	src_projected->cloud = *mesh_cloud2_projected;
 //}
 
+
+std::map<std::string, double> Processor::computeBoundingBox(pcl::PolygonMesh::Ptr mesh) {
+	std::map<std::string, double> result;
+
+	PointCloud::Ptr cloud(new PointCloud());
+	pcl::fromROSMsg(mesh->cloud, *cloud);
+	std::vector<double> resultArray = PCLCore::computeBoundingBoxSize(cloud);
+	if (resultArray.size() < 3) {
+		result["x"] = 0.0;
+		result["y"] = 0.0;
+		result["z"] = 0.0;
+	} else {
+		result["x"] = resultArray[0];
+		result["y"] = resultArray[1];
+		result["z"] = resultArray[2];
+	}
+	
+	return result;
+}

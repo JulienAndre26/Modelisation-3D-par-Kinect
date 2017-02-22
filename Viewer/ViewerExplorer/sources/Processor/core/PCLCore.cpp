@@ -1,4 +1,7 @@
 #include <unordered_map>
+#include <pcl/features/moment_of_inertia_estimation.h>
+#include <pcl/filters/approximate_voxel_grid.h>
+#include <vector>
 
 #include "PCLCore.h"
 
@@ -236,6 +239,18 @@ int PCLCore::compress(std::string* file_path) {
 	return 0;
 }
 
+int PCLCore::compress(pcl::PointCloud<pcl::PointXYZ>::Ptr input, pcl::PointCloud<pcl::PointXYZ>::Ptr output, float compressRatio) {
+	pcl::PointCloud<pcl::PointXYZ>::Ptr copy(input);
+
+	pcl::ApproximateVoxelGrid<PointT> avg;
+	// keeps only 1 voxel (point) within a sphere of 1cm radius
+	avg.setLeafSize(compressRatio, compressRatio, compressRatio);
+	avg.setInputCloud(copy);
+	avg.filter(*output);
+
+	return 0;
+}
+
 
 void* PCLCore::other(std::string* file_path) {
 	return (void*)0;
@@ -270,3 +285,86 @@ Eigen::Matrix4f * PCLCore::getMatrix(std::string path) {
 
 	return result;
 } 
+
+#include "Processor.h"
+std::vector<double> PCLCore::computeBoundingBoxSize(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
+	pcl::PointCloud<pcl::PointXYZ>::Ptr filtered(new PointCloud);
+	compress(cloud, filtered, 0.1);
+	pcl::MomentOfInertiaEstimation <pcl::PointXYZ> feature_extractor;
+	feature_extractor.setInputCloud(filtered);
+	feature_extractor.compute();
+
+	//std::vector <float> moment_of_inertia;
+	//std::vector <float> eccentricity;
+	//pcl::PointXYZ min_point_AABB;
+	//pcl::PointXYZ max_point_AABB;
+	pcl::PointXYZ min_point_OBB;
+	pcl::PointXYZ max_point_OBB;
+	pcl::PointXYZ position_OBB;
+	Eigen::Matrix3f rotational_matrix_OBB;
+	//float major_value, middle_value, minor_value;
+	Eigen::Vector3f major_vector, middle_vector, minor_vector;
+	Eigen::Vector3f mass_center;
+
+	//feature_extractor.getMomentOfInertia(moment_of_inertia);
+	//feature_extractor.getEccentricity(eccentricity);
+	//feature_extractor.getAABB(min_point_AABB, max_point_AABB);
+	feature_extractor.getOBB(min_point_OBB, max_point_OBB, position_OBB, rotational_matrix_OBB);
+	//feature_extractor.getEigenValues(major_value, middle_value, minor_value);
+	//feature_extractor.getEigenVectors(major_vector, middle_vector, minor_vector);
+	//feature_extractor.getMassCenter(mass_center);
+
+	Eigen::Vector3f position(position_OBB.x, position_OBB.y, position_OBB.z);
+	//Eigen::Quaternionf quat(rotational_matrix_OBB);
+
+	//pcl::PointXYZ center(mass_center(0), mass_center(1), mass_center(2));
+	//pcl::PointXYZ x_axis(major_vector(0) + mass_center(0), major_vector(1) + mass_center(1), major_vector(2) + mass_center(2));
+	//pcl::PointXYZ y_axis(middle_vector(0) + mass_center(0), middle_vector(1) + mass_center(1), middle_vector(2) + mass_center(2));
+	//pcl::PointXYZ z_axis(minor_vector(0) + mass_center(0), minor_vector(1) + mass_center(1), minor_vector(2) + mass_center(2));
+
+	Eigen::Vector3f p1 (min_point_OBB.x, min_point_OBB.y, min_point_OBB.z);
+	Eigen::Vector3f p2 (min_point_OBB.x, min_point_OBB.y, max_point_OBB.z);
+	//Eigen::Vector3f p3 (max_point_OBB.x, min_point_OBB.y, max_point_OBB.z);
+	Eigen::Vector3f p4 (max_point_OBB.x, min_point_OBB.y, min_point_OBB.z);
+	Eigen::Vector3f p5 (min_point_OBB.x, max_point_OBB.y, min_point_OBB.z);
+	//Eigen::Vector3f p6 (min_point_OBB.x, max_point_OBB.y, max_point_OBB.z);
+	//Eigen::Vector3f p7 (max_point_OBB.x, max_point_OBB.y, max_point_OBB.z);
+	//Eigen::Vector3f p8 (max_point_OBB.x, max_point_OBB.y, min_point_OBB.z);
+
+	p1 = rotational_matrix_OBB * p1 + position;
+	p2 = rotational_matrix_OBB * p2 + position;
+	//p3 = rotational_matrix_OBB * p3 + position;
+	p4 = rotational_matrix_OBB * p4 + position;
+	p5 = rotational_matrix_OBB * p5 + position;
+	//p6 = rotational_matrix_OBB * p6 + position;
+	//p7 = rotational_matrix_OBB * p7 + position;
+	//p8 = rotational_matrix_OBB * p8 + position;
+
+	pcl::PointXYZ pt1 (p1 (0), p1 (1), p1 (2));
+	pcl::PointXYZ pt2 (p2 (0), p2 (1), p2 (2));
+	//pcl::PointXYZ pt3 (p3 (0), p3 (1), p3 (2));
+	pcl::PointXYZ pt4 (p4 (0), p4 (1), p4 (2));
+	pcl::PointXYZ pt5 (p5 (0), p5 (1), p5 (2));
+	//pcl::PointXYZ pt6 (p6 (0), p6 (1), p6 (2));
+	//pcl::PointXYZ pt7 (p7 (0), p7 (1), p7 (2));
+	//pcl::PointXYZ pt8 (p8 (0), p8 (1), p8 (2));
+
+	std::cout << pt1 << std::endl;
+	std::cout << pt4 << std::endl;
+	std::cout << pt5 << std::endl;
+
+	Processor proc;
+	double dist1 = proc.computeMetrics(pt1.x, pt1.y, pt1.z, pt2.x, pt2.y, pt2.z).returnedDouble;
+	double dist2 = proc.computeMetrics(pt1.x, pt1.y, pt1.z, pt4.x, pt4.y, pt4.z).returnedDouble;
+	double dist3 = proc.computeMetrics(pt1.x, pt1.y, pt1.z, pt5.x, pt5.y, pt5.z).returnedDouble;
+
+	std::cout << "dist 1 : " << dist1 << std::endl;
+	std::cout << "dist 2 : " << dist2 << std::endl;
+	std::cout << "dist 3 : " << dist3 << std::endl;
+	std::vector<double> result; //{ dist1, dist2, dist3 };
+	result.push_back(dist1);
+	result.push_back(dist2);
+	result.push_back(dist3);
+	return  result;
+}
+

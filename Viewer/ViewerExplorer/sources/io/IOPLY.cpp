@@ -16,12 +16,14 @@ bool IOPLY::load(const char * filename, PolygonMesh::Ptr mesh) {
 bool IOPLY::load(const char * filename, PointCloud::Ptr objectToLoad) {
 	if (!IIO::fileExists(std::string(filename)))
 		return false;
-	
-	pcl::PolygonMesh::Ptr mesh(new pcl::PolygonMesh);
+	//std::cout << "file exists" << std::endl;
+	pcl::PolygonMesh::Ptr mesh(new pcl::PolygonMesh());
 	pcl::io::loadPolygonFile(filename, *mesh);
+	//std::cout << "polygon mesh created" << std::endl;
 
-	pcl::PCLPointCloud2 mesh_cloud2 = mesh->cloud;
-	pcl::fromROSMsg(mesh_cloud2, *objectToLoad);
+	//pcl::PCLPointCloud2 mesh_cloud2 = mesh->cloud;
+	pcl::fromROSMsg(mesh->cloud, *objectToLoad);
+	//std::cout << "conversion done" << std::endl;
 	return true;
 }
 
