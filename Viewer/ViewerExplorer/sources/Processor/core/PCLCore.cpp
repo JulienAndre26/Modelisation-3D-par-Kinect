@@ -53,6 +53,44 @@ void PCLCore::merge(const std::string& from, const std::string& to, const std::s
 	MergeVisualizer(from, to, into);
 }
 
+void PCLCore::saveMerge(PointCloud::Ptr src_transformed, PolygonMesh::Ptr tgt_mesh, const std::string& into) {
+	PointCloud::Ptr tgt_dotted(new PointCloud);
+	PolygonMesh::Ptr resulting_mesh(new PolygonMesh);
+	// Remove source duplication
+	PCLCore::removeDuplicate(src_transformed);
+	// Add tgt points
+	pcl::fromROSMsg(tgt_mesh->cloud, *tgt_dotted);
+	// Remove target duplication
+	PCLCore::removeDuplicate(tgt_dotted);
+	// Concatenate data
+	*src_transformed += *tgt_dotted;
+	// Remove result duplication (may append)
+	PCLCore::removeDuplicate(src_transformed);
+	// Save merged points
+	IOPLY::save(into.c_str(), src_transformed);
+}
+
+// sorting functions
+bool comparePoint(pcl::PointXYZ p1, pcl::PointXYZ p2) {
+	if (p1.x != p2.x)
+		return p1.x > p2.x;
+	else if (p1.y != p2.y)
+		return  p1.y > p2.y;
+	else
+		return p1.z > p2.z;
+}
+
+bool equalPoint(pcl::PointXYZ p1, pcl::PointXYZ p2) {
+	if (p1.x == p2.x && p1.y == p2.y && p1.z == p2.z)
+		return true;
+	return false;
+}
+
+void PCLCore::removeDuplicate(PointCloud::Ptr cloud) {
+	std::sort(cloud->points.begin(), cloud->points.end(), comparePoint);
+	cloud->points.erase(std::unique(cloud->points.begin(), cloud->points.end(), equalPoint), cloud->points.end());
+	cloud->width = cloud->points.size();
+}
 
 int PCLCore::compress(std::string* file_path) {
 	PointCloud::Ptr raw_cloud(new PointCloud);

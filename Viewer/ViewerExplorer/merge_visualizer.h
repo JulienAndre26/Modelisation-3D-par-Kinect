@@ -26,6 +26,7 @@ public:
 	static const int MIN_PICKING_POINTS = 4;
 
 	MergeVisualizer(const std::string& from, const std::string& to, const std::string& into) {
+		finished = false;
 		m_saveTarget = into;
 
 		// loading special stuff for merge visualizer
@@ -52,6 +53,8 @@ private:
 	// Source meshes
 	PolygonMesh::Ptr m_src;
 	PolygonMesh::Ptr m_tgt;
+	// Merge processing
+	bool finished;
 
 	// load meshes to merge
 	void loadMeshes(const std::string& from, const std::string& to);
