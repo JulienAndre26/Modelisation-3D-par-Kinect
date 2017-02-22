@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>952</width>
-    <height>632</height>
+    <height>647</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -193,7 +193,7 @@ QPushButton#btnHelpM:hover {
          </layout>
         </item>
         <item>
-         <widget class="QVTKWidget" name="qvtkWidget3D" native="true">
+         <widget class="QVTKWidget" name="qvtkWidget3D">
           <property name="minimumSize">
            <size>
             <width>300</width>
@@ -360,7 +360,7 @@ QPushButton#btnHelpR:hover {
          </layout>
         </item>
         <item>
-         <widget class="QVTKWidget" name="qvtkWidgetLateral" native="true">
+         <widget class="QVTKWidget" name="qvtkWidgetLateral">
           <property name="minimumSize">
            <size>
             <width>100</width>
@@ -413,7 +413,7 @@ padding: 6px;</string>
          </widget>
         </item>
         <item>
-         <widget class="QVTKWidget" name="qvtkWidgetPlan" native="true">
+         <widget class="QVTKWidget" name="qvtkWidgetPlan">
           <property name="minimumSize">
            <size>
             <width>100</width>
@@ -474,13 +474,13 @@ padding: 6px;</string>
           <property name="minimumSize">
            <size>
             <width>250</width>
-            <height>340</height>
+            <height>300</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
             <width>250</width>
-            <height>340</height>
+            <height>300</height>
            </size>
           </property>
           <widget class="QListWidget" name="listWidget">
@@ -708,20 +708,20 @@ QPushButton#btnBrowse:pressed {
           <property name="minimumSize">
            <size>
             <width>250</width>
-            <height>245</height>
+            <height>300</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
             <width>250</width>
-            <height>225</height>
+            <height>300</height>
            </size>
           </property>
           <widget class="QLabel" name="lbPin1">
            <property name="geometry">
             <rect>
              <x>50</x>
-             <y>110</y>
+             <y>160</y>
              <width>41</width>
              <height>31</height>
             </rect>
@@ -737,7 +737,7 @@ QPushButton#btnBrowse:pressed {
            <property name="geometry">
             <rect>
              <x>130</x>
-             <y>160</y>
+             <y>210</y>
              <width>81</width>
              <height>16</height>
             </rect>
@@ -756,7 +756,7 @@ QPushButton#btnBrowse:pressed {
            <property name="geometry">
             <rect>
              <x>30</x>
-             <y>140</y>
+             <y>190</y>
              <width>81</width>
              <height>16</height>
             </rect>
@@ -775,7 +775,7 @@ QPushButton#btnBrowse:pressed {
            <property name="geometry">
             <rect>
              <x>20</x>
-             <y>40</y>
+             <y>30</y>
              <width>201</width>
              <height>16</height>
             </rect>
@@ -793,8 +793,8 @@ QPushButton#btnBrowse:pressed {
           <widget class="QLabel" name="lbDistance">
            <property name="geometry">
             <rect>
-             <x>50</x>
-             <y>205</y>
+             <x>60</x>
+             <y>255</y>
              <width>210</width>
              <height>20</height>
             </rect>
@@ -813,7 +813,7 @@ QPushButton#btnBrowse:pressed {
            <property name="geometry">
             <rect>
              <x>10</x>
-             <y>198</y>
+             <y>248</y>
              <width>41</width>
              <height>31</height>
             </rect>
@@ -829,7 +829,7 @@ QPushButton#btnBrowse:pressed {
            <property name="geometry">
             <rect>
              <x>30</x>
-             <y>180</y>
+             <y>230</y>
              <width>81</width>
              <height>16</height>
             </rect>
@@ -848,7 +848,7 @@ QPushButton#btnBrowse:pressed {
            <property name="geometry">
             <rect>
              <x>130</x>
-             <y>180</y>
+             <y>230</y>
              <width>81</width>
              <height>16</height>
             </rect>
@@ -867,7 +867,7 @@ QPushButton#btnBrowse:pressed {
            <property name="geometry">
             <rect>
              <x>130</x>
-             <y>140</y>
+             <y>190</y>
              <width>81</width>
              <height>16</height>
             </rect>
@@ -886,7 +886,7 @@ QPushButton#btnBrowse:pressed {
            <property name="geometry">
             <rect>
              <x>30</x>
-             <y>160</y>
+             <y>210</y>
              <width>81</width>
              <height>16</height>
             </rect>
@@ -905,7 +905,7 @@ QPushButton#btnBrowse:pressed {
            <property name="geometry">
             <rect>
              <x>20</x>
-             <y>60</y>
+             <y>50</y>
              <width>201</width>
              <height>21</height>
             </rect>
@@ -924,7 +924,7 @@ QPushButton#btnBrowse:pressed {
            <property name="geometry">
             <rect>
              <x>150</x>
-             <y>110</y>
+             <y>160</y>
              <width>41</width>
              <height>31</height>
             </rect>
@@ -935,6 +935,107 @@ QPushButton#btnBrowse:pressed {
            <property name="alignment">
             <set>Qt::AlignCenter</set>
            </property>
+          </widget>
+          <widget class="QWidget" name="wdgBoxSize" native="true">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>80</y>
+             <width>230</width>
+             <height>70</height>
+            </rect>
+           </property>
+           <widget class="QLabel" name="lbCompass">
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>10</y>
+              <width>50</width>
+              <height>50</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+           <widget class="QLabel" name="lbWidth">
+            <property name="geometry">
+             <rect>
+              <x>120</x>
+              <y>10</y>
+              <width>47</width>
+              <height>13</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Width</string>
+            </property>
+           </widget>
+           <widget class="QLabel" name="lbWidthValue">
+            <property name="geometry">
+             <rect>
+              <x>170</x>
+              <y>10</y>
+              <width>47</width>
+              <height>13</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>0.000</string>
+            </property>
+           </widget>
+           <widget class="QLabel" name="lbHeight">
+            <property name="geometry">
+             <rect>
+              <x>120</x>
+              <y>30</y>
+              <width>47</width>
+              <height>13</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Height</string>
+            </property>
+           </widget>
+           <widget class="QLabel" name="lbHeightValue">
+            <property name="geometry">
+             <rect>
+              <x>170</x>
+              <y>30</y>
+              <width>47</width>
+              <height>13</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>0.000</string>
+            </property>
+           </widget>
+           <widget class="QLabel" name="lbDepthValue">
+            <property name="geometry">
+             <rect>
+              <x>170</x>
+              <y>50</y>
+              <width>47</width>
+              <height>13</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>0.000</string>
+            </property>
+           </widget>
+           <widget class="QLabel" name="lbDepth">
+            <property name="geometry">
+             <rect>
+              <x>120</x>
+              <y>50</y>
+              <width>47</width>
+              <height>13</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Depth</string>
+            </property>
+           </widget>
           </widget>
          </widget>
         </item>

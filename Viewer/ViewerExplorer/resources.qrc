@@ -25,6 +25,7 @@
         <file alias="m_scroll">resources/icons/mouse_scroll.png</file>
         <file alias="leftarrow">resources/icons/leftarrow.png</file>
         <file alias="rightarrow">resources/icons/rightarrow.png</file>
+        <file alias="compass">resources/icons/compass.png</file>
     </qresource>
     <qresource prefix="/gifs">
         <file alias="init">resources/gifs/init.gif</file>

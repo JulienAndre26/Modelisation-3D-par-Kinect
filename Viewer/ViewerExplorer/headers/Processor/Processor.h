@@ -23,7 +23,8 @@ public:
 	Status merge(const string& from, const string& to, const string& into);
 	Status computeMetrics(float x1, float y1, float z1, float x2, float y2, float z2);
 	static std::map<std::string, double> computeBoundingBox(pcl::PolygonMesh::Ptr mesh);
-	
+	static std::map<std::string, double> computeBoundingBox(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
+	static std::map<std::string, double> computeBoundingBox(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud);
 	//void flatten(pcl::PointCloud<pcl::PointXYZRGB>::Ptr src, pcl::PointCloud<pcl::PointXYZRGB>::Ptr src_projected, bool isLateral);
 	//static void flattenMesh(pcl::PolygonMesh::Ptr src, pcl::PolygonMesh::Ptr src_projected, bool isLateral);
 };

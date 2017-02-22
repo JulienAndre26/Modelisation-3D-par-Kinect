@@ -38,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->lbDistanceIcon->setVisible(false);
 	ui->btnExitFS->setVisible(false);
 	ui->btnHelpM->setVisible(false);
+	ui->wdgBoxSize->setVisible(false);
 
 	// Alignements
 	ui->gif3D->setAlignment(Qt::AlignCenter);
@@ -58,6 +59,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	assignIcon(ui->lbPin1, std::string(":/icons/pin"));
 	assignIcon(ui->lbPin2, std::string(":/icons/pin"));
 	assignIcon(ui->lbDistanceIcon, std::string(":/icons/distance"));
+	assignIcon(ui->lbCompass, std::string(":/icons/compass"));
 
 	ui->btnBrowse->setIcon(QIcon(":/icons/browse"));
 	ui->btnShow->setIcon(QIcon(":/icons/show"));
@@ -168,6 +170,8 @@ void MainWindow::importFileOpened(QString fileName) {
 		ui->lbLoadedFile->setText("Please open a file");
 		ui->btnResetCamera->setEnabled(false);
 
+		ui->wdgBoxSize->setVisible(false);
+
 		bIsWidgetActive = false;
 		setFullscreenActive(this->bIsFullscreenActive);
 	}
@@ -229,8 +233,7 @@ void MainWindow::on_btnMerge_clicked() {
 void MainWindow::onMerge() {
 	if (qslFilenameList.size() < 2) {
 		QMessageBox::warning(this, "Empty list", "Please select .import file with at least 2 models");
-	}
-	else {
+	} else {
 		ui->progressBar->setVisible(true);
 		ui->progressBar->setValue(0);
 
@@ -342,6 +345,16 @@ void MainWindow::onLoad(QString path) {
 }
 
 
+void MainWindow::updateBoundingBoxLabels(double x, double y, double z) {
+	ui->lbWidthValue->setText(QString::number(x, 'f', 2) + METER);
+	ui->lbHeightValue->setText(QString::number(y, 'f', 2) + METER);
+	ui->lbDepthValue->setText(QString::number(z, 'f', 2) + METER);
+}
+
+void MainWindow::displayBoxSize() {
+	ui->wdgBoxSize->setVisible(true);
+}
+
 void MainWindow::processLoadThread(MainWindow * mw) {
 	cout << "LOADING MESH..." << szFilePath << endl;
 
@@ -349,18 +362,15 @@ void MainWindow::processLoadThread(MainWindow * mw) {
 		PointCloudColored::Ptr cloud(new PointCloudColored());
 		IOPLY::load(szFilePath, cloud);
 		launchOpenThreads(cloud, mw);
-	}
-	else {
+		std::map<std::string, double> map = Processor::computeBoundingBox(cloud);
+		updateBoundingBoxLabels(map["x"], map["y"], map["z"]);
+	} else {
 		pcl::PolygonMesh::Ptr mesh(new PolygonMesh());
 		IOPLY::load(szFilePath, mesh);
 		launchOpenThreads(mesh, mw);
+		std::map<std::string, double> map = Processor::computeBoundingBox(mesh);
+		updateBoundingBoxLabels(map["x"], map["y"], map["z"]);
 	}
-
-	//std::map<std::string, double> map = Processor::computeBoundingBox(mesh);
-
-	//std::cout << map["x"] << std::endl;
-	//std::cout << map["y"] << std::endl;
-	//std::cout << map["z"] << std::endl;
 
 	if (qth3D->isRunning()) {
 		qth3D->wait();
@@ -417,8 +427,7 @@ void MainWindow::show2D(pcl::PolygonMesh::Ptr mesh, bool bPlanView) {
 	if (bPlanView) {
 		ui->qvtkWidgetPlan->SetRenderWindow(renderWindow);
 		resetWidgetCamera(ui->qvtkWidgetPlan, xPlan, yPlan, zPlan, 1, 0, 0);
-	}
-	else {
+	} else {
 		ui->qvtkWidgetLateral->SetRenderWindow(renderWindow);
 		resetWidgetCamera(ui->qvtkWidgetLateral, xLateral, yLateral, zLateral);
 	}
@@ -436,8 +445,7 @@ void MainWindow::show2D(PointCloudColored::Ptr cloud, bool bPlanView) {
 	if (bPlanView) {
 		ui->qvtkWidgetPlan->SetRenderWindow(renderWindow);
 		resetWidgetCamera(ui->qvtkWidgetPlan, xPlan, yPlan, zPlan, 1, 0, 0);
-	}
-	else {
+	} else {
 		ui->qvtkWidgetLateral->SetRenderWindow(renderWindow);
 		resetWidgetCamera(ui->qvtkWidgetLateral, xLateral, yLateral, zLateral);
 	}

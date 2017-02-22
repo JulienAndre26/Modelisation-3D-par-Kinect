@@ -50,6 +50,8 @@ VTK_MODULE_INIT(vtkInteractionStyle)
 #define METRIC_P1		1
 #define METRIC_P2		2
 
+#define METER " m"
+
 namespace Ui {
 class MainWindow;
 }
@@ -82,6 +84,8 @@ public:
 
 	void updateMetrics(int nPoint, float x, float y, float z);
 	void updateMetrics(double distance);
+
+	void displayBoxSize();
 
 	void launchOpenThreads(PolygonMesh::Ptr mesh, MainWindow * mw);
 	void launchOpenThreads(PointCloudColored::Ptr cloud, MainWindow * mw);
@@ -157,6 +161,7 @@ private:
 	void showHelp();
 	void assignIcon(QPushButton* button, std::string& resource);
 	void assignIcon(QLabel * label, std::string& resource);
+	void updateBoundingBoxLabels(double x, double y, double z);
 };
 
 enum CameraPositionPlan {
