@@ -371,10 +371,8 @@ void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
 
 void MainWindow::onLoad(QString path)
 {
-	if (ui->lbLoadedFile->text().compare("Please open a file", Qt::CaseInsensitive) == 0) {
-		ui->btnLeftPlan->setEnabled(qslFilenameList.size() > 1);
-		ui->btnRightPlan->setEnabled(qslFilenameList.size() > 1);
-	}
+	ui->btnLeftPlan->setEnabled(false);
+	ui->btnRightPlan->setEnabled(false);
 
 	if (QString::compare(path, qsLoadedFile, Qt::CaseInsensitive) == 0)
 		return;
@@ -579,7 +577,7 @@ QMovie * MainWindow::getMovie(int nStatus)
 		qm = new QMovie(":/gifs/load");
 		break;
 	case MOVIE_MERGE:
-		qm = new QMovie(":/gifs/load");
+		qm = new QMovie(":/gifs/merge");
 		break;
 	default:
 		qm = nullptr;
@@ -648,6 +646,13 @@ void MainWindow::setAllViewDisplay(bool bShowWidget, int nStatus)
 	setViewDisplay(VIEW_3D, bShowWidget, nStatus);
 	setViewDisplay(VIEW_LATERAL, bShowWidget, nStatus);
 	setViewDisplay(VIEW_PLAN, bShowWidget, nStatus);
+
+	if (bShowWidget)
+	{
+		ui->btnLeftPlan->setEnabled(qslFilenameList.size() > 1);
+		ui->btnRightPlan->setEnabled(qslFilenameList.size() > 1);
+	}
+	
 }
 
 void MainWindow::processView(pcl::PolygonMesh::Ptr mesh, int nView)
