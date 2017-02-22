@@ -58,7 +58,6 @@ void PCLCore::merge(const std::string& from, const std::string& to, const std::s
 
 void PCLCore::saveMerge(PointCloud::Ptr src_transformed, PolygonMesh::Ptr tgt_mesh, const std::string& into) {
 	PointCloud::Ptr tgt_dotted(new PointCloud);
-	PolygonMesh::Ptr resulting_mesh(new PolygonMesh);
 	// Remove source duplication
 	PCLCore::removeDuplicate(src_transformed);
 	// Add tgt points
@@ -69,8 +68,12 @@ void PCLCore::saveMerge(PointCloud::Ptr src_transformed, PolygonMesh::Ptr tgt_me
 	*src_transformed += *tgt_dotted;
 	// Remove result duplication (may append)
 	PCLCore::removeDuplicate(src_transformed);
+
+	PolygonMesh::Ptr resulting_mesh(new PolygonMesh);
+	pcl::toROSMsg(*src_transformed, resulting_mesh->cloud);
+
 	// Save merged points
-	IOPLY::save(into.c_str(), src_transformed);
+	IOPLY::save(into.c_str(), resulting_mesh);
 }
 
 // sorting functions

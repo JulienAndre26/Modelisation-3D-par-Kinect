@@ -142,8 +142,8 @@ std::map<std::string, double> Processor::computeBoundingBox(pcl::PointCloud<pcl:
 }
 
 std::map<std::string, double> Processor::computeBoundingBox(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud) {
-	pcl::PointCloud<pcl::PointXYZ> noColor;
-	pcl::copyPointCloud(*cloud, noColor);
-	pcl::PointCloud<pcl::PointXYZ>::Ptr ptr(&noColor);
-	return Processor::computeBoundingBox(ptr);
+	PointCloud::Ptr noColor(new PointCloud());
+	pcl::copyPointCloud(*cloud, *noColor);
+	//pcl::PointCloud<pcl::PointXYZ>::Ptr ptr(&noColor);
+	return Processor::computeBoundingBox(noColor);
 }
