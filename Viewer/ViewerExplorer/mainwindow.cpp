@@ -365,13 +365,13 @@ void MainWindow::processLoadThread(MainWindow * mw) {
 		IOPLY::load(szFilePath, cloud);
 		launchOpenThreads(cloud, mw);
 		std::map<std::string, double>* map = Processor::computeBoundingBox(cloud);
-		updateBoundingBoxLabels((*map)["x"], (*map)["y"], (*map)["z"]);
+		updateBoundingBoxLabels((*map)["y"], (*map)["x"], (*map)["z"]);
 	} else {
 		pcl::PolygonMesh::Ptr mesh(new PolygonMesh());
 		IOPLY::load(szFilePath, mesh);
 		launchOpenThreads(mesh, mw);
 		std::map<std::string, double>* map = Processor::computeBoundingBox(mesh);
-		updateBoundingBoxLabels((*map)["x"], (*map)["y"], (*map)["z"]);
+		updateBoundingBoxLabels((*map)["y"], (*map)["x"], (*map)["z"]);
 	}
 
 	if (qth3D->isRunning()) {

@@ -193,7 +193,7 @@ QPushButton#btnHelpM:hover {
          </layout>
         </item>
         <item>
-         <widget class="QVTKWidget" name="qvtkWidget3D" native="true">
+         <widget class="QVTKWidget" name="qvtkWidget3D">
           <property name="minimumSize">
            <size>
             <width>300</width>
@@ -360,7 +360,7 @@ QPushButton#btnHelpR:hover {
          </layout>
         </item>
         <item>
-         <widget class="QVTKWidget" name="qvtkWidgetLateral" native="true">
+         <widget class="QVTKWidget" name="qvtkWidgetLateral">
           <property name="minimumSize">
            <size>
             <width>100</width>
@@ -413,7 +413,7 @@ padding: 6px;</string>
          </widget>
         </item>
         <item>
-         <widget class="QVTKWidget" name="qvtkWidgetPlan" native="true">
+         <widget class="QVTKWidget" name="qvtkWidgetPlan">
           <property name="minimumSize">
            <size>
             <width>100</width>
@@ -1006,9 +1006,9 @@ QPushButton#btnBrowse:pressed {
             <property name="geometry">
              <rect>
               <x>100</x>
-              <y>30</y>
+              <y>29</y>
               <width>47</width>
-              <height>13</height>
+              <height>16</height>
              </rect>
             </property>
             <property name="font">
@@ -1063,9 +1063,9 @@ QPushButton#btnBrowse:pressed {
             <property name="geometry">
              <rect>
               <x>100</x>
-              <y>50</y>
+              <y>49</y>
               <width>47</width>
-              <height>13</height>
+              <height>16</height>
              </rect>
             </property>
             <property name="font">
