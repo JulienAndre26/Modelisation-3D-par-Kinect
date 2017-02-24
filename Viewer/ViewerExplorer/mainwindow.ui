@@ -1079,6 +1079,19 @@ QPushButton#btnBrowse:pressed {
             </property>
            </widget>
           </widget>
+          <widget class="QLabel" name="gifDimensions">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>223</y>
+             <width>231</width>
+             <height>71</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
          </widget>
         </item>
        </layout>

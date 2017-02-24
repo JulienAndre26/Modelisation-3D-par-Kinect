@@ -31,5 +31,6 @@
         <file alias="init">resources/gifs/init.gif</file>
         <file alias="load">resources/gifs/load.gif</file>
         <file alias="merge">resources/gifs/merge.gif</file>
+        <file alias="dimensions">resources/gifs/dimensions.gif</file>
     </qresource>
 </RCC>

@@ -39,11 +39,13 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->btnExitFS->setVisible(false);
 	ui->btnHelpM->setVisible(false);
 	ui->wdgBoxSize->setVisible(false);
+	ui->gifDimensions->setVisible(false);
 
 	// Alignements
 	ui->gif3D->setAlignment(Qt::AlignCenter);
 	ui->gifLateral->setAlignment(Qt::AlignCenter);
 	ui->gifPlan->setAlignment(Qt::AlignCenter);
+	ui->gifDimensions->setAlignment(Qt::AlignCenter);
 
 	// Icons
 	assignIcon(ui->btnLeftPlan, std::string(":/icons/leftarrow"));
@@ -71,6 +73,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->gifLateral->setMovie(qmInit);
 	ui->gifPlan->setMovie(qmInit);
 	qmInit->start();
+
+	qmDimensions = new QMovie(":/gifs/dimensions");
+	ui->gifDimensions->setMovie(qmDimensions);
+	qmDimensions->start();
 
 	// Mutex
 	vmuRenderLock = vtkMutexLock::New();
@@ -171,6 +177,7 @@ void MainWindow::importFileOpened(QString fileName) {
 		ui->btnResetCamera->setEnabled(false);
 
 		ui->wdgBoxSize->setVisible(false);
+		ui->gifDimensions->setVisible(false);
 
 		bIsWidgetActive = false;
 		setFullscreenActive(this->bIsFullscreenActive);
@@ -323,6 +330,7 @@ void MainWindow::onLoad(QString path) {
 	ui->btnLeftPlan->setEnabled(false);
 	ui->btnRightPlan->setEnabled(false);
 	ui->wdgBoxSize->setVisible(false);
+	ui->gifDimensions->setVisible(true);
 	hideMetrics();
 
 	if (QString::compare(path, qsLoadedFile, Qt::CaseInsensitive) == 0)
@@ -355,6 +363,7 @@ void MainWindow::updateBoundingBoxLabels(double x, double y, double z) {
 
 void MainWindow::displayBoxSize() {
 	ui->wdgBoxSize->setVisible(true);
+	ui->gifDimensions->setVisible(false);
 }
 
 void MainWindow::processLoadThread(MainWindow * mw) {
@@ -390,31 +399,46 @@ void MainWindow::processLoadThread(MainWindow * mw) {
 	}
 }
 
+void MainWindow::t3DFinished()
+{
+	setViewDisplay(VIEW_3D, true, NULL);
+}
+
+void MainWindow::t2DLFinished()
+{
+	setViewDisplay(VIEW_LATERAL, true, NULL);
+}
+
+void MainWindow::t2DPFinished()
+{
+	setViewDisplay(VIEW_PLAN, true, NULL);
+}
+
 void MainWindow::launchOpenThreads(pcl::PolygonMesh::Ptr mesh, MainWindow * mw) {
 	qth3D = new ThreadOpenMesh(mw, mesh, VIEW_3D);
-	QObject::connect(qth3D, SIGNAL(finished()), qth3D, SLOT(onEnd()));
+	QObject::connect(qth3D, SIGNAL(finished()), this, SLOT(t3DFinished()));
 	qth3D->start();
 
 	qthLateral = new ThreadOpenMesh(mw, mesh, VIEW_LATERAL);
-	QObject::connect(qthLateral, SIGNAL(finished()), qthLateral, SLOT(onEnd()));
+	QObject::connect(qthLateral, SIGNAL(finished()), this, SLOT(t2DLFinished()));
 	qthLateral->start();
 
 	qthPlan = new ThreadOpenMesh(mw, mesh, VIEW_PLAN);
-	QObject::connect(qthPlan, SIGNAL(finished()), qthPlan, SLOT(onEnd()));
+	QObject::connect(qthPlan, SIGNAL(finished()), this, SLOT(t2DPFinished()));
 	qthPlan->start();
 }
 
 void MainWindow::launchOpenThreads(PointCloudColored::Ptr cloud, MainWindow * mw) {
 	qth3D = new ThreadOpenPC(mw, cloud, VIEW_3D);
-	QObject::connect(qth3D, SIGNAL(finished()), qth3D, SLOT(onEnd()));
+	QObject::connect(qth3D, SIGNAL(finished()), this, SLOT(t3DFinished()));
 	qth3D->start();
 
 	qthLateral = new ThreadOpenPC(mw, cloud, VIEW_LATERAL);
-	QObject::connect(qthLateral, SIGNAL(finished()), qthLateral, SLOT(onEnd()));
+	QObject::connect(qthLateral, SIGNAL(finished()), this, SLOT(t2DLFinished()));
 	qthLateral->start();
 
 	qthPlan = new ThreadOpenPC(mw, cloud, VIEW_PLAN);
-	QObject::connect(qthPlan, SIGNAL(finished()), qthPlan, SLOT(onEnd()));
+	QObject::connect(qthPlan, SIGNAL(finished()), this, SLOT(t2DPFinished()));
 	qthPlan->start();
 }
 

@@ -18,7 +18,7 @@ public:
 		void onEnd()
 	{
 		mw->displayBoxSize();
-		mw->setAllViewDisplay(true, NULL);
+		//mw->setAllViewDisplay(true, NULL);
 		cout << "Thread Load finished" << endl;
 	}
 

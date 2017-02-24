@@ -95,6 +95,12 @@ public:
 	QMutex qmuReduceLock;
 
 	static constexpr const char* MERGE_FILE_NAME() { return "mergedPC.ply"; }
+
+public slots:
+	void t3DFinished();
+	void t2DLFinished();
+	void t2DPFinished();
+
 private slots:
     void on_btnBrowse_clicked();
     void on_btnMerge_clicked();
@@ -111,12 +117,12 @@ private slots:
 
 	void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
 	void on_listWidget_itemClicked(QListWidgetItem *item);
-
 	
 private:
     Ui::MainWindow *ui;
 
 	QMovie * qmInit;
+	QMovie * qmDimensions;
 
 	bool bIsMeshColorized = false;
 	bool bIsFullscreenActive = false;
