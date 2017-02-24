@@ -126,7 +126,6 @@ void MergeVisualizer::initVisualizer() {
 		PointCloud::Ptr tmp(new PointCloud);
 		for (int i = 0; i < m_srcPCC->size(); i++)
 			tmp->push_back(PointT(m_srcPCC->at(i).x, m_srcPCC->at(i).y, m_srcPCC->at(i).z));
-		std::cout << "TMP SIZE : " << tmp->size() << std::endl;
 		m_src_args.viewerPtr->addPointCloud(tmp, "src");
 	} else { // if faces
 		m_src_args.viewerPtr->addPolygonMesh(*m_src, "src"); 
