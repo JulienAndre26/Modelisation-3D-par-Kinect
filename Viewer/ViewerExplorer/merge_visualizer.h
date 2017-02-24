@@ -1,6 +1,7 @@
 #pragma once
 
 #include "custom_typedef.h"
+#include "mainwindow.h"
 #include <IOPLY.h>
 #include <PCLCore.h>
 #include <stdio.h>
@@ -27,6 +28,7 @@ public:
 
 	MergeVisualizer(const std::string& from, const std::string& to, const std::string& into) {
 		finished = false;
+		m_loadSource = from;
 		m_saveTarget = into;
 
 		// loading special stuff for merge visualizer
@@ -45,12 +47,15 @@ public:
 
 	~MergeVisualizer() {}
 private:
+	// source name
+	std::string m_loadSource;
 	// save target path
 	std::string m_saveTarget;
 	// callback structs for both visualizers
 	_merge_args m_src_args;
 	_merge_args m_tgt_args;
 	// Source meshes
+	PointCloudColored::Ptr m_srcPCC;
 	PolygonMesh::Ptr m_src;
 	PolygonMesh::Ptr m_tgt;
 	// Merge processing

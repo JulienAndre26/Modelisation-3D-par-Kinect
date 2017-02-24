@@ -360,7 +360,7 @@ void MainWindow::displayBoxSize() {
 void MainWindow::processLoadThread(MainWindow * mw) {
 	cout << "LOADING MESH..." << szFilePath << endl;
 
-	if (string(szFilePath).find("mergedPC.ply") != std::string::npos) {
+	if (string(szFilePath).find(MainWindow::MERGE_FILE_NAME()) != std::string::npos) {
 		PointCloudColored::Ptr cloud(new PointCloudColored());
 		IOPLY::load(szFilePath, cloud);
 		launchOpenThreads(cloud, mw);

@@ -163,7 +163,6 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
     <ClCompile Include="merge_visualizer.cpp" />
-    <ClCompile Include="Pairwise.cpp" />
     <ClCompile Include="sources\io\IOPLY.cpp" />
     <ClCompile Include="sources\io\IOXML.cpp" />
     <ClCompile Include="sources\Processor\core\PCLCore.cpp" />

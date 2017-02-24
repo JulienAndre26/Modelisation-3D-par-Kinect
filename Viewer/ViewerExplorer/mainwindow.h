@@ -94,6 +94,7 @@ public:
 	vtkMutexLock * vmuRenderLock;
 	QMutex qmuReduceLock;
 
+	static constexpr const char* MERGE_FILE_NAME() { return "mergedPC.ply"; }
 private slots:
     void on_btnBrowse_clicked();
     void on_btnMerge_clicked();

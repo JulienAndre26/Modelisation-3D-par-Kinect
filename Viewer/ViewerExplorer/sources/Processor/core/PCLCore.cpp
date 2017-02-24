@@ -52,6 +52,13 @@ void PCLCore::transformMesh(PolygonMesh::Ptr src_mesh, PointCloud::Ptr src_dotte
 	// pcl::transformPointCloud(src_dotted, src_dotted, affineRigidTransformation(src_dotted.makeShared(), tgt_dotted.makeShared()));
 }
 
+void PCLCore::transformMesh(PointCloudColored::Ptr src_mesh, PointCloud::Ptr src_dotted, PointCloud::Ptr src_pick, PointCloud::Ptr tgt_pick) {
+	for (int i = 0; i < src_mesh->size(); i++)
+		src_dotted->push_back(PointT(src_mesh->at(i).x, src_mesh->at(i).y, src_mesh->at(i).z));
+	
+	pcl::transformPointCloud(*src_dotted, *src_dotted, PCLCore::getRigidTransformation(src_pick, tgt_pick));
+}
+
 void PCLCore::merge(const std::string& from, const std::string& to, const std::string& into) {
 	MergeVisualizer(from, to, into);
 }

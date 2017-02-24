@@ -1,9 +1,14 @@
 #include "merge_visualizer.h"
 
 void MergeVisualizer::loadMeshes(const std::string& from, const std::string& to) {
-	m_src = PolygonMesh::Ptr(new PolygonMesh);
+	if (m_loadSource.find(MainWindow::MERGE_FILE_NAME()) != std::string::npos) {// if no face
+		m_srcPCC = PointCloudColored::Ptr(new PointCloudColored);
+		IOPLY::load(from.c_str(), m_srcPCC);
+	} else { // if faces
+		m_src = PolygonMesh::Ptr(new PolygonMesh);
+		IOPLY::load(from.c_str(), m_src);
+	}
 	m_tgt = PolygonMesh::Ptr(new PolygonMesh);
-	IOPLY::load(from.c_str(), m_src);
 	IOPLY::load(to.c_str(), m_tgt);
 }
 
@@ -72,7 +77,10 @@ void pointPickingEventOccurred(const pcl::visualization::PointPickingEvent &even
 void MergeVisualizer::displayResult() {
 	PointCloud::Ptr src_dotted(new PointCloud);
 	// transform point cloud
-	PCLCore::transformMesh(m_src, src_dotted, m_src_args.clicked_points_3d, m_tgt_args.clicked_points_3d);
+	if (m_loadSource.find(MainWindow::MERGE_FILE_NAME()) != std::string::npos) // if no face
+		PCLCore::transformMesh(m_srcPCC, src_dotted, m_src_args.clicked_points_3d, m_tgt_args.clicked_points_3d);
+	else // faces
+		PCLCore::transformMesh(m_src, src_dotted, m_src_args.clicked_points_3d, m_tgt_args.clicked_points_3d);
 	// Save resulting merge
 	PCLCore::saveMerge(src_dotted, m_tgt, m_saveTarget);
 	std::cout << "[Merge] Saved !" << std::endl;
@@ -114,7 +122,15 @@ void handleKeyboardEvents(const pcl::visualization::KeyboardEvent &event, void* 
 
 void MergeVisualizer::initVisualizer() {
 	// view meshes to pick points
-	m_src_args.viewerPtr->addPolygonMesh(*m_src, "src");
+	if (m_loadSource.find(MainWindow::MERGE_FILE_NAME()) != std::string::npos) { // if no face
+		PointCloud::Ptr tmp(new PointCloud);
+		for (int i = 0; i < m_srcPCC->size(); i++)
+			tmp->push_back(PointT(m_srcPCC->at(i).x, m_srcPCC->at(i).y, m_srcPCC->at(i).z));
+		std::cout << "TMP SIZE : " << tmp->size() << std::endl;
+		m_src_args.viewerPtr->addPointCloud(tmp, "src");
+	} else { // if faces
+		m_src_args.viewerPtr->addPolygonMesh(*m_src, "src"); 
+	}
 	m_tgt_args.viewerPtr->addPolygonMesh(*m_tgt, "tgt");
 
 	// Adding empty points clouds to each viewer
