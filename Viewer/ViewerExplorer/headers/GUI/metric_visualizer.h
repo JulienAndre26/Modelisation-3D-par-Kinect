@@ -85,7 +85,7 @@ private:
 public:
 
 	MetricVisualizer(PointCloudColored::Ptr src, MainWindow * mw) 
-		: Visualizer("", false) 
+		: Visualizer() 
 	{
 		init(mw);
 
