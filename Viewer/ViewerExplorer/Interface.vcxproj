@@ -161,25 +161,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="mainwindow.cpp" />
-    <ClCompile Include="merge_visualizer.cpp" />
+    <ClCompile Include="sources\GUI\mainwindow.cpp" />
+    <ClCompile Include="sources\GUI\merge_visualizer.cpp" />
     <ClCompile Include="sources\io\IOPLY.cpp" />
     <ClCompile Include="sources\io\IOXML.cpp" />
     <ClCompile Include="sources\Processor\core\PCLCore.cpp" />
     <ClCompile Include="sources\Processor\Processor.cpp" />
-    <ClCompile Include="sources\TestPCL.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="mainwindow.h">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DNDEBUG -DQT_XML_LIB -DQT_XMLPATTERNS_LIB  "-I$(PCL_ROOT)\3rdParty\VTK\include\vtk-7.0" "-I$(PCL_ROOT)\include\pcl-1.8" "-I$(PCL_ROOT)\3rdParty\Boost\include\boost-1_61" "-I$(PCL_ROOT)\3rdParty\Eigen\eigen3" "-I$(PCL_ROOT)\3rdParty\FLANN\include" "-I$(PCL_ROOT)\3rdParty\Qhull\include" "-I." "-I.\release" "-I$(QTDIR)\mkspecs\win32-msvc2015" "-I.\GeneratedFiles" "-I.\headers\GUI" "-I.\headers\io" "-I.\headers\Processor" "-I.\headers\Processor\core" "-I.\headers" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtUiTools" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtQuickWidgets" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\Qt3DCore" "-I$(QTDIR)\include\Qt3DRender" "-I$(QTDIR)\include\Qt3DInput" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing mainwindow.h...</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_XML_LIB -DQT_XMLPATTERNS_LIB  "-I$(PCL_ROOT)\3rdParty\VTK\include\vtk-7.0" "-I$(PCL_ROOT)\include\pcl-1.8" "-I$(PCL_ROOT)\3rdParty\Boost\include\boost-1_61" "-I$(PCL_ROOT)\3rdParty\Eigen\eigen3" "-I$(PCL_ROOT)\3rdParty\FLANN\include" "-I$(PCL_ROOT)\3rdParty\Qhull\include" "-I." "-I.\debug" "-I$(QTDIR)\mkspecs\win32-msvc2015" "-I.\GeneratedFiles" "-I.\headers\GUI" "-I.\headers\io" "-I.\headers\Processor" "-I.\headers\Processor\core" "-I.\headers" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtUiTools" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtQuickWidgets" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\Qt3DCore" "-I$(QTDIR)\include\Qt3DRender" "-I$(QTDIR)\include\Qt3DInput" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing mainwindow.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="mainwindow.ui">
@@ -196,19 +183,29 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="merge_visualizer.h" />
-    <CustomBuild Include="custom_qthreads.h">
+    <ClInclude Include="GeneratedFiles\ui_mainwindow.h" />
+    <ClInclude Include="headers\custom_typedef.h" />
+    <CustomBuild Include="headers\GUI\custom_qthreads.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing custom_qthreads.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_XML_LIB -DQT_XMLPATTERNS_LIB  "-I$(PCL_ROOT)\3rdParty\VTK\include\vtk-7.0" "-I$(PCL_ROOT)\include\pcl-1.8" "-I$(PCL_ROOT)\3rdParty\Boost\include\boost-1_61" "-I$(PCL_ROOT)\3rdParty\Eigen\eigen3" "-I$(PCL_ROOT)\3rdParty\FLANN\include" "-I$(PCL_ROOT)\3rdParty\Qhull\include" "-I." "-I.\debug" "-I$(QTDIR)\mkspecs\win32-msvc2015" "-I.\GeneratedFiles" "-I.\headers\GUI" "-I.\headers\io" "-I.\headers\Processor" "-I.\headers\Processor\core" "-I.\headers" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtUiTools" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtQuickWidgets" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\Qt3DCore" "-I$(QTDIR)\include\Qt3DRender" "-I$(QTDIR)\include\Qt3DInput" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_XML_LIB -DQT_XMLPATTERNS_LIB "-I$(PCL_ROOT)\3rdParty\VTK\include\vtk-7.0" "-I$(PCL_ROOT)\include\pcl-1.8" "-I$(PCL_ROOT)\3rdParty\Boost\include\boost-1_61" "-I$(PCL_ROOT)\3rdParty\Eigen\eigen3" "-I$(PCL_ROOT)\3rdParty\FLANN\include" "-I$(PCL_ROOT)\3rdParty\Qhull\include" "-I." "-I.\debug" "-I$(QTDIR)\mkspecs\win32-msvc2015" "-I.\GeneratedFiles" "-I.\headers\GUI" "-I.\headers\io" "-I.\headers\Processor" "-I.\headers\Processor\core" "-I.\headers" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtUiTools" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtQuickWidgets" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\Qt3DCore" "-I$(QTDIR)\include\Qt3DRender" "-I$(QTDIR)\include\Qt3DInput" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing custom_qthreads.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DNDEBUG -DQT_XML_LIB -DQT_XMLPATTERNS_LIB  "-I$(PCL_ROOT)\3rdParty\VTK\include\vtk-7.0" "-I$(PCL_ROOT)\include\pcl-1.8" "-I$(PCL_ROOT)\3rdParty\Boost\include\boost-1_61" "-I$(PCL_ROOT)\3rdParty\Eigen\eigen3" "-I$(PCL_ROOT)\3rdParty\FLANN\include" "-I$(PCL_ROOT)\3rdParty\Qhull\include" "-I." "-I.\release" "-I$(QTDIR)\mkspecs\win32-msvc2015" "-I.\GeneratedFiles" "-I.\headers\GUI" "-I.\headers\io" "-I.\headers\Processor" "-I.\headers\Processor\core" "-I.\headers" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtUiTools" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtQuickWidgets" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\Qt3DCore" "-I$(QTDIR)\include\Qt3DRender" "-I$(QTDIR)\include\Qt3DInput" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DNDEBUG -DQT_XML_LIB -DQT_XMLPATTERNS_LIB "-I$(PCL_ROOT)\3rdParty\VTK\include\vtk-7.0" "-I$(PCL_ROOT)\include\pcl-1.8" "-I$(PCL_ROOT)\3rdParty\Boost\include\boost-1_61" "-I$(PCL_ROOT)\3rdParty\Eigen\eigen3" "-I$(PCL_ROOT)\3rdParty\FLANN\include" "-I$(PCL_ROOT)\3rdParty\Qhull\include" "-I." "-I.\release" "-I$(QTDIR)\mkspecs\win32-msvc2015" "-I.\GeneratedFiles" "-I.\headers\GUI" "-I.\headers\io" "-I.\headers\Processor" "-I.\headers\Processor\core" "-I.\headers" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtUiTools" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtQuickWidgets" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\Qt3DCore" "-I$(QTDIR)\include\Qt3DRender" "-I$(QTDIR)\include\Qt3DInput" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns"</Command>
     </CustomBuild>
-    <ClInclude Include="GeneratedFiles\ui_mainwindow.h" />
-    <ClInclude Include="headers\custom_typedef.h" />
+    <CustomBuild Include="headers\GUI\mainwindow.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing mainwindow.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_XML_LIB -DQT_XMLPATTERNS_LIB "-I$(PCL_ROOT)\3rdParty\VTK\include\vtk-7.0" "-I$(PCL_ROOT)\include\pcl-1.8" "-I$(PCL_ROOT)\3rdParty\Boost\include\boost-1_61" "-I$(PCL_ROOT)\3rdParty\Eigen\eigen3" "-I$(PCL_ROOT)\3rdParty\FLANN\include" "-I$(PCL_ROOT)\3rdParty\Qhull\include" "-I." "-I.\debug" "-I$(QTDIR)\mkspecs\win32-msvc2015" "-I.\GeneratedFiles" "-I.\headers\GUI" "-I.\headers\io" "-I.\headers\Processor" "-I.\headers\Processor\core" "-I.\headers" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtUiTools" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtQuickWidgets" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\Qt3DCore" "-I$(QTDIR)\include\Qt3DRender" "-I$(QTDIR)\include\Qt3DInput" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing mainwindow.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DQT_NO_DEBUG -DNDEBUG -DQT_XML_LIB -DQT_XMLPATTERNS_LIB "-I$(PCL_ROOT)\3rdParty\VTK\include\vtk-7.0" "-I$(PCL_ROOT)\include\pcl-1.8" "-I$(PCL_ROOT)\3rdParty\Boost\include\boost-1_61" "-I$(PCL_ROOT)\3rdParty\Eigen\eigen3" "-I$(PCL_ROOT)\3rdParty\FLANN\include" "-I$(PCL_ROOT)\3rdParty\Qhull\include" "-I." "-I.\release" "-I$(QTDIR)\mkspecs\win32-msvc2015" "-I.\GeneratedFiles" "-I.\headers\GUI" "-I.\headers\io" "-I.\headers\Processor" "-I.\headers\Processor\core" "-I.\headers" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtUiTools" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtQuickWidgets" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\Qt3DCore" "-I$(QTDIR)\include\Qt3DRender" "-I$(QTDIR)\include\Qt3DInput" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\include\QtXmlPatterns"</Command>
+    </CustomBuild>
+    <ClInclude Include="headers\GUI\merge_visualizer.h" />
     <ClInclude Include="headers\GUI\metric_visualizer.h" />
     <ClInclude Include="headers\io\IIO.h" />
     <ClInclude Include="headers\io\IOPLY.h" />
