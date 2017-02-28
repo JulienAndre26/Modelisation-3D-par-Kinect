@@ -4,7 +4,7 @@
 #include <fstream>
 
 /*
-* Abstract class to 
+* Abstract class to read and write file from the disk.
 */
 class IIO {
 

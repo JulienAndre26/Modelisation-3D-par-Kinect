@@ -13,6 +13,12 @@ typedef struct {
 	char * message;
 } Status;
 
+
+
+/*
+Processor interface to access the core from the UI.
+*/
+
 class IProcessor {
 private:
 

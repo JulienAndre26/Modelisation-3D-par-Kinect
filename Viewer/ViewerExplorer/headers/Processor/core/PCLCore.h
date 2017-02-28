@@ -11,6 +11,11 @@
 #include <pcl/common/transformation_from_correspondences.h>
 #include <pcl/filters/approximate_voxel_grid.h>
 
+
+/*
+Implementation of the ICore interface, to merge plan.
+*/
+
 class PCLCore : public ICore {
 private:
 	int someattribute;

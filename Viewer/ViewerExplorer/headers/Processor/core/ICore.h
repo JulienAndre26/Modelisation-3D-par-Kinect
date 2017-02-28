@@ -2,6 +2,10 @@
 
 #include <string>
 
+/*
+Interface to access the core, to merge meshes for instance.
+*/
+
 class ICore {
 
 public:

@@ -25,6 +25,10 @@
 #endif // !XML_GET_FLOAT_ERROR
 
 
+/*
+Class to read and write XML files from the disk.
+*/
+
 class IOXML : public IIO {
 private:
 	static IOXML * instance;

@@ -13,6 +13,11 @@
 #include <pcl/conversions.h>
 #include <pcl/ros/conversions.h>
 
+
+/*
+Implementation of the processor interface, to access core functions from the UI.
+*/
+
 class Processor : public IProcessor {
 private :
 	int someField;

@@ -10,7 +10,11 @@
 #include <pcl/io/vtk_lib_io.h> 
 #include <pcl/ros/conversions.h>
 
-class IOPLY /*: public IIO*/ {
+/*
+ Class to read and write PLY files from the disk.
+*/
+
+class IOPLY {
 
 public:
 	// inherited method
